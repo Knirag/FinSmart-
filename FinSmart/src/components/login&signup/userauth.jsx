@@ -12,7 +12,7 @@ const Authentication = () => {
     <div className="user">
       <div className="container">
         <div className="header">
-          <img src={finsmartLogo}/>
+          <img src={finsmartLogo} />
           <div className="status-container">
             <div
               className={`status ${loginType === "LOGIN" ? "active" : ""}`}

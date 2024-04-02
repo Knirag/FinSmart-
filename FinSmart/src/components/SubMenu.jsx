@@ -4,17 +4,19 @@ import styled from "styled-components";
 
 const SidebarLink = styled(Link)`
   display: flex;
-  color: #e1e9fc;
+  color: #fffff;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
   list-style: none;
   height: 60px;
   text-decoration: none;
   font-size: 18px;
 
   &:hover {
-    border: 1px solid;
+    border-left: 4px solid #08fbff;
+    cursor: pointer;
+    // border: 1px solid;
     box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5),
       0 0 20px rgba(255, 255, 255, 0.2);
     outline-color: rgba(255, 255, 255, 0);
@@ -28,18 +30,24 @@ const SidebarLabel = styled.span`
 `;
 
 const DropdownLink = styled(Link)`
-  background: #414757;
-  height: 60px;
+  background: #563063;
+  height: 20px;
   padding-left: 3rem;
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: #f5f5f5;
-  font-size: 18px;
+  color: #e1e9fc;
+  font-size: 10px;
 
   &:hover {
-    background: #632ce4;
+    border-left: 4px solid #08fbff;
     cursor: pointer;
+    // border: 1px solid;
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5),
+      0 0 20px rgba(255, 255, 255, 0.2);
+    outline-color: rgba(255, 255, 255, 0);
+    outline-offset: 15px;
+    text-shadow: 1px 1px 2px #ffffff;
   }
 `;
 
