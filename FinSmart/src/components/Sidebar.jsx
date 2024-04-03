@@ -6,7 +6,7 @@ import * as AiIcons from "react-icons/ai";
 import { SidebarData } from "./SidebarData";
 import SubMenu from "./SubMenu";
 import { IconContext } from "react-icons/lib";
-import finsmartLogo from '../images/logo.svg'
+import fLogo from '../images/logo.svg'
 
 const Nav = styled.div`
   background: rgb(59, 10, 84);
@@ -72,7 +72,7 @@ const Sidebar = () => {
             {SidebarData.map((item, index) => {
               return <SubMenu item={item} key={index} />;
             })}
-          <img src={finsmartLogo} className="logo2"/>
+          <img src={fLogo} className="logo2"/>
           </SidebarWrap>
         </SidebarNav>
       </IconContext.Provider>
