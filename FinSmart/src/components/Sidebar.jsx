@@ -43,7 +43,7 @@ const SidebarNav = styled.nav`
   transition: 350ms;
   z-index: 10;
   scroll-effect: smooth;
-`;
+  `;
 
 const SidebarWrap = styled.div`
   width: 100%;

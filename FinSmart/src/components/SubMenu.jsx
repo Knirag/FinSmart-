@@ -12,9 +12,10 @@ const SidebarLink = styled(Link)`
   height: 60px;
   text-decoration: none;
   font-size: 18px;
+  font-style: Serif;
 
   &:hover {
-    border-left: 4px solid #08fbff;
+    border-left: 4px solid #f7f2f2;
     cursor: pointer;
     // border: 1px solid;
     box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5),

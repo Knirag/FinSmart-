@@ -6,6 +6,7 @@ import Authentication from "./components/login&signup/userauth";
 import Sidebar from "./components/Sidebar";
 import Budgets from "./components/Budgets/budgetpage";
 import Accounts from "./components/Accounts/Accounts";
+import Dashboard from "./components/Homepage/dashboard";
 import "./App.css";
 
 export default function App() {
@@ -18,7 +19,8 @@ export default function App() {
           <Route index element={<Finsmart2024 />} />
           <Route path="/auth" element={<Authentication />} />
           <Route path="/budgets" element={<Budgets />} />
-          <Route path="/accounts" element={<Accounts/>} />
+          <Route path="/accounts" element={<Accounts />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </BrowserRouter>

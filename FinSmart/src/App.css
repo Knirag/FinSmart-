@@ -4,8 +4,9 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: aliceblue;
 }
-/* body{
-} */
+body{
+    background: #4f3263;
+}
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -241,4 +242,112 @@ input {
   flex-direction: column;
   width: 150px;
   margin-left: 40px;
+}
+
+
+
+/* ---------------------------------------------------------------------------------------------------------------- */
+
+/* Budgets Page */
+
+/* ---------------------------------------------------------------------------------------------------------------- */
+
+.FinValues{
+  margin-bottom: 120px;
+  margin-right:750px;
+  flex-direction: column;
+  border-bottom: 1px solid #ffffff96;
+  padding:6px 30px;
+    text-shadow:
+        0 0 5px #fff,
+        0 0 10px #fff,
+        0 0 20px #000000,
+        0 0 40px rgb(1, 16, 16),
+        0 0 80px rgb(0, 0, 0),
+        0 0 90px rgb(0, 0, 0),
+        0 0 4px rgb(0, 0, 0),
+        0 0 3px rgb(2, 0, 0);
+  }
+ .Exps{
+  background-color: #bbdfe887;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 350px;
+ }
+
+ .close-modal{
+  display: flex;
+  justify-content: flex-start;
+      position: relative;
+        display: inline-block;
+        padding: 10px 6px;
+        color: #ffffff;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-decoration: none;
+        font-size: 12px;
+        overflow: hidden;
+        transition: 0.1s;
+        background: none;
+        border:  1px solid #c603fc;
+        border-radius: 2px;
+        margin-top: 30px;
+        margin-left: 170px;
+ }
+ .close-modal:hover {
+   color: #ffffff;
+   background: #f321216c;
+   box-shadow: 0 0 10px #fa6565, 0 0 40px #f3212145, 0 0 80px #ffffff68;
+   transition-delay: 0s;
+ }
+ .save-data{
+    display: flex;
+      justify-content: flex-start;
+      position: relative;
+      display: inline-block;
+      padding: 10px 6px;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-decoration: none;
+      font-size: 12px;
+      overflow: hidden;
+      transition: 0.1s;
+      background: none;
+      border: 1px solid #c603fc;
+      border-radius: 2px;
+      margin-top: 30px;
+      margin-left: 0px;
+ }
+ .save-data:hover {
+   color: #ffffff;
+   background: #ffffff8d;
+   box-shadow: 0 0 10px #5af1f6, 0 0 40px #9bddf39d, 0 0 80px #ffffffab;
+   transition-delay: 0s;
+ }
+
+
+/* ---------------------------------------------------------------------------------------------------------------- */
+
+/* Accounts Page */
+
+/* ---------------------------------------------------------------------------------------------------------------- */
+
+.Acc{
+margin-bottom: 300px;
+  margin-right: 750px;
+  flex-direction: column;
+  border-bottom: 1px solid #ffffff96;
+  padding: 6px 30px;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 10px #fff,
+    0 0 20px #000000,
+    0 0 40px rgb(1, 16, 16),
+    0 0 80px rgb(0, 0, 0),
+    0 0 90px rgb(0, 0, 0),
+    0 0 4px rgb(0, 0, 0),
+    0 0 3px rgb(2, 0, 0);
 }

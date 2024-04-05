@@ -6,7 +6,7 @@ import * as GrIcons from "react-icons/gr";
 export const SidebarData = [
   {
     title: "My Dashboard",
-    path: "/Dashboard",
+    path: "/dashboard",
     icon: <RiIcons.RiDashboardFill />,
   },
   {

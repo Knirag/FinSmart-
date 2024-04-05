@@ -2,13 +2,29 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { CiCirclePlus } from "react-icons/ci";
+import "../../App.css";
 
+const AccountInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  margin-top: 90px;
+  width: 900px;
+  height: 350px;
+  background: rgb(59, 10, 84);
+  color: "#05f7d3";
+  border-radius: 9px;
+  box-shadow: 0px 5px 10px 0px rgba(255, 255, 255, 0.5),
+    0 0 20px rgba(255, 255, 255, 0.2);
+`;
 const AddIcon = styled(Link)`
   display: flex;
   font-size: 50px;
   color: #03dbfc;
   border-radius: 30px;
-  background-color: #b661f2;
+  background-color: rgb(59, 10, 84);
   position: fixed;
   bottom: 50px;
   right: 40px;
@@ -53,6 +69,9 @@ const Accounts = () => {
   };
   return (
     <div>
+      <AccountInfo>
+        <h3 className="Acc"> Accounts</h3>
+      </AccountInfo>
       <AddIcon>
         <CiCirclePlus onClick={toggleModal} />
       </AddIcon>
