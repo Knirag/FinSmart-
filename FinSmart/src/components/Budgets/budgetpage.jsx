@@ -1,32 +1,18 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { CiCircleMinus } from "react-icons/ci";
 import { CiCirclePlus } from "react-icons/ci";
-import { PiDotsThreeVerticalFill } from "react-icons/pi";
-
+import ExpenseList from "./ExpenseList";
+import ExpensesFilter from "./ExpensesFilter";
+import ExpenseForm from "./ExpenseForm";
+import IncomeList from "./IncomeList";
 import "../../App.css";
+import MonthlyFilter from "../Homepage/MonthlyFilter";
+import IncomeForm from "./IncomeForm";
+const Budget = styled.div``;
 
-const Budget = styled.body``;
 
-const Timelines = styled.select`
-  background: rgb(59, 10, 84);
-  height: 20px;
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: #e1e9fc;
-  font-size: 10px;
-  justify-content: flex-end;
-  position: relative;
-  left: 960px;
-  top: 60px;
-  border-radius: 1.5px;
-  box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.5);
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
 // const Timelines = styled.select`
 //   display: flex;
 //   flex-direction: column;
@@ -39,18 +25,7 @@ const Timelines = styled.select`
 //   border: none;
 //   outline: none;
 // `;
-const ExpenseCategory = styled.select`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  position: relative;
-  left: 370px;
-  bottom: 200px;
-  background: rgb(59, 10, 84);
-  border-radius: 4px;
-  border: none;
-  outline: none;
-`;
+
 const BudgetContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -59,7 +34,7 @@ const BudgetContainer = styled.div`
   margin: 0 auto;
   margin-top: 90px;
   width: 900px;
-  height: 200px;
+  height: 100%;
   background: rgb(59, 10, 84);
   color: "#05f7d3";
   border-radius: 9px;
@@ -72,10 +47,21 @@ const AddIcon = styled(Link)`
   color: #03dbfc;
   border-radius: 30px;
   background-color: rgb(59, 10, 84);
-  position: fixed;
-  bottom: 50px;
+  position: absolute;
+  top: 190px;
   right: 40px;
 `;
+const MinusIcon = styled(Link)`
+  display: flex;
+  font-size: 50px;
+  color: #03dbfc;
+  border-radius: 30px;
+  background-color: rgb(59, 10, 84);
+  position: absolute;
+  bottom: 20px;
+  right: 40px;
+`;
+
 const Modal = styled.div`
   width: 100vw;
   height: 100vh;
@@ -104,39 +90,24 @@ const ModalContent = styled.div`
   min-width: 290px;
   box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5);
 `;
-const ModalTimelines = styled.select`
+
+const ModalContent1 = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1.4;
   background: rgb(59, 10, 84);
-  height: 28px;
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: #e1e9fc;
-  font-size: 13px;
-  text-align: center;
-  width: 335px;
-  margin: 0 auto;
-  padding: 3px;
-  border: 1px solid #732982;
-  border-radius: 4px;
-
-  // justify-content: flex-end;
-  // position: relative;
-  // left: 960px;
-  // top: 60px;
-
-  &:hover {
-    // border-left: 4px solid #08fbff;
-    cursor: pointer;
-    // border: 1px solid;
-    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5),
-      0 0 20px rgba(255, 255, 255, 0.2);
-    // outline-color: rgba(255, 255, 255, 0);
-    outline-offset: 15px;
-    // text-shadow: 1px 1px 2px #ffffff;
-  }
+  padding: 14px 28px;
+  border-radius: 7px;
+  min-height: 400px;
+  min-width: 290px;
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5);
 `;
-const Budgets = () => {
+
+const Budgets = ({ addExpense, selectedMonth  }) => {
   const [modal, setModal] = useState(false);
+
   const toggleModal = () => {
     setModal(!modal);
 
@@ -146,97 +117,118 @@ const Budgets = () => {
       document.body.classList.remove("active-modal");
     }
   };
-  // const [text, setText] = useState('');
-  //const [amount, setAmount] = useState(0);
+
+  // EXPENSE STATE UPDATE(ARRAY:ADD & DELETE)
+  const [expenses, setExpenses] = useState([
+    {
+      id: 1,
+      description: "2kg Potatoes",
+      amount: 30000,
+      category: "Groceries",
+      account: "Mobile Money",
+      month: "March",
+    },
+    {
+      id: 2,
+      description: "Rent",
+      amount: 60000,
+      category: "Housing",
+      account: "Credit",
+      month: "January",
+    },
+  ]);
+
+  const addItem = (data) => {
+    setExpenses(() => [...expenses, data]);
+  };
+  const deleteItem = (id) => {
+    setExpenses(expenses.filter((expense) => expense.id !== id));
+  };
+  const filterItem = (cat) => {
+    setExpenses(expenses.filter((expense) => expense.category == cat));
+  };
+
+  // INCOME STATE UPDATE(ARRAY:ADD & DELETE)
+
+  const [income, setIncome] = useState([
+    {
+      id: 1,
+      description: "Salary",
+      amount: 300000,
+      account: "Mobile Money",
+      month: "March",
+    },
+    {
+      id: 2,
+      description: "Allowance",
+      amount: 500000,
+      account: "Mobile Money",
+      month: "January",
+    },
+  ]);
+ const addIncome = (data) => {
+   setIncome((prevIncome) => [...prevIncome, data]);
+ };
+
+ // Function to remove income data by ID
+ const deleteIncome = (id) => {
+   setIncome(income.filter((item) => item.id !== id));
+ };
+
+
   return (
     <Budget>
-      <Timelines>
-        <option value="january">January</option>
-        <option value="february">February</option>
-        <option value="march">March</option>
-        <option value="april">April</option>
-        <option value="may">May</option>
-        <option value="june">June</option>
-        <option value="july">July</option>
-        <option value="august">August</option>
-        <option value="september">September</option>
-        <option value="october">October</option>
-        <option value="november">November</option>
-        <option value="december">December</option>
-      </Timelines>
+      <h4 className="FinValuesI">Income:</h4>
+      <MonthlyFilter filterItem={filterItem} selectedMonth={selectedMonth} />
       <BudgetContainer>
-        <h4 className="FinValues">Income:</h4>
-        <h6>Name</h6> <h6>Amount</h6> <PiDotsThreeVerticalFill />
-      </BudgetContainer>
-      <BudgetContainer>
-        <h4 className="FinValues">Expenses:</h4>
-        <ExpenseCategory>
-          <option value="Option1">Housing</option>
-          <option value="Option2">Utilities</option>
-          <option value="Option3">Transport</option>
-          <option value="Option4">Savings & Investments</option>
-          <option value="Option5">Groceries</option>
-          <option value="Option6">Education</option>
-          <option value="Option7">Entertainment</option>
-          <option value="Option8">Shopping</option>
-          <option value="Option9">Miscelleneous</option>
-        </ExpenseCategory>
-        <h5 id="category">Category</h5>
-        <h6>Name</h6>
-        <h6>Amount </h6> <PiDotsThreeVerticalFill />
+        <IncomeList items={income} deleteItemIncome={deleteIncome} />
       </BudgetContainer>
       <AddIcon>
         <CiCirclePlus onClick={toggleModal} />
       </AddIcon>
+
+      {/* {modal && (
+        <Modal>
+          <Overlay>
+            <ModalContent>
+              <h5 style={{ color: "#ffff" }}>Add Income:</h5>
+              {/* {showIncomForm ? <IncomeForm/> : <ExpenseForm />} */}
+
+      {/* BUTTONS */}
+      {/* <button className="close-modal" onClick={toggleModal}>
+                Cancel
+              </button>
+            </ModalContent>
+          </Overlay>
+        </Modal> */}
+
+      <h4 className="FinValuesE">Expenses:</h4>
+      <BudgetContainer>
+        <ExpensesFilter filterItem={filterItem} />
+        <ExpenseList
+          items={expenses}
+          deleteItem={deleteItem}
+        />
+      </BudgetContainer>
+
+      {/* EXPENSES SECTION */}
+      <MinusIcon>
+        <CiCircleMinus onClick={toggleModal} />
+      </MinusIcon>
       {modal && (
         <Modal>
           <Overlay>
             <ModalContent>
               <h5 style={{ color: "#ffff" }}>Create Budget</h5>
-              <form>
-                <label>Name:</label>
-                <input type="text" value></input>
-                <label>Amount:</label>
-                <input></input>
-                <label>Month:</label>
-                <ModalTimelines>
-                  <option value="january">January</option>
-                  <option value="february">February</option>
-                  <option value="march">March</option>
-                  <option value="april">April</option>
-                  <option value="may">May</option>
-                  <option value="june">June</option>
-                  <option value="july">July</option>
-                  <option value="august">August</option>
-                  <option value="september">September</option>
-                  <option value="october">October</option>
-                  <option value="november">November</option>
-                  <option value="december">December</option>
-                </ModalTimelines>
-                <br></br>
-                <label>Account:</label>
-                <ModalTimelines>
-                  <option value="someOption">Mobile Money</option>
-                  <option value="otherOption">Credit Account</option>
-                </ModalTimelines>
-                <br></br>
-                <label>Category:</label>
-                <ModalTimelines>
-                  <option value="Option1">Housing</option>
-                  <option value="Option2">Utilities</option>
-                  <option value="Option3">Transport</option>
-                  <option value="Option4">Savings & Investments</option>
-                  <option value="Option5">Groceries</option>
-                  <option value="Option6">Education</option>
-                  <option value="Option7">Entertainment</option>
-                  <option value="Option8">Shopping</option>
-                  <option value="Option9">Miscelleneous</option>
-                </ModalTimelines>
-                <button className="save-data">Create</button>
-                <button className="close-modal" onClick={toggleModal}>
-                  Cancel
-                </button>
-              </form>
+
+              <ExpenseForm
+                addExpense={addItem}
+              />
+
+              {/* BUTTONS */}
+              <button className="close-modal" onClick={toggleModal}>
+                Cancel
+              </button>
             </ModalContent>
           </Overlay>
         </Modal>

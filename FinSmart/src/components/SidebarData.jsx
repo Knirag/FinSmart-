@@ -24,7 +24,7 @@ export const SidebarData = [
   },
   {
     title: "Statements",
-    path: "/budget:month//IncomeStatement",
+    path: "/IncomeStatement",
     icon: <FaIcons.FaPaperclip />,
 
     iconClosed: <RiIcons.RiArrowDownSFill />,

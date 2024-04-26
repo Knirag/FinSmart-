@@ -7,9 +7,11 @@ import Sidebar from "./components/Sidebar";
 import Budgets from "./components/Budgets/budgetpage";
 import Accounts from "./components/Accounts/Accounts";
 import Dashboard from "./components/Homepage/dashboard";
+import IncomeStatement from "./components/Statements/incomestatement";
 import "./App.css";
 
 export default function App() {
+
   return (
     <BrowserRouter>
       <div className="app-container">
@@ -21,6 +23,8 @@ export default function App() {
           <Route path="/budgets" element={<Budgets />} />
           <Route path="/accounts" element={<Accounts />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/statement" element={<IncomeStatement />} />
+          
         </Routes>
       </div>
     </BrowserRouter>

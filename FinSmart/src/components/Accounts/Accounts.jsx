@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import AccountsList from "./AccountsList";
+import AccountsForm from "./AccountsForm";
 import { CiCirclePlus } from "react-icons/ci";
 import "../../App.css";
 
@@ -12,7 +14,7 @@ const AccountInfo = styled.div`
   margin: 0 auto;
   margin-top: 90px;
   width: 900px;
-  height: 350px;
+  height: 100%;
   background: rgb(59, 10, 84);
   color: "#05f7d3";
   border-radius: 9px;
@@ -53,10 +55,10 @@ const ModalContent = styled.div`
   background: rgb(59, 10, 84);
   padding: 14px 28px;
   border-radius: 3px;
-  min-height: 400px;
+  min-height: 200px;
   min-width: 300px;
 `;
-const Accounts = () => {
+const Accounts = ({addAccountProp}) => {
   const [modal, setModal] = useState(false);
   const toggleModal = () => {
     setModal(!modal);
@@ -67,10 +69,41 @@ const Accounts = () => {
       document.body.classList.remove("active-modal");
     }
   };
+
+   const [accounts, setAccounts] = useState([
+     {
+       id: 1,
+       name: "Mobile Money",
+       balance: 20000,
+     },
+     {
+       id: 2,
+       name: "Current Account",
+       balance: 2000000,
+     },
+   ]);
+ const [accountData, setAccountData] = useState([]);
+
+ const handleAddAccount = (newData) => {
+   setAccountData(newData);
+ };
+   const deleteItem = (id) => {
+     setAccounts(accounts.filter((accounts) => accounts.id !== id));
+   };
+
+   const onSubmit = (data) => {
+     toggleModal();
+   };
+
   return (
     <div>
       <AccountInfo>
         <h3 className="Acc"> Accounts</h3>
+        <AccountsList
+          items={accounts}
+          deleteItem={deleteItem}
+          accountData={accountData}
+        />
       </AccountInfo>
       <AddIcon>
         <CiCirclePlus onClick={toggleModal} />
@@ -80,19 +113,11 @@ const Accounts = () => {
           <Overlay>
             <ModalContent>
               <h5 style={{ color: "#ffff" }}>Add Acccount:</h5>
-              <form>
-                <label>Name:</label>
-                <input className="acctDetails" type="text"></input>
-                <label>Type:</label>
-                <input className="acctDetails" type="text"></input>
-                <label>Balance:</label>
-                <input className="acctDetails" type="text"></input>
-
-                <button className="acctDetails">Add</button>
-                <button className="close-modal" onClick={toggleModal}>
-                  Cancel
-                </button>
-              </form>
+              <AccountsForm addAccount={handleAddAccount} />
+              {/* Button */}
+              <button className="close-modal" onClick={toggleModal}>
+                Cancel
+              </button>
             </ModalContent>
           </Overlay>
         </Modal>

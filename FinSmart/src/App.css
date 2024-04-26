@@ -5,7 +5,10 @@
   color: aliceblue;
 }
 body{
-    background: #4f3263;
+    background: #4d0170;
+    /* background-image: url(images/download.jpeg);
+    background-repeat: no-repeat;
+    background-size:cover; */
 }
 #root {
   max-width: 1280px;
@@ -252,15 +255,19 @@ input {
 
 /* ---------------------------------------------------------------------------------------------------------------- */
 
-.FinValues{
-  margin-bottom: 120px;
-  margin-right:750px;
+.FinValuesI{
+  font-family: "Jersey 15", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  display: flex;
+  font-size: 30px;
+  position:absolute;
+  margin: -34px;
+  margin-left:170px;
   flex-direction: column;
-  border-bottom: 1px solid #ffffff96;
-  padding:6px 30px;
     text-shadow:
-        0 0 5px #fff,
-        0 0 10px #fff,
+        0 0 5px #68c7ea,
+        0 0 10px #84d6ff,
         0 0 20px #000000,
         0 0 40px rgb(1, 16, 16),
         0 0 80px rgb(0, 0, 0),
@@ -268,13 +275,34 @@ input {
         0 0 4px rgb(0, 0, 0),
         0 0 3px rgb(2, 0, 0);
   }
+    .FinValuesE {
+      font-family: "Jersey 15", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+      display: flex;
+      font-size: 30px;
+      margin-top: 50px;
+      position: absolute;
+      margin-left: 190px;
+      flex-direction: column;
+      text-shadow:
+        0 0 5px #68c7ea,
+        0 0 10px #84d6ff,
+        0 0 20px #000000,
+        0 0 40px rgb(1, 16, 16),
+        0 0 80px rgb(0, 0, 0),
+        0 0 90px rgb(0, 0, 0),
+        0 0 4px rgb(0, 0, 0),
+        0 0 3px rgb(2, 0, 0);
+    }
+
  .Exps{
-  background-color: #bbdfe887;
+  background-color: #42869787;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 350px;
+  width: 450px;
  }
 
  .close-modal{
@@ -305,7 +333,7 @@ input {
  .save-data{
     display: flex;
       justify-content: flex-start;
-      position: relative;
+      position: absolute;
       display: inline-block;
       padding: 10px 6px;
       color: #ffffff;
@@ -319,7 +347,7 @@ input {
       border: 1px solid #c603fc;
       border-radius: 2px;
       margin-top: 30px;
-      margin-left: 0px;
+      margin-left: -100px;
  }
  .save-data:hover {
    color: #ffffff;
@@ -327,6 +355,98 @@ input {
    box-shadow: 0 0 10px #5af1f6, 0 0 40px #9bddf39d, 0 0 80px #ffffffab;
    transition-delay: 0s;
  }
+/* ---------------------------------------------------------------------------------------------------------------- */
+
+/* Expense List */
+
+.ExpensesTable {
+  width: 90%;
+  border-collapse: collapse;
+  background:none;
+  color: #fff;
+}
+
+.ExpensesTable th,
+.ExpensesTable td {
+  padding: 6px;
+  text-align: center;
+}
+
+.ExpensesTable thead th {
+  background-color: #e17cff28;
+  font-weight: bold;
+  border-bottom: 1px solid #8e44ad;
+font-family: "Jersey 15", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+  text-shadow:
+      0 0 5px #68c7ea,
+      0 0 10px #84d6ff,
+      0 0 20px #000000,
+      0 0 40px rgb(1, 16, 16),
+      0 0 80px rgb(0, 0, 0),
+      0 0 90px rgb(0, 0, 0),
+      0 0 4px rgb(0, 0, 0),
+      0 0 3px rgb(2, 0, 0);
+}
+
+.ExpensesTable h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-family: "Jersey 15", sans-serif;
+    font-weight: 400;
+}
+
+.deleteItems {
+  font-family: "Jersey 15", sans-serif;
+    font-weight: 400;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #f0195e;
+  
+}
+
+.deleteItems:hover {
+  opacity: 0.8;
+}
+
+
+.ExpensesTable th:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  box-shadow: 0 1px 5px rgba(179, 7, 138, 0.299);
+  transition: 0.3s ease-in-out;
+}
+
+.ExpensesTable th:hover:after {
+  box-shadow: 0 1px 10px rgba(142, 68, 173, 1);
+}
+
+.ExpensesTable tbody tr:last-child td {
+  background-color: #e799ff32;
+  font-weight: bold;
+  text-align: right;
+  font-family: "Jersey 15", sans-serif;
+    font-weight: 400;
+    text-shadow:
+        0 0 5px #68c7ea,
+        0 0 10px #ffffff,
+        0 0 20px #ffffff,
+        0 0 40px rgb(1, 16, 16),
+        0 0 80px rgb(0, 0, 0),
+        0 0 90px rgb(0, 0, 0),
+        0 0 4px rgb(0, 0, 0),
+        0 0 3px rgb(2, 0, 0);
+}
+
+
 
 
 /* ---------------------------------------------------------------------------------------------------------------- */
@@ -336,14 +456,51 @@ input {
 /* ---------------------------------------------------------------------------------------------------------------- */
 
 .Acc{
-margin-bottom: 300px;
-  margin-right: 750px;
-  flex-direction: column;
-  border-bottom: 1px solid #ffffff96;
-  padding: 6px 30px;
+
+    font-family: "Jersey 15", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    display: flex;
+    font-size: 30px;
+    margin-top: -280px;
+    position: fixed;
+    margin-right: 800px;
+    flex-direction: column;
+    text-shadow:
+      0 0 5px #68c7ea,
+      0 0 10px #84d6ff,
+      0 0 20px #000000,
+      0 0 40px rgb(1, 16, 16),
+      0 0 80px rgb(0, 0, 0),
+      0 0 90px rgb(0, 0, 0),
+      0 0 4px rgb(0, 0, 0),
+      0 0 3px rgb(2, 0, 0);
+
+}
+.AccountsTable {
+  width: 90%;
+  border-collapse: collapse;
+  background: none;
+  color: #fff;
+}
+
+.AccountsTable th,
+.AccountsTable td {
+  padding: 6px;
+  text-align: center;
+}
+
+.AccountsTable thead th {
+  background-color: #e17cff28;
+  font-weight: bold;
+  border-bottom: 1px solid #8e44ad;
+  font-family: "Jersey 15", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
   text-shadow:
-    0 0 5px #fff,
-    0 0 10px #fff,
+    0 0 5px #68c7ea,
+    0 0 10px #84d6ff,
     0 0 20px #000000,
     0 0 40px rgb(1, 16, 16),
     0 0 80px rgb(0, 0, 0),
@@ -351,3 +508,47 @@ margin-bottom: 300px;
     0 0 4px rgb(0, 0, 0),
     0 0 3px rgb(2, 0, 0);
 }
+
+.AccountsTable h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-family: "Jersey 15", sans-serif;
+  font-weight: 400;
+}
+.AccountsTable th:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  box-shadow: 0 1px 5px rgba(179, 7, 138, 0.299);
+  transition: 0.3s ease-in-out;
+}
+
+.AccountsTable th:hover:after {
+  box-shadow: 0 1px 10px rgba(142, 68, 173, 1);
+}
+
+.AccountsTable tbody tr:last-child td {
+  background-color: #e799ff32;
+  font-weight: bold;
+  text-align: right;
+  font-family: "Jersey 15", sans-serif;
+  font-weight: 400;
+  text-shadow:
+    0 0 5px #68c7ea,
+    0 0 10px #ffffff,
+    0 0 20px #ffffff,
+    0 0 40px rgb(1, 16, 16),
+    0 0 80px rgb(0, 0, 0),
+    0 0 90px rgb(0, 0, 0),
+    0 0 4px rgb(0, 0, 0),
+    0 0 3px rgb(2, 0, 0);
+}
+/* ---------------------------------------------------------------------------------------------------------------- */
+
+/* Accounts Page */
+
+/* ---------------------------------------------------------------------------------------------------------------- */

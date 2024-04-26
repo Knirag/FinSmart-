@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from "styled-components";
 import "../../App.css";
-
+import MonthlyFilter from './MonthlyFilter';
+import ProgressBar from 'react-bootstrap/esm/ProgressBar';
 
 const DasboardInfo = styled.div`
   display: flex;
@@ -34,15 +35,20 @@ const LineChart = styled.div`
     0 0 20px rgba(255, 255, 255, 0.2);
 `;
 const Dashboard = () => {
+    const filterItem = (cat) => {
+      setExpenses(expenses.filter((expense) => expense.category == cat));
+    };
   return (
     <div>
       <DasboardInfo>
+        <MonthlyFilter filterItem={filterItem} />
       </DasboardInfo>
       <LineChart>
-
+        <h4>Good </h4>
+        <ProgressBar/>
       </LineChart>
     </div>
-  )
+  );
 }
 
 export default Dashboard;
