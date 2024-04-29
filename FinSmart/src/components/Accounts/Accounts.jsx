@@ -58,7 +58,7 @@ const ModalContent = styled.div`
   min-height: 200px;
   min-width: 300px;
 `;
-const Accounts = ({addAccountProp}) => {
+const Accounts = () => {
   const [modal, setModal] = useState(false);
   const toggleModal = () => {
     setModal(!modal);

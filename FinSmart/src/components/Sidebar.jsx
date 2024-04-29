@@ -9,7 +9,7 @@ import { IconContext } from "react-icons/lib";
 import fLogo from '../images/logo.svg'
 
 const Nav = styled.div`
-  background: rgb(59, 10, 84);
+  background: none;
   height: 80px;
   display: flex;
   justify-content: flex-start;

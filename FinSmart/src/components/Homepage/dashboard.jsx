@@ -2,7 +2,7 @@ import React from 'react';
 import styled from "styled-components";
 import "../../App.css";
 import MonthlyFilter from './MonthlyFilter';
-import ProgressBar from 'react-bootstrap/esm/ProgressBar';
+// import Progressbar from './Progressbar';
 
 const DasboardInfo = styled.div`
   display: flex;
@@ -27,7 +27,7 @@ const LineChart = styled.div`
   margin: 0 auto;
   margin-top: 90px;
   width: 900px;
-  height: 200px;
+  height: 100%;
   background: rgb(59, 10, 84);
   color: "#05f7d3";
   border-radius: 9px;
@@ -44,8 +44,7 @@ const Dashboard = () => {
         <MonthlyFilter filterItem={filterItem} />
       </DasboardInfo>
       <LineChart>
-        <h4>Good </h4>
-        <ProgressBar/>
+        {/* <Progressbar/> */}
       </LineChart>
     </div>
   );
