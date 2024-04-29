@@ -107,16 +107,16 @@ const ModalContent1 = styled.div`
 
 const Budgets = ({ addExpense, selectedMonth  }) => {
   const [modal, setModal] = useState(false);
-
-  const toggleModal = () => {
-    setModal(!modal);
-
-    if (modal) {
-      document.body.classList.add("active-modal");
-    } else {
-      document.body.classList.remove("active-modal");
-    }
-  };
+ const [modalType, setModalType] = useState(null);
+const toggleModal = (type) => {
+  setModalType(type);
+  setModal(!modal);
+  
+  if (!modal) {
+    document.body.classList.add("active-modal");
+  } else {
+    document.body.classList.remove("active-modal");
+  }
 
   // EXPENSE STATE UPDATE(ARRAY:ADD & DELETE)
   const [expenses, setExpenses] = useState([
@@ -187,20 +187,7 @@ const Budgets = ({ addExpense, selectedMonth  }) => {
         <CiCirclePlus onClick={toggleModal} />
       </AddIcon>
 
-      {/* {modal && (
-        <Modal>
-          <Overlay>
-            <ModalContent>
-              <h5 style={{ color: "#ffff" }}>Add Income:</h5>
-              {/* {showIncomForm ? <IncomeForm/> : <ExpenseForm />} */}
 
-      {/* BUTTONS */}
-      {/* <button className="close-modal" onClick={toggleModal}>
-                Cancel
-              </button>
-            </ModalContent>
-          </Overlay>
-        </Modal> */}
 
       <h4 className="FinValuesE">Expenses:</h4>
       <BudgetContainer>

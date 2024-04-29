@@ -19,8 +19,8 @@ const listAccountData = JSON.parse(localStorage.getItem("accountData"));
         {listAccountData ? (
           listAccountData?.map((account) => (
             <tr>
-              <td>{account.name}</td>
-              <td>{account.balance}</td>
+              <td>{listAccountData.name}</td>
+              <td>{listAccountData.balance}</td>
               <td>
                 <button
                   className="deleteItems"
@@ -38,7 +38,7 @@ const listAccountData = JSON.parse(localStorage.getItem("accountData"));
         )}
 
         <tr>
-          <td colSpan="2">
+          {/* <td colSpan="2">
             <h4>TOTAL:</h4>
           </td>
           <td colSpan="1">
@@ -48,7 +48,7 @@ const listAccountData = JSON.parse(localStorage.getItem("accountData"));
                 .toFixed(2)}{" "}
               Frw
             </h4> */}
-          </td>
+          {/* </td> */}
         </tr>
       </tbody>
     </table>
