@@ -1,6 +1,23 @@
 import React from "react";
 import { RxCross2 } from "react-icons/rx";
-const IncomeList = ({ items, deleteItemIncome }) => {
+const IncomeList = () => {
+  const listIncomeData = JSON.parse(localStorage.getItem("incomeData"));
+  
+  const handleDeleteIncome = (incomeId) => {
+    const incomes = JSON.parse(localStorage.getItem("incomeData"));
+    const updatedIncomes = incomes.filter((income) => income.id !== incomeId);
+    localStorage.setItem("incomeData", JSON.stringify(updatedIncomes));
+    window.location.reload(); 
+  };
+const totalIncome = listIncomeData
+? listIncomeData
+    .reduce(
+      (total, income) => total + parseInt(income.amount),
+      0
+    )
+    .toFixed(2)
+: "0.00";
+localStorage.setItem("totalIncome", totalIncome);
   return (
     <table className="ExpensesTable">
       <thead>
@@ -12,32 +29,34 @@ const IncomeList = ({ items, deleteItemIncome }) => {
         </tr>
       </thead>
       <tbody>
-        {items.map((item) => (
-          <tr key={item.id}>
-            <td>{item.month}</td>
-            <td>{item.description}</td>
-            <td>{item.amount}</td>
-            <td>{item.account}</td>
-            <td>
-              <button
-                className="deleteItems"
-                onClick={() => deleteItemIncome(item.id)}
-              >
-                <RxCross2 />
-              </button>
-            </td>
+        {listIncomeData ? (
+          listIncomeData.map((income) => (
+            <tr key={income.id}>
+              <td>{income.month}</td>
+              <td>{income.description}</td>
+              <td>{income.amount}Frw</td>
+              <td>{income.account}</td>
+              <td>
+                <button
+                  className="deleteItems"
+                  onClick={() => handleDeleteIncome(income.id)}
+                >
+                  <RxCross2 />
+                </button>
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td>Add Budget Data</td>
           </tr>
-        ))}
+        )}
         <tr>
           <td colSpan="4">
             <h4>INCOME TOTAL:</h4>
           </td>
           <td>
-            <h4>
-              {items
-                .reduce((total, item) => total + parseInt(item.amount), 0)
-                .toFixed(2)}
-            </h4>
+            <h4>{totalIncome} Frw</h4>
           </td>
         </tr>
       </tbody>

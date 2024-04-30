@@ -29,55 +29,6 @@ export const SidebarData = [
 
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
-    subNav: [
-      {
-        title: "January",
-        path: "/January/IncomeStatement",
-      },
-      {
-        title: "February",
-        path: "/February/IncomeStatement",
-      },
-      {
-        title: "March",
-        path: "/March/IncomeStatement",
-      },
-      {
-        title: "April",
-        path: "/April/IncomeStatement",
-      },
-      {
-        title: "May",
-        path: "/May/IncomeStatement",
-      },
-      {
-        title: "June",
-        path: "/June/IncomeStatement",
-      },
-      {
-        title: "July",
-        path: "/July/IncomeStatement",
-      },
-      {
-        title: "August",
-        path: "/August/IncomeStatement",
-      },
-      {
-        title: "September",
-        path: "/September/IncomeStatement",
-      },
-      {
-        title: "October",
-        path: "/October/IncomeStatement",
-      },
-      {
-        title: "November",
-        path: "/November/IncomeStatement",
-      },
-      {
-        title: "December",
-        path: "/December/IncomeStatement",
-      },
-    ],
+
   },
 ];

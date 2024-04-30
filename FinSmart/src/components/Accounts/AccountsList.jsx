@@ -2,10 +2,19 @@ import React from "react";
 import { RxCross2 } from "react-icons/rx";
 import "../../App.css";
 
-const ExpenseList = ({ deleteItem }) => {
+const AccountsList = () => {
 
 const listAccountData = JSON.parse(localStorage.getItem("accountData"));
 
+const handleDeleteAccount = (accountId) => {
+    const accounts = JSON.parse(localStorage.getItem("accountData"));
+    const updatedAccounts = accounts.filter(
+      (account) => account.id !== accountId
+    );
+    localStorage.setItem("accountData", JSON.stringify(updatedAccounts));
+        window.location.reload();
+
+};
   return (
     <table className="AccountsTable">
       <thead>
@@ -18,14 +27,11 @@ const listAccountData = JSON.parse(localStorage.getItem("accountData"));
       <tbody>
         {listAccountData ? (
           listAccountData?.map((account) => (
-            <tr>
-              <td>{listAccountData.name}</td>
-              <td>{listAccountData.balance}</td>
+            <tr key={account.id}>
+              <td>{account.name}</td>
+              <td>{account.balance}</td>
               <td>
-                <button
-                  className="deleteItems"
-                  onClick={() => deleteItem(listAccountData.value)}
-                >
+                <button className="deleteItems" onClick={() => handleDeleteAccount(account.id)}>
                   <RxCross2 />
                 </button>
               </td>
@@ -33,26 +39,14 @@ const listAccountData = JSON.parse(localStorage.getItem("accountData"));
           ))
         ) : (
           <tr>
-            <td colSpan="3">No account data available</td>
+            <td colSpan="3">Add Account Data</td>
           </tr>
         )}
 
-        <tr>
-          {/* <td colSpan="2">
-            <h4>TOTAL:</h4>
-          </td>
-          <td colSpan="1">
-            {/* <h4>
-              {accountData
-                .reduce((total, data) => total + parseInt(data.balance), 0)
-                .toFixed(2)}{" "}
-              Frw
-            </h4> */}
-          {/* </td> */}
-        </tr>
+        <tr></tr>
       </tbody>
     </table>
   );
 };
 
-export default ExpenseList;
+export default AccountsList;

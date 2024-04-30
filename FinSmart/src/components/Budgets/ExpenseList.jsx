@@ -1,6 +1,24 @@
-import React from "react";
+import React from "react"; // Corrected import statement
 import { RxCross2 } from "react-icons/rx";
-const ExpenseList = ({ items, deleteItem }) => {
+
+const ExpenseList = () => {
+  const listExpenseData = JSON.parse(localStorage.getItem("expenseData"));
+
+  const handleDeleteExpense = (expenseId) => {
+  const expenses = JSON.parse(localStorage.getItem("expenseData"));
+  const updatedExpenses = expenses.filter(
+    (expense) => expense.id !== expenseId
+  );
+  localStorage.setItem("expenseData", JSON.stringify(updatedExpenses));
+      window.location.reload(); 
+
+};
+  const totalExpenses = listExpenseData
+    ? listExpenseData
+        .reduce((total, expense) => total + parseInt(expense.amount), 0)
+        .toFixed(2)
+    : "0.00";
+localStorage.setItem("totalExpenses", totalExpenses);
   return (
     <table className="ExpensesTable">
       <thead>
@@ -13,31 +31,36 @@ const ExpenseList = ({ items, deleteItem }) => {
         </tr>
       </thead>
       <tbody>
-        {items.map((item) => (
-          <tr key= {item.id}>
-            <td>{item.month}</td>
-            <td>{item.description}</td>
-            <td>{item.amount}</td>
-            <td>{item.category}</td>
-            <td>{item.account}</td>
-            <td>
-              <button
-                className="deleteItems"
-                onClick={() => deleteItem(item.id)}
-              >
-                <RxCross2 />
-              </button>
-            </td>
+        {listExpenseData ? (
+          listExpenseData.map((expense) => (
+            <tr key={expense.id}>
+              <td>{expense.month}</td>
+              <td>{expense.description}</td>
+              <td>{expense.amount}Frw</td>
+              <td>{expense.category}</td>
+              <td>{expense.account}</td>
+
+              <td>
+                <button
+                  className="deleteItems"
+                  onClick={() => handleDeleteExpense(expense.id)}
+                >
+                  <RxCross2 />
+                </button>
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td>Add Budget Data</td>
           </tr>
-        ))}
+        )}
         <tr>
           <td colSpan="4">
             <h4>EXPENSE TOTAL:</h4>
           </td>
           <td>
-            <h4>
-              {items.reduce((total, item) => total + parseInt(item.amount), 0).toFixed(2)}
-            </h4>
+            <h4>{totalExpenses}Frw</h4>
           </td>
         </tr>
       </tbody>

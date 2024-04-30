@@ -24,27 +24,42 @@ const ModalTimelines = styled.select`
   }
 `;
 
-
-// const onSubmit = (data) => {
-//   // Handle form submission logic here
-// onSubmit={handleSubmit(addIncome)}
-// };
-
 const IncomeForm = () => {
-    const [formData,setFormData] = useState({})
-    const onChangeHandler = (e) =>{
-        const { value } = e.target;
-        const {name} = e.target
-        setFormData({
-            ...formData,
-            [name]:value
-        })
-    }
+
+    const [incomeFormData, setIncomeFormData] = useState({});
+
+    const onChangeHandler = (e) => {
+      const { name, value } = e.target;
+      setIncomeFormData({
+        ...incomeFormData,
+        [name]: value,
+      });
+    };
+
+    const onSubmit = (e) => {
+      e.preventDefault();
+      const currentIncomeData =
+        JSON.parse(localStorage.getItem("incomeData")) || [];
+      const id = currentIncomeData.length;
+      currentIncomeData.push({
+        id: id,
+        ...incomeFormData,
+      });
+      localStorage.setItem("incomeData", JSON.stringify(currentIncomeData));
+      window.location.reload();
+    };
+
+
+    // Get account options for dropdown menu
+    const accountData = JSON.parse(localStorage.getItem("accountData"));
   return (
-    <form action="" className="mb-5">
-        
+    <form action="" className="mb-5" onSubmit={onSubmit}>
       {/* DESCRIPTION */}
-      <label htmlFor="description" className="form-label" onSubmit={onChangeHandler}>
+      <label
+        htmlFor="description"
+        className="form-label"
+        onSubmit={onChangeHandler}
+      >
         Description:
       </label>
       <input
@@ -58,24 +73,32 @@ const IncomeForm = () => {
       <label htmlFor="amount" className="form-label">
         Amount:
       </label>
-      <input
-        id="amount"
-        type="text"
-        name="amount"
-        onChange={onChangeHandler}
-      />
+      <input id="amount" type="text" name="amount" onChange={onChangeHandler} />
 
       {/* MONTH */}
       <label htmlFor="month" className="form-label">
         Month:
       </label>
+
       <ModalTimelines
         name="month"
         id=""
         className="form-select"
         onChange={onChangeHandler}
       >
+        <option value="">Select Month</option>
         <option value="January">January</option>
+        <option value="February">February</option>
+        <option value="March">March</option>
+        <option value="April">April</option>
+        <option value="May">May</option>
+        <option value="June">June</option>
+        <option value="July">July</option>
+        <option value="August">August</option>
+        <option value="September">September</option>
+        <option value="October">October</option>
+        <option value="November">November</option>h
+        <option value="December">December</option>
       </ModalTimelines>
 
       {/* ACCOUNT SELECTION */}
@@ -88,8 +111,18 @@ const IncomeForm = () => {
         className="form-select"
         onChange={onChangeHandler}
       >
-        <option value="MobileMoney">Mobile Money</option>
-        <option value="CreditAcc">Credit Account</option>
+        {accountData ? (
+          <>
+            <option value="">Select account</option>
+            {accountData.map((account) => (
+              <option key={account.id} value={account.name}>
+                {account.name}
+              </option>
+            ))}
+          </>
+        ) : (
+          <option value="">Loading...</option>
+        )}
       </ModalTimelines>
 
       <br />

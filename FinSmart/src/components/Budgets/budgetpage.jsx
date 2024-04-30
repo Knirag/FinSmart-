@@ -1,30 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { CiCircleMinus } from "react-icons/ci";
 import { CiCirclePlus } from "react-icons/ci";
 import ExpenseList from "./ExpenseList";
-import ExpensesFilter from "./ExpensesFilter";
 import ExpenseForm from "./ExpenseForm";
 import IncomeList from "./IncomeList";
 import "../../App.css";
 import MonthlyFilter from "../Homepage/MonthlyFilter";
 import IncomeForm from "./IncomeForm";
 const Budget = styled.div``;
-
-
-// const Timelines = styled.select`
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: flex-end;
-//   position: relative;
-//   left: 960px;
-//   top: 60px;
-//   background: rgb(59, 10, 84);
-//   border-radius: 4px;
-//   border: none;
-//   outline: none;
-// `;
 
 const BudgetContainer = styled.div`
   display: flex;
@@ -70,13 +55,16 @@ const Modal = styled.div`
   right: 0;
   bottom: 0;
   position: fixed;
+  z-index: 999;
 `;
+
 const Overlay = styled.div`
   width: 100vw;
   height: 100vh;
   background: rgba(49, 49, 49, 0.8);
   position: fixed;
 `;
+
 const ModalContent = styled.div`
   position: absolute;
   top: 50%;
@@ -91,129 +79,122 @@ const ModalContent = styled.div`
   box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5);
 `;
 
-const ModalContent1 = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  line-height: 1.4;
-  background: rgb(59, 10, 84);
-  padding: 14px 28px;
-  border-radius: 7px;
-  min-height: 400px;
-  min-width: 290px;
-  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5);
-`;
-
-const Budgets = ({ addExpense, selectedMonth  }) => {
+const Budgets = () => {
   const [modal, setModal] = useState(false);
- const [modalType, setModalType] = useState(null);
-const toggleModal = (type) => {
-  setModalType(type);
-  setModal(!modal);
-  
-  if (!modal) {
-    document.body.classList.add("active-modal");
-  } else {
-    document.body.classList.remove("active-modal");
-  }
+  const [modalType, setModalType] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState("");
 
-  // EXPENSE STATE UPDATE(ARRAY:ADD & DELETE)
+  const toggleModal = (type) => {
+    setModalType(type);
+    setModal(!modal);
+
+    if (!modal) {
+      document.body.classList.add("active-modal");
+    } else {
+      document.body.classList.remove("active-modal");
+    }
+  };
+
+  useEffect(() => {
+    const storedMonth = localStorage.getItem("selectedMonth");
+    if (storedMonth) {
+      setSelectedMonth(storedMonth);
+    }
+  }, []);
+
+  const filterDataByMonth = (data) => {
+    return data.filter((item) => item.month === selectedMonth);
+  };
   const [expenses, setExpenses] = useState([
     {
       id: 1,
-      description: "2kg Potatoes",
-      amount: 30000,
-      category: "Groceries",
-      account: "Mobile Money",
-      month: "March",
-    },
-    {
-      id: 2,
-      description: "Rent",
-      amount: 60000,
-      category: "Housing",
-      account: "Credit",
-      month: "January",
+      description: "",
+      amount: "",
+      category: "",
+      account: "",
+      month: "",
     },
   ]);
-
-  const addItem = (data) => {
-    setExpenses(() => [...expenses, data]);
-  };
-  const deleteItem = (id) => {
-    setExpenses(expenses.filter((expense) => expense.id !== id));
-  };
-  const filterItem = (cat) => {
-    setExpenses(expenses.filter((expense) => expense.category == cat));
-  };
-
-  // INCOME STATE UPDATE(ARRAY:ADD & DELETE)
-
   const [income, setIncome] = useState([
     {
-      id: 1,
-      description: "Salary",
-      amount: 300000,
-      account: "Mobile Money",
-      month: "March",
-    },
-    {
-      id: 2,
-      description: "Allowance",
-      amount: 500000,
-      account: "Mobile Money",
-      month: "January",
+      id: "",
+      description: "",
+      amount: "",
+      account: "",
+      month: "",
     },
   ]);
- const addIncome = (data) => {
-   setIncome((prevIncome) => [...prevIncome, data]);
- };
 
- // Function to remove income data by ID
- const deleteIncome = (id) => {
-   setIncome(income.filter((item) => item.id !== id));
- };
+  const [expenseData, setExpenseData] = useState([]);
 
+  const handleAddExpense = (newData) => {
+    setExpenseData(newData);
+  };
+  const [incomeData, setIncomeData] = useState([]);
 
+  const handleAddIncome = (newData) => {
+    setIncomeData(newData);
+  };
   return (
     <Budget>
+      {/* INCOME */}
       <h4 className="FinValuesI">Income:</h4>
-      <MonthlyFilter filterItem={filterItem} selectedMonth={selectedMonth} />
+      <MonthlyFilter filterItem={setSelectedMonth} />
       <BudgetContainer>
-        <IncomeList items={income} deleteItemIncome={deleteIncome} />
+        <IncomeList incomeData={filterDataByMonth(incomeData)} items={income} />
       </BudgetContainer>
       <AddIcon>
-        <CiCirclePlus onClick={toggleModal} />
+        <CiCirclePlus onClick={() => toggleModal("income")} />
       </AddIcon>
 
+      {/* EXPENSES Modal */}
 
+      {modal && modalType === "income" && (
+        <Modal>
+          <Overlay>
+            <ModalContent>
+              <h5 style={{ color: "#ffff" }}>Add Income:</h5>
+              <IncomeForm addIncome={handleAddIncome} onSubmit={toggleModal} />
+              <button
+                className="close-modal"
+                onClick={() => toggleModal("income")}
+              >
+                Cancel
+              </button>
+            </ModalContent>
+          </Overlay>
+        </Modal>
+      )}
 
+      {/* EXPENSES */}
       <h4 className="FinValuesE">Expenses:</h4>
       <BudgetContainer>
-        <ExpensesFilter filterItem={filterItem} />
         <ExpenseList
+          expenseData={filterDataByMonth(expenseData)}
           items={expenses}
-          deleteItem={deleteItem}
         />
       </BudgetContainer>
 
-      {/* EXPENSES SECTION */}
+      {/* EXPENSES Modal */}
       <MinusIcon>
-        <CiCircleMinus onClick={toggleModal} />
+        <CiCircleMinus onClick={() => toggleModal("expense")} />
       </MinusIcon>
-      {modal && (
+      {modal && modalType === "expense" && (
         <Modal>
           <Overlay>
             <ModalContent>
               <h5 style={{ color: "#ffff" }}>Create Budget</h5>
 
               <ExpenseForm
-                addExpense={addItem}
+                addExpense={handleAddExpense}
+                onSubmit={toggleModal}
               />
 
               {/* BUTTONS */}
-              <button className="close-modal" onClick={toggleModal}>
+              <button
+                className="close-modal"
+                onClick={() => toggleModal("expense")}
+              >
                 Cancel
               </button>
             </ModalContent>

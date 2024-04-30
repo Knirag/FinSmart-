@@ -1,47 +1,56 @@
 import React from "react";
+import MonthlyFilter from "../Homepage/MonthlyFilter";
 
-const IncomeStatement = ({ income, expenses }) => {
-  const totalIncome = income.reduce((acc, item) => acc + item.amount, 0);
-  const totalExpenses = expenses.reduce((acc, item) => acc + item.amount, 0);
-  const netIncome = totalIncome - totalExpenses;
+const IncomeStatement = ({ data }) => {
+  // Define income statement data structure
+  const { revenue, costOfGoodsSold, operatingExpenses, netIncome } = data;
+
+  const calculateGrossProfit = () => {
+    return revenue - costOfGoodsSold;
+  };
+
+  const calculateOperatingIncome = () => {
+    return calculateGrossProfit() - operatingExpenses;
+  };
 
   return (
     <div className="income-statement">
-      <h2>Personal Income Statement</h2>
-      <div className="income-section">
-        <h3>Income</h3>
-        <ul>
-          {income.map((item, index) => (
-            <li key={index}>
-              <span>{item.description}</span>
-              <span>${item.amount.toFixed(2)}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="total">
-          <span>Total Income:</span>
-          <span>${totalIncome.toFixed(2)}</span>
-        </div>
-      </div>
-      <div className="expense-section">
-        <h3>Expenses</h3>
-        <ul>
-          {expenses.map((item, index) => (
-            <li key={index}>
-              <span>{item.description}</span>
-              <span>${item.amount.toFixed(2)}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="total">
-          <span>Total Expenses:</span>
-          <span>${totalExpenses.toFixed(2)}</span>
-        </div>
-      </div>
-      <div className="net-income">
-        <h3>Net Income</h3>
-        <p>${netIncome.toFixed(2)}</p>
-      </div>
+      <MonthlyFilter/>
+      <h2>Income Statement</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Revenue</td>
+            <td>{revenue}</td>
+          </tr>
+          <tr>
+            <td>Cost of Goods Sold</td>
+            <td>({costOfGoodsSold})</td>
+          </tr>
+          <tr>
+            <td>Gross Profit</td>
+            <td>{calculateGrossProfit()}</td>
+          </tr>
+          <tr>
+            <td>Operating Expenses</td>
+            <td>({operatingExpenses})</td>
+          </tr>
+          <tr>
+            <td>Operating Income</td>
+            <td>{calculateOperatingIncome()}</td>
+          </tr>
+          <tr>
+            <td>Net Income</td>
+            <td>{netIncome}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };

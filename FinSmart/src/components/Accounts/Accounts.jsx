@@ -82,14 +82,13 @@ const Accounts = () => {
        balance: 2000000,
      },
    ]);
+
  const [accountData, setAccountData] = useState([]);
 
  const handleAddAccount = (newData) => {
    setAccountData(newData);
  };
-   const deleteItem = (id) => {
-     setAccounts(accounts.filter((accounts) => accounts.id !== id));
-   };
+
 
    const onSubmit = (data) => {
      toggleModal();
@@ -99,11 +98,7 @@ const Accounts = () => {
     <div>
       <AccountInfo>
         <h3 className="Acc"> Accounts</h3>
-        <AccountsList
-          items={accounts}
-          deleteItem={deleteItem}
-          accountData={accountData}
-        />
+        <AccountsList items={accounts} accountData={accountData} />
       </AccountInfo>
       <AddIcon>
         <CiCirclePlus onClick={toggleModal} />
@@ -113,7 +108,10 @@ const Accounts = () => {
           <Overlay>
             <ModalContent>
               <h5 style={{ color: "#ffff" }}>Add Acccount:</h5>
-              <AccountsForm addAccount={handleAddAccount} />
+              <AccountsForm
+                addAccount={handleAddAccount}
+                onSubmit={toggleModal}
+              />
               {/* Button */}
               <button className="close-modal" onClick={toggleModal}>
                 Cancel

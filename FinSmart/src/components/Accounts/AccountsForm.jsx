@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { v4 as uuidv4 } from "uuid";
 
 const AccountsForm = () => {
 
@@ -15,12 +16,19 @@ const AccountsForm = () => {
   };
   const { handleSubmit } = useForm();
 
-  const onSubmit = (e) => {
-    e.preventDefault()
-    const currentAccountData = JSON.parse(localStorage.getItem("accountData"));
-    currentAccountData.push(formInput);
-    localStorage.setItem("accountData", JSON.stringify(currentAccountData));
-  };
+ const onSubmit = (e) => {
+   e.preventDefault();
+   const currentAccountData =
+     JSON.parse(localStorage.getItem("accountData")) || [];
+   const id = currentAccountData.length;
+   currentAccountData.push({
+     id: id,
+     name: formInput.name,
+     balance: formInput.balance,
+   });
+   localStorage.setItem("accountData", JSON.stringify(currentAccountData));
+    window.location.reload();
+ };
   return (
     <form action="" className="mb-5" onSubmit={onSubmit}>
       <label htmlFor="name" className="form-label1">
