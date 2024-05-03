@@ -76,11 +76,7 @@ const Accounts = () => {
        name: "Mobile Money",
        balance: 20000,
      },
-     {
-       id: 2,
-       name: "Current Account",
-       balance: 2000000,
-     },
+ 
    ]);
 
  const [accountData, setAccountData] = useState([]);

@@ -39,18 +39,24 @@ const ExpenseForm = () => {
       const currentExpenseData =
         JSON.parse(localStorage.getItem("expenseData")) || [];
       const id = currentExpenseData.length + 1;
-      currentExpenseData.push({
+      const newExpense = {
         id: id,
         ...expenseFormData,
-      });
+      };
+      currentExpenseData.push(newExpense);
       localStorage.setItem("expenseData", JSON.stringify(currentExpenseData));
-          window.location.reload(); 
-
+      const accounts = JSON.parse(localStorage.getItem("accountData")) || [];
+      const account = accounts.find((acc) => acc.name === newExpense.account);
+      if (account) {
+         let newAccountBalance = 0;
+       newAccountBalance = parseInt(account.balance) - parseInt(newExpense.amount);
+       account.balance = newAccountBalance; 
+        localStorage.setItem("accountData", JSON.stringify(accounts));
+      }
+      window.location.reload();
     };
 
-const accountData = JSON.parse(localStorage.getItem("accountData"));
-
-
+    const accountData = JSON.parse(localStorage.getItem("accountData"));
   return (
     <form action="" className="mb-5" onSubmit={onSubmit}>
       {/* DESCRIPTION */}

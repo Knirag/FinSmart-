@@ -552,7 +552,44 @@ font-family: "Jersey 15", sans-serif;
 /* Progress Bar Component */
 
 /* ---------------------------------------------------------------------------------------------------------------- */
+.budgetLabel{
+  font-family: "Jersey 15", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 34px;
+    text-shadow:
+      0 0 5px #68c7ea,
+      0 0 10px #84d6ff,
+      0 0 20px #000000,
+      0 0 40px rgb(1, 16, 16),
+      0 0 80px rgb(0, 0, 0),
+      0 0 90px rgb(0, 0, 0),
+      0 0 4px rgb(0, 0, 0),
+      0 0 3px rgb(2, 0, 0);
+}
+.budgetLabels{
+font-family: "Space Grotesk", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: bold;
+  font-size: 14px;
+  display:block;
+  z-index: index 99px;;
+  flex-direction: column;
+  margin-left:400px;
+  padding: 1px;
+  margin:1px;
+  text-shadow:
+      0 0 5px #dcf4fd,
+      0 0 10px #efd7ff,
+      0 0 20px #000000,
+      0 0 40px rgb(1, 16, 16),
+      0 0 80px rgb(0, 0, 0),
+      0 0 90px rgb(0, 0, 0),
+      0 0 4px rgb(0, 0, 0),
+      0 0 3px rgb(2, 0, 0);
 
+}
 
 
 
@@ -566,6 +603,111 @@ font-family: "Jersey 15", sans-serif;
   justify-content: flex-end;
   flex-direction: row;
   position: absolute;
-  right: 220px;
+  right: 290px;
   bottom: 220px;
+}
+.budgetData{
+  display: block;
+  justify-content: flex-start;
+  flex-direction: row;
+  align-items: flex-start;
+  position: absolute;
+  left: 70px;
+  width: 200px;
+  /* height: 200px; */
+  padding: 200px;
+  margin: 0 auto;
+  margin-bottom:80px;
+}
+.labelBudget1{
+    font-family: "Jersey 15", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 34px;
+    position: absolute;
+    display: flex;
+    margin-top:-60px;
+    margin-left: 90px;
+      align-items: center;
+      justify-content: center;
+    text-shadow:
+      0 0 5px #68c7ea,
+      0 0 10px #84d6ff,
+      0 0 20px #000000,
+      0 0 40px rgb(1, 16, 16),
+      0 0 80px rgb(0, 0, 0),
+      0 0 90px rgb(0, 0, 0),
+      0 0 4px rgb(0, 0, 0),
+      0 0 3px rgb(2, 0, 0);
+}
+.labelBudget2 {
+  font-family: "Jersey 15", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 34px;
+  position: absolute;
+  display: flex;
+  margin-top: 40px;
+  margin-left: 90px;
+  align-items:center;
+  justify-content: center;
+  text-shadow:
+    0 0 5px #68c7ea,
+    0 0 10px #84d6ff,
+    0 0 20px #000000,
+    0 0 40px rgb(1, 16, 16),
+    0 0 80px rgb(0, 0, 0),
+    0 0 90px rgb(0, 0, 0),
+    0 0 4px rgb(0, 0, 0),
+    0 0 3px rgb(2, 0, 0);
+}
+.labelBudgetamount1{
+  font-family: "Space Grotesk", sans-serif;
+    font-optical-sizing: auto;
+    font-weight:700;
+    font-style: bold;
+    font-size:  20px;
+    position: absolute;
+      display: flex;
+      margin-top: -10px;
+      margin-left: 80px;
+      border: thin dotted;
+      padding: 4px;
+      align-items: center;
+      justify-content: center;
+    text-shadow:
+        0 0 5px #c3f9fc,
+        0 0 10px #f9cdfd,
+        0 0 20px #000000,
+        0 0 40px rgb(1, 16, 16),
+        0 0 80px rgb(0, 0, 0),
+        0 0 90px rgb(0, 0, 0),
+        0 0 4px rgb(0, 0, 0),
+        0 0 3px rgb(2, 0, 0);
+}
+.labelBudgetamount2{
+  font-family: "Space Grotesk", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: bold;
+    font-size: 20px;
+    position: absolute;
+    position: absolute;
+    margin-left: 80px;
+    border: thin dotted;
+      display: flex;
+      padding: 4px;
+        margin-top: 80px;
+        align-items: center;
+        justify-content: center;
+        text-shadow:
+          0 0 5px #c3f9fc,
+          0 0 10px #f9cdfd,
+          0 0 20px #000000,
+          0 0 40px rgb(1, 16, 16),
+          0 0 80px rgb(0, 0, 0),
+          0 0 90px rgb(0, 0, 0),
+          0 0 4px rgb(0, 0, 0),
+          0 0 3px rgb(2, 0, 0);
+
 }

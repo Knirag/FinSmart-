@@ -4,11 +4,25 @@ const IncomeList = () => {
   const listIncomeData = JSON.parse(localStorage.getItem("incomeData"));
   
   const handleDeleteIncome = (incomeId) => {
-    const incomes = JSON.parse(localStorage.getItem("incomeData"));
+    const incomes = JSON.parse(localStorage.getItem("incomeData")) || [];
+    const deletedIncome = incomes.find((income) => income.id === incomeId);
     const updatedIncomes = incomes.filter((income) => income.id !== incomeId);
     localStorage.setItem("incomeData", JSON.stringify(updatedIncomes));
-    window.location.reload(); 
+    if (deletedIncome) {
+      const accounts = JSON.parse(localStorage.getItem("accountData")) || [];
+      const account = accounts.find(
+        (acc) => acc.name === deletedIncome.account
+      );
+      if (account) {
+        let newAccountBalance =
+          parseInt(account.balance) - parseInt(deletedIncome.amount);
+        account.balance = newAccountBalance;
+        localStorage.setItem("accountData", JSON.stringify(accounts));
+      }
+    }
+    window.location.reload();
   };
+
 const totalIncome = listIncomeData
 ? listIncomeData
     .reduce(

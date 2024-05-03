@@ -36,18 +36,37 @@ const IncomeForm = () => {
       });
     };
 
-    const onSubmit = (e) => {
-      e.preventDefault();
-      const currentIncomeData =
-        JSON.parse(localStorage.getItem("incomeData")) || [];
-      const id = currentIncomeData.length + 1;
-      currentIncomeData.push({
-        id: id,
-        ...incomeFormData,
-      });
-      localStorage.setItem("incomeData", JSON.stringify(currentIncomeData));
-      window.location.reload();
-    };
+     const onSubmit = (e) => {
+       e.preventDefault();
+
+       // Retrieve current income data
+       const currentIncomeData =
+         JSON.parse(localStorage.getItem("incomeData")) || [];
+
+       // Add new income
+       const id = currentIncomeData.length + 1;
+       const newIncome = {
+         id: id,
+         ...incomeFormData,
+       };
+       currentIncomeData.push(newIncome);
+
+       // Update income data in local storage
+       localStorage.setItem("incomeData", JSON.stringify(currentIncomeData));
+
+       // Add income amount to account balance
+       const accounts = JSON.parse(localStorage.getItem("accountData")) || [];
+       const account = accounts.find((acc) => acc.name === newIncome.account);
+       if (account) {
+        let newAccountBalance = 0
+         newAccountBalance = parseInt(account.balance) + parseInt(newIncome.amount);
+        account.balance = newAccountBalance; 
+         localStorage.setItem("accountData", JSON.stringify(accounts));
+       }
+
+       // Reload page
+       window.location.reload();
+     };
 
 
     // Get account options for dropdown menu

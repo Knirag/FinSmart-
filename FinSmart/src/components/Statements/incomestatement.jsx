@@ -1,5 +1,5 @@
-import React from 'react';
-import MonthlyFilter from '../Homepage/MonthlyFilter';
+import React, { useState, useEffect } from "react";
+import MonthlyFilter from "../Homepage/MonthlyFilter";
 import styled from "styled-components";
 
 const StatementContainer = styled.div`
@@ -22,110 +22,135 @@ const StatementContainer = styled.div`
   box-shadow: 0px 5px 10px 0px rgba(255, 255, 255, 0.5),
     0 0 20px rgba(255, 255, 255, 0.2);
 `;
+
 const IncomeStatement = () => {
+  const [incomeData, setIncomeData] = useState([]);
+  const [expenseData, setExpenseData] = useState([]);
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [totalExpenses, setTotalExpenses] = useState(0);
+
+  useEffect(() => {
+    const storedIncomeData =
+      JSON.parse(localStorage.getItem("incomeData")) || [];
+    const storedExpenseData =
+      JSON.parse(localStorage.getItem("expenseData")) || [];
+    setIncomeData(storedIncomeData);
+    setExpenseData(storedExpenseData);
+    const totalIncome = parseFloat(localStorage.getItem("totalIncome")) || 0;
+    setTotalIncome(totalIncome);
+
+    // Retrieve total expenses from local storage
+    const totalExpenses =
+      parseFloat(localStorage.getItem("totalExpenses")) || 0;
+    setTotalExpenses(totalExpenses);
+  }, []);
+    const netIncome = totalIncome - totalExpenses;
+
+  // Function to filter expense data by category
+  const getExpensesByCategory = (category) => {
+    return expenseData.filter((expense) => expense.category === category);
+  };
+
   return (
     <div>
       <MonthlyFilter />
       <h4>Monthly Personal Statement</h4>
       <StatementContainer>
-        {/* Header */}
-        <h6 className="topRow">Total Income</h6>
-        <span></span>
+        {/* Display totals */}
+        <h6 className="topRow">Total Income: </h6>
+        <span>{totalIncome.toFixed(2)}</span>
         <h6 className="topRow">Total Expenses</h6>
+        <span>{totalExpenses.toFixed(2)}</span>
+        <h6 className="topRow">
+          Net (Income - Expenses): {netIncome.toFixed(2)}
+        </h6>
         <span></span>
-        <h6 className="topRow">Net(Income-Expenses)</h6>
-        <span></span>
-        {/* Income */}
+        {/* Render each category */}
         <h3>INCOME</h3>
-        <h6 className="incomeRow">Source 1</h6>
-        <span></span>
-        <h6 className="incomeRow">Source 2</h6>
-        <span></span>
-        {/* EXPENSES */}
+
         <h3>EXPENSES</h3>
-        {/* Category 1 */}
+        {/* Housing */}
         <h5>Housing</h5>
-        <h6 className="expenseRow">Expense 1</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 2</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 3</h6>
-        <span></span>
-        {/* Category 2 */}
+        {getExpensesByCategory("Housing").map((expense) => (
+          <div key={expense.id}>
+            <p>
+              {expense.description} - {expense.amount}
+            </p>
+          </div>
+        ))}
+
+        {/* Utilities */}
         <h5>Utilities</h5>
-        <h6 className="expenseRow">Expense 4</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 5</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 6</h6>
-        <span></span>
-        {/* Category 3 */}
+        {getExpensesByCategory("Utilities").map((expense) => (
+          <div key={expense.id}>
+            <p>
+              {expense.description} - {expense.amount}
+            </p>
+          </div>
+        ))}
+
+        {/* Transport */}
         <h5>Transport</h5>
-        <h6 className="expenseRow">Expense 7</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 8</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 9</h6>
-        <span></span>
-        {/* Category 4 */}
-        <h5>Transport</h5>
-        <h6 className="expenseRow">Expense 10</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 11</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 12</h6>
-        <span></span>
-        {/* Category 5 */}
+        {getExpensesByCategory("Transport").map((expense) => (
+          <div key={expense.id}>
+            <p>
+              {expense.description} - {expense.amount}
+            </p>
+          </div>
+        ))}
+
+        {/* Savings & Investment */}
         <h5>Savings & Investment</h5>
-        <h6 className="expenseRow">Expense 13</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 14</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 15</h6>
-        <span></span>
-        {/* Category 6 */}
+        {getExpensesByCategory("Savings").map((expense) => (
+          <div key={expense.id}>
+            <p>
+              {expense.description} - {expense.amount}
+            </p>
+          </div>
+        ))}
+
+        {/* Groceries */}
         <h5>Groceries</h5>
-        <h6 className="expenseRow">Expense 16</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 17</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 18</h6>
-        <span></span>
-        {/* Category 7 */}
+        {getExpensesByCategory("Groceries").map((expense) => (
+          <div key={expense.id}>
+            <p>
+              {expense.description} - {expense.amount}
+            </p>
+          </div>
+        ))}
+
+        {/* Education */}
         <h5>Education</h5>
-        <h6 className="expenseRow">Expense 19</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 20</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 21</h6>
-        <span></span>
-        {/* Category 8 */}
+        {getExpensesByCategory("Education").map((expense) => (
+          <div key={expense.id}>
+            <p>
+              {expense.description} - {expense.amount}
+            </p>
+          </div>
+        ))}
+
+        {/* Entertainment */}
         <h5>Entertainment</h5>
-        <h6 className="expenseRow">Expense 22</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 23</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 24</h6>
-        <span></span>
-        {/* Category 9 */}
+        {getExpensesByCategory("Entertainment").map((expense) => (
+          <div key={expense.id}>
+            <p>
+              {expense.description} - {expense.amount}
+            </p>
+          </div>
+        ))}
+
+        {/* Shopping */}
         <h5>Shopping</h5>
-        <h6 className="expenseRow">Expense 25</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 26</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 27</h6>
-        <span></span>
-        {/* Category 10 */}
-        <h5>Education</h5>
-        <h6 className="expenseRow">Expense 28</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 29</h6>
-        <span></span>
-        <h6 className="expenseRow">Expense 30</h6>
-        <span></span>
+        {getExpensesByCategory("Shopping").map((expense) => (
+          <div key={expense.id}>
+            <p>
+              {expense.description} - {expense.amount}
+            </p>
+          </div>
+        ))}
       </StatementContainer>
     </div>
   );
-}
+};
 
-export default IncomeStatement
+export default IncomeStatement;

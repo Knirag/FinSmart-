@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import "../../App.css";
 import MonthlyFilter from "./MonthlyFilter";
-import { Chart as ChartJS, defaults } from "chart.js/auto";
 import { Doughnut } from "react-chartjs-2";
-  
+import ProgressBarComp from "./Progressbar";
+import "chart.js/auto";
+
+
 const DasboardInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -44,18 +46,22 @@ const Dashboard = () => {
     const storedTotalIncome = localStorage.getItem("totalIncome");
     const storedTotalExpenses = localStorage.getItem("totalExpenses");
 
-    setTotalIncome(storedTotalIncome ? parseInt(storedTotalIncome) : 0);
-    setTotalExpenses(storedTotalExpenses ? parseInt(storedTotalExpenses) : 0);
+    setTotalIncome(
+      storedTotalIncome ? parseInt(storedTotalIncome) : 0
+    );
+    setTotalExpenses(
+      storedTotalExpenses ? parseInt(storedTotalExpenses) : 0
+    );
   }, []);
 
   // Define chart data
   const chartData = {
-    labels: ["", ""],
+    labels: ["Expenses", "Income"],
     datasets: [
       {
         label: "",
         data: [totalExpenses, totalIncome],
-        backgroundColor: ["81, 7, 101)", "rgba(69, 145, 245)"],
+        backgroundColor: ["rgba(81, 7, 101)", "rgba(69, 145, 245)"],
         borderColor: ["rgba(218, 208, 219)", "rgba(219, 240, 255)"],
       },
     ],
@@ -65,10 +71,10 @@ const Dashboard = () => {
       <DasboardInfo>
         <MonthlyFilter />
         <div className="budgetData">
-          <h5>Earned</h5>
-          <h5>{totalIncome}Frw</h5>
-          <h5>Spent: </h5>
-          <h5>{totalExpenses}Frw</h5>
+          <h5 className="labelBudget1">Earned</h5>
+          <h5 className="labelBudgetamount1">{totalIncome}Frw</h5>
+          <h5 className="labelBudget2">Spent: </h5>
+          <h5 className="labelBudgetamount2">{totalExpenses}Frw</h5>
         </div>
         <div className="dataCardcategoryCard">
           <Doughnut
@@ -88,7 +94,8 @@ const Dashboard = () => {
         </div>
       </DasboardInfo>
       <LineChart>
-        <h4>Budget:</h4>
+        <h4 className="budgetLabel">Budget:</h4>
+        <ProgressBarComp />
       </LineChart>
     </div>
   );

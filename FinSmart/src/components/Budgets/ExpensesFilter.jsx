@@ -21,10 +21,16 @@ const ExpenseCategory = styled.select`
   }
 `;
 
-const ExpensesFilter = ({filterItem}) => {
+const ExpensesFilter = ({ expenses, filterItem }) => {
+  
   return (
     <>
-      <ExpenseCategory name="" id="" mb-3 onChange={(event) => filterItem(event.target.value)}>
+      <ExpenseCategory
+        name=""
+        id=""
+        mb-3
+        onChange={(event) => filterItem(event.target.value)}
+      >
         <option value="">Category</option>
         <option value="Housing">Housing</option>
         <option value="Utilities">Utilities</option>
@@ -38,6 +44,6 @@ const ExpensesFilter = ({filterItem}) => {
       </ExpenseCategory>
     </>
   );
-}
+};
 
 export default ExpensesFilter

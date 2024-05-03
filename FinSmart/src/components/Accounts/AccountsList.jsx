@@ -15,6 +15,7 @@ const handleDeleteAccount = (accountId) => {
         window.location.reload();
 
 };
+ 
   return (
     <table className="AccountsTable">
       <thead>

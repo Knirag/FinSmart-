@@ -83,7 +83,6 @@ const ModalContent = styled.div`
 const Budgets = () => {
   const [modal, setModal] = useState(false);
   const [modalType, setModalType] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState("");
 
   const toggleModal = (type) => {
     setModalType(type);
@@ -96,12 +95,9 @@ const Budgets = () => {
     }
   };
 
-  
-
-
   const [expenses, setExpenses] = useState([
     {
-      id: 1,
+      id: "",
       description: "",
       amount: "",
       category: "",
@@ -118,18 +114,43 @@ const Budgets = () => {
       month: "",
     },
   ]);
-const filterItem = (cat) => {
-  setExpenses(expenses.filter(expenses => expenses.category == cat))
-}
+  useEffect(() => {
+    // Retrieve expenses data from local storage
+    const storedExpenses = JSON.parse(localStorage.getItem("expenseData")) || [];
+    setExpenses(storedExpenses);
+  }, []);
+
+
   const [expenseData, setExpenseData] = useState([]);
 
   const handleAddExpense = (newData) => {
-    setExpenseData(newData);
-  };
+    setExpenseData([...expenseData, newData]);
+     const updatedAccounts = expenses.map((item) => {
+    if (item.account === newData.account) {
+      // Deduct the expense amount from the balance
+      return { ...item, balance: parseFloat(item.balance) - parseFloat(newData.amount) };
+    }
+    return item;
+     });
+     setExpenses(updatedAccounts);
+    };
   const [incomeData, setIncomeData] = useState([]);
 
   const handleAddIncome = (newData) => {
-    setIncomeData(newData);
+    setIncomeData([...incomeData, newData]);
+    const updatedAccounts = income.map((item) => {
+      if (item.account === newData.account) {
+        // Add the income amount to the balance
+        return {
+          ...item,
+          balance: parseFloat(item.balance) + parseFloat(newData.amount),
+        };
+      }
+      return item;
+    });
+
+    // Update the income state with the updated account balances
+    setIncome(updatedAccounts);
   };
   return (
     <Budget>
@@ -164,12 +185,9 @@ const filterItem = (cat) => {
 
       {/* EXPENSES */}
       <h4 className="FinValuesE">Expenses:</h4>
-      <ExpensesFilter filterItem = {filterItem}/>
+      {/* <ExpensesFilter/> */}
       <BudgetContainer>
-        <ExpenseList
-          expenseData={expenseData}
-          items={expenses}
-        />
+        <ExpenseList expenses={expenses} items={expenses} />
       </BudgetContainer>
 
       {/* EXPENSES Modal */}
