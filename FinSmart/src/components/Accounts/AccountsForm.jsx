@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { v4 as uuidv4 } from "uuid";
 
 const AccountsForm = () => {
 
@@ -20,7 +19,7 @@ const AccountsForm = () => {
    e.preventDefault();
    const currentAccountData =
      JSON.parse(localStorage.getItem("accountData")) || [];
-   const id = currentAccountData.length;
+   const id = currentAccountData.length + 1;
    currentAccountData.push({
      id: id,
      name: formInput.name,

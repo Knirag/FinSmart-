@@ -40,7 +40,7 @@ const IncomeForm = () => {
       e.preventDefault();
       const currentIncomeData =
         JSON.parse(localStorage.getItem("incomeData")) || [];
-      const id = currentIncomeData.length;
+      const id = currentIncomeData.length + 1;
       currentIncomeData.push({
         id: id,
         ...incomeFormData,

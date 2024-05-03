@@ -34,7 +34,7 @@ localStorage.setItem("totalIncome", totalIncome);
             <tr key={income.id}>
               <td>{income.month}</td>
               <td>{income.description}</td>
-              <td>{income.amount}Frw</td>
+              <td>{parseInt(income.amount).toLocaleString()}Frw</td>
               <td>{income.account}</td>
               <td>
                 <button

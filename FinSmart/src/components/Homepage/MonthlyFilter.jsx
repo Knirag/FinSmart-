@@ -21,24 +21,31 @@ position: absolute;
   }
 `;
 
-const MonthlyFilter = ({ filterItem}) => {
-  const months = ["January", "February", "March", "April","May","June","July","August","September","October","November","December"];
-  const handleChange = (event) => {
-    const selectedMonth = event.target.value;
-    localStorage.setItem("selectedMonth", selectedMonth); 
-    filterItem(selectedMonth); 
-  };
+const MonthlyFilter = () => {
+  const months = [
+    "",
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+ 
+
   return (
-    <Timelines
-      name=""
-      id=""
-       onChange={(event) => filterItem(event.target.value)}
-    >
-      {
-        months.map((month)=> (
-          <option key={month} value={month}>{month}</option>
-        ))
-      }
+    <Timelines name="" id="" >
+      {months.map((month) => (
+        <option key={month} value={month}>
+          {month}
+        </option>
+      ))}
     </Timelines>
   );
 };

@@ -24,11 +24,10 @@ export const SidebarData = [
   },
   {
     title: "Statements",
-    path: "/IncomeStatement",
+    path: "/statement",
     icon: <FaIcons.FaPaperclip />,
 
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
-
   },
 ];

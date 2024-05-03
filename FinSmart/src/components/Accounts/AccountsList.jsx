@@ -29,9 +29,12 @@ const handleDeleteAccount = (accountId) => {
           listAccountData?.map((account) => (
             <tr key={account.id}>
               <td>{account.name}</td>
-              <td>{account.balance}</td>
+              <td>{parseInt(account.balance).toLocaleString()}Frw</td>
               <td>
-                <button className="deleteItems" onClick={() => handleDeleteAccount(account.id)}>
+                <button
+                  className="deleteItems"
+                  onClick={() => handleDeleteAccount(account.id)}
+                >
                   <RxCross2 />
                 </button>
               </td>

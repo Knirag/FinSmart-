@@ -14,7 +14,7 @@ const DasboardInfo = styled.div`
   margin: 0 auto;
   margin-top: 90px;
   width: 900px;
-  height: 400px;
+  height: 250px;
   background: rgb(59, 10, 84);
   color: "#05f7d3";
   border-radius: 9px;
@@ -50,10 +50,10 @@ const Dashboard = () => {
 
   // Define chart data
   const chartData = {
-    labels: ["Expenses", "Income"],
+    labels: ["", ""],
     datasets: [
       {
-        label: "Amount",
+        label: "",
         data: [totalExpenses, totalIncome],
         backgroundColor: ["81, 7, 101)", "rgba(69, 145, 245)"],
         borderColor: ["rgba(218, 208, 219)", "rgba(219, 240, 255)"],
@@ -64,9 +64,11 @@ const Dashboard = () => {
     <div>
       <DasboardInfo>
         <MonthlyFilter />
-        <div>
-          <h5>Earned: {totalIncome}</h5>
-          <h5>Spent: {totalExpenses}</h5>
+        <div className="budgetData">
+          <h5>Earned</h5>
+          <h5>{totalIncome}Frw</h5>
+          <h5>Spent: </h5>
+          <h5>{totalExpenses}Frw</h5>
         </div>
         <div className="dataCardcategoryCard">
           <Doughnut
@@ -74,12 +76,12 @@ const Dashboard = () => {
             options={{
               plugins: {
                 title: {
-                  text: "Expenses vs Income",
                   display: true,
                   align: "start",
                   fontSize: 20,
                   color: "black",
                 },
+                cutoutPercentage: 80,
               },
             }}
           />

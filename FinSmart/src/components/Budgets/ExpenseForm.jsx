@@ -38,7 +38,7 @@ const ExpenseForm = () => {
       e.preventDefault();
       const currentExpenseData =
         JSON.parse(localStorage.getItem("expenseData")) || [];
-      const id = currentExpenseData.length;
+      const id = currentExpenseData.length + 1;
       currentExpenseData.push({
         id: id,
         ...expenseFormData,

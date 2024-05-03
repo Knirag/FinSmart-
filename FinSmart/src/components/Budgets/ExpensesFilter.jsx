@@ -2,16 +2,23 @@ import React from 'react';
 import styled from "styled-components";
 
 const ExpenseCategory = styled.select`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  position: absolute;
-  right: 200px;
-  bottom: 90px;
   background: rgb(59, 10, 84);
-  border-radius: 4px;
-  border: none;
-  outline: none;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #e1e9fc;
+  font-size: 10px;
+  justify-content: flex-end;
+  position: relative;
+  right: 187px;
+  bottom: 190px;
+  border-radius: 1.5px;
+  box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.5);
+  position: absolute;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const ExpensesFilter = ({filterItem}) => {

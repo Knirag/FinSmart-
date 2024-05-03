@@ -9,6 +9,7 @@ import IncomeList from "./IncomeList";
 import "../../App.css";
 import MonthlyFilter from "../Homepage/MonthlyFilter";
 import IncomeForm from "./IncomeForm";
+import ExpensesFilter from "./ExpensesFilter";
 const Budget = styled.div``;
 
 const BudgetContainer = styled.div`
@@ -95,16 +96,9 @@ const Budgets = () => {
     }
   };
 
-  useEffect(() => {
-    const storedMonth = localStorage.getItem("selectedMonth");
-    if (storedMonth) {
-      setSelectedMonth(storedMonth);
-    }
-  }, []);
+  
 
-  const filterDataByMonth = (data) => {
-    return data.filter((item) => item.month === selectedMonth);
-  };
+
   const [expenses, setExpenses] = useState([
     {
       id: 1,
@@ -124,7 +118,9 @@ const Budgets = () => {
       month: "",
     },
   ]);
-
+const filterItem = (cat) => {
+  setExpenses(expenses.filter(expenses => expenses.category == cat))
+}
   const [expenseData, setExpenseData] = useState([]);
 
   const handleAddExpense = (newData) => {
@@ -139,9 +135,9 @@ const Budgets = () => {
     <Budget>
       {/* INCOME */}
       <h4 className="FinValuesI">Income:</h4>
-      <MonthlyFilter filterItem={setSelectedMonth} />
+      <MonthlyFilter />
       <BudgetContainer>
-        <IncomeList incomeData={filterDataByMonth(incomeData)} items={income} />
+        <IncomeList incomeData={incomeData} items={income} />
       </BudgetContainer>
       <AddIcon>
         <CiCirclePlus onClick={() => toggleModal("income")} />
@@ -168,9 +164,10 @@ const Budgets = () => {
 
       {/* EXPENSES */}
       <h4 className="FinValuesE">Expenses:</h4>
+      <ExpensesFilter filterItem = {filterItem}/>
       <BudgetContainer>
         <ExpenseList
-          expenseData={filterDataByMonth(expenseData)}
+          expenseData={expenseData}
           items={expenses}
         />
       </BudgetContainer>
@@ -183,7 +180,7 @@ const Budgets = () => {
         <Modal>
           <Overlay>
             <ModalContent>
-              <h5 style={{ color: "#ffff" }}>Create Budget</h5>
+              <h5 style={{ color: "#ffff" }}>Add Expense:</h5>
 
               <ExpenseForm
                 addExpense={handleAddExpense}

@@ -1,7 +1,7 @@
 import React from "react"; // Corrected import statement
 import { RxCross2 } from "react-icons/rx";
 
-const ExpenseList = () => {
+const ExpenseList = ({}) => {
   const listExpenseData = JSON.parse(localStorage.getItem("expenseData"));
 
   const handleDeleteExpense = (expenseId) => {
