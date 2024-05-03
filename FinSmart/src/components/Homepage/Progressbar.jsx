@@ -2,14 +2,22 @@ import React, { useEffect, useState } from "react";
 import ProgressBar from "@ramonak/react-progress-bar";
 import styled from "styled-components";
 
-const StyledProgressBar = styled(ProgressBar)`
-  width: 100%;
-  display: block;
-  justify-content: center;
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Item = styled.div`
+  display: flex;
   align-items: center;
-  padding: -93px;
   margin: 6px;
-  margin-right: 600px;
+`;
+const StyledProgressBar = styled(ProgressBar)`
+  width: 400px;
+  display: flex;
+  align-items: center;
+  margin: 6px;
+  flex: 1px;
 `;
 
 const ProgressBarComp = () => {
@@ -52,16 +60,20 @@ const ProgressBarComp = () => {
   }, [expenseData]);
 
   return (
-    <div className="progress-bar-container">
+    <Container className="progress-bar-container">
       {Object.entries(categoryPercentages).map(([category, percentage]) => (
-        <React.Fragment key={category}>
+        <Item key={category}>
           <h6 className="budgetLabels">{category}</h6>
           <StyledProgressBar
             completed={percentage > 100 ? 100 : percentage.toFixed(0)}
+            bgColor="  radial-gradient(circle, rgba(207,104,249,0.6746420980501575) 0%, rgba(93,4,255,0.7698801932882529) 100%)"
+            height="15px"
+            labelClassName="label"
+            baseBgColor="#f2d7fc"
           />
-        </React.Fragment>
+        </Item>
       ))}
-    </div>
+    </Container>
   );
 };
 

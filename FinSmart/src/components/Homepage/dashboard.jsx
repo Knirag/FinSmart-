@@ -72,9 +72,9 @@ const Dashboard = () => {
         <MonthlyFilter />
         <div className="budgetData">
           <h5 className="labelBudget1">Earned</h5>
-          <h5 className="labelBudgetamount1">{totalIncome}Frw</h5>
+          <h5 className="labelBudgetamount1">{parseInt(totalIncome).toLocaleString()}Frw</h5>
           <h5 className="labelBudget2">Spent: </h5>
-          <h5 className="labelBudgetamount2">{totalExpenses}Frw</h5>
+          <h5 className="labelBudgetamount2">{parseInt(totalExpenses).toLocaleString()}Frw</h5>
         </div>
         <div className="dataCardcategoryCard">
           <Doughnut

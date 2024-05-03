@@ -591,7 +591,17 @@ font-family: "Space Grotesk", sans-serif;
 
 }
 
-
+.label{
+  font-size: 13px;
+  font-weight: bold;
+  display: center;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  margin-inline-end: 40px;
+  padding: 8px;
+  margin: 0 auto;
+}
 
 /* ---------------------------------------------------------------------------------------------------------------- */
 
