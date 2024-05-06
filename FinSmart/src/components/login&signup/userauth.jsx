@@ -1,48 +1,51 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import finsmartLogo from '../../images/logo.svg';
+import { useNavigate } from "react-router-dom";
+import finsmartLogo from "../../images/logo.svg";
 import "../../App.css";
 
 const Authentication = () => {
   const [loginType, setLoginType] = useState("LOGIN");
+  const navigateTo = useNavigate();
+  const [formData, setFormData] = useState({ email: "", password: "" });
+
   const handleLoginTypeChange = (newType) => {
     setLoginType(newType);
   };
- const {
-   register,
-   handleSubmit,
-   formState: { errors },
- } = useForm();
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
- const onSubmit = (data) => {
-   // Store user data in local storage
-   localStorage.setItem(
-     "userData",
-     JSON.stringify({
-       email: data.email,
-       password: data.password,
-     })
-   );
+  const handleSignUpSubmit = (e) => {
+   e.preventDefault();
+   const userData = JSON.parse(localStorage.getItem("userData")) || [];
 
-   const userData = JSON.parse(localStorage.getItem("userData"));
+   const id = userData.length ? userData[userData.length - 1].id + 1 : 1;
 
-   console.log("User credentials:", userData)
-   if (userData) {
-     if (
-       (userData.email === data.email && userData.password ===
-       data.password)
-     ) {
-       console.log("You Are Successfully Logged In");
-     } else {
-       console.log("Email or Password is not matching with our record");
-     }
-   } else {
-     console.log("Email or Password is not matching with our record");
-   }
+   userData.push({ id, ...formData });
 
-   console.log(userData);
- };
+   localStorage.setItem("userData", JSON.stringify(userData));
+
+   console.log("You Are Successfully Signed Up");
+   navigateTo("/dashboard");
+  };
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if (
+      userData &&
+      userData.email === formData.email &&
+      userData.password === formData.password
+    ) {
+      console.log("You Are Successfully Logged In");
+      navigateTo("/dashboard"); 
+    } else {
+      alert("Email or Password is not matching with our record");
+
+    }
+  };
 
   return (
     <div className="user">
@@ -50,57 +53,67 @@ const Authentication = () => {
         <div className="header">
           <img src={finsmartLogo} className="logo1" />
           <div className="status-container">
-            <div
-              className={`status ${loginType === "LOGIN" ? "active" : ""}`}
-              onClick={() => handleLoginTypeChange("LOGIN")}
-            >
-              LOGIN
+            <div className={`status ${loginType === "LOGIN" ? "active" : ""}`}>
+              <button
+                onClick={() => handleLoginTypeChange("LOGIN")}
+                className="wmga"
+              >
+                LOGIN
+              </button>
             </div>
             <div className="stroke"></div>
-            <div
-              className={`status ${loginType === "SIGNUP" ? "active" : ""}`}
-              onClick={() => handleLoginTypeChange("SIGNUP")}
-            >
-              SIGNUP
+            <div className={`status ${loginType === "SIGNUP" ? "active" : ""}`}>
+              <button
+                onClick={() => handleLoginTypeChange("SIGNUP")}
+                className="wmga"
+              >
+                SIGNUP
+              </button>
             </div>
           </div>
         </div>
         <div className="inputs">
           {loginType === "LOGIN" && (
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleLoginSubmit}>
               <div className="email-field">
                 <label>Email: </label>
                 <div>
                   <input
                     type="email"
-                    {...register("email", { required: true })}
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
                   />
-                  {errors.email && (
-                    <span style={{ color: "red" }}>*Email* is mandatory </span>
-                  )}
                 </div>
               </div>
 
               <div className="password-field">
                 <label>Password: </label>
                 <div>
-                  <input type="password" {...register("password")} />
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                  />
                 </div>
               </div>
 
-              <button onClick={onSubmit} className="submit">
+              <button type="submit" className="submit">
                 SUBMIT
               </button>
             </form>
           )}
           {loginType === "SIGNUP" && (
-            <form className="signup" onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSignUpSubmit}>
               <div className="email-field2">
                 <label>Email: </label>
                 <div>
                   <input
                     type="email"
-                    {...register("email", { required: true })}
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
@@ -109,7 +122,9 @@ const Authentication = () => {
                 <div>
                   <input
                     type="password"
-                    {...register("password", { required: true })}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
@@ -118,12 +133,14 @@ const Authentication = () => {
                 <div>
                   <input
                     type="password"
-                    {...register("repeatpswd", { required: true })}
+                    name="repeatpswd"
+                    value={formData.repeatpswd}
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
 
-              <button onClick={onSubmit}>
+              <button type="submit" className="submit">
                 SUBMIT
               </button>
             </form>
@@ -133,4 +150,5 @@ const Authentication = () => {
     </div>
   );
 };
+
 export default Authentication;

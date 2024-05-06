@@ -96,7 +96,6 @@ body{
   left: 0;
   width: 100vw;
   height: 100vh;
-
 }
 
 .container {
@@ -120,31 +119,34 @@ body{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 390px;
+position: absolute;
 }
 
 .status-container {
   display: flex;
-  gap: 20%;
+  gap: 10%;
   justify-content: center;
+    position: fixed;
 }
 
 .stroke {
   width: 2px;
   height: 30px;
-  background-color: rgb(255, 255, 255);
+  color: rgb(25, 6, 6);
+  font-weight: bold;
 }
 
 .status,
 .status2 {
   margin-top: -5px;
   font-size: 12px;
-  z-index: 10;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: -130px;
+  margin-bottom: -240px;
   font-weight: bold;
+  /* position: absolute; */
 }
 
 .logo1 {
@@ -153,15 +155,34 @@ body{
   justify-content: center;
   align-items: center;
   width: 60%;
-  height: auto;
+  height: 200px;
   margin: 0 auto;
-  margin-top: 0 auto;
   margin-bottom: -150px;
+  z-index: -99px;
 }
-
+.wmga{
+  background: none;
+  border: none;
+  outline: none;
+  font-family: "Space Grotesk", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: bold;
+    text-shadow:
+        0 0 5px #68c7ea,
+        0 0 10px #84d6ff,
+        0 0 20px #000000,
+        0 0 40px rgb(1, 16, 16),
+        0 0 80px rgb(0, 0, 0),
+        0 0 90px rgb(0, 0, 0),
+        0 0 4px rgb(0, 0, 0),
+        0 0 3px rgb(2, 0, 0);
+}
 input {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   background: none;
   outline: none;
   border-color: #732982;
@@ -173,41 +194,45 @@ input {
 }
 
 .email-field {
-  margin-top: 20%;
-  margin-bottom: 30px;
+margin-top: 60px;
+margin-bottom: 40px;
   background: none;
 }
 
 .password-field {
-  margin-top: 50px;
+  margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .signup {
-  margin-bottom: -20px;
-  margin-top: 60px;
+margin-top: 20px;
+margin-bottom: 20px;
 }
 
 .email-field2 {
-  margin-top: -5%;
+margin-top: 80px;
   margin-bottom: 20px;
-  background: none;
 }
-
 .password-field2 {
   margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .repeat-password-field {
   margin-top: 20px;
-}
+    margin-bottom: 20px;
+} 
 
 .submit {
   margin: 0 auto;
-  margin-top: 90px;
+  position: absolute;
+  margin-top: 20px;
+  margin-left: -50px; 
+  margin-bottom: 20px;
   background: none;
   color: white;
   font-weight: bold;
-  padding: 10px 20px;
+  padding: 10px 15px;
   border: 1px solid #c95fe1;
   border-radius: 4px;
   cursor: pointer;
@@ -400,7 +425,7 @@ font-family: "Jersey 15", sans-serif;
 
 .deleteItems {
   font-family: "Jersey 15", sans-serif;
-    font-weight: 400;
+  font-weight: 400;
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -720,4 +745,103 @@ font-family: "Space Grotesk", sans-serif;
           0 0 4px rgb(0, 0, 0),
           0 0 3px rgb(2, 0, 0);
 
+}/* ---------------------------------------------------------------------------------------------------------------- */
+
+/* Income Statement */
+/* ---------------------------------------------------------------------------------------------------------------- */
+.incomeStatementLabel{
+  font-family: "Jersey 15", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 36px;
+    text-shadow:
+        0 0 5px #c3f9fc,
+        0 0 10px #f9cdfd,
+        0 0 20px #000000,
+        0 0 40px rgb(1, 16, 16),
+        0 0 80px rgb(0, 0, 0),
+        0 0 90px rgb(0, 0, 0),
+        0 0 4px rgb(0, 0, 0),
+        0 0 3px rgb(2, 0, 0);
+}
+.topRow{
+  display: block;
+  margin: 4px;
+  margin-top: 10px;
+  font-family: "Space Grotesk", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: bold;
+  font-size: 16px;
+  text-shadow:
+        0 0 5px #c3f9fc,
+        0 0 10px #f9cdfd,
+        0 0 20px #000000,
+        0 0 40px rgb(1, 16, 16),
+        0 0 80px rgb(0, 0, 0),
+        0 0 90px rgb(0, 0, 0),
+        0 0 4px rgb(0, 0, 0),
+        0 0 3px rgb(2, 0, 0);
+}
+.budgetTitle{
+font-family: "Space Grotesk", sans-serif;
+  font-optical-sizing: auto;
+  margin: 8px;
+  font-weight: 600;
+  font-style: bold;
+  font-size: 19px;
+  text-shadow:
+    0 0 5px #d5f7f8,
+    0 0 10px #f9cdfd,
+    0 0 20px #000000,
+    0 0 40px rgb(1, 16, 16),
+    0 0 80px rgb(0, 0, 0),
+    0 0 90px rgb(0, 0, 0),
+    0 0 4px rgb(0, 0, 0),
+    0 0 3px rgb(2, 0, 0);
+    border-width: 30px;
+    border-color: #5af1f6;
+}
+.finTotals{
+ margin: 0 auto;
+}
+.finValues{
+display: flex;
+  align-items: center;
+  font-weight: light;
+  margin: 0 auto;
+  border: thin;
+  text-decoration: underline;
+  padding: 5px;
+}
+.categoryLabels{
+display: flex;
+flex-wrap: wrap;
+  align-items: center;
+  margin: 15px;
+  margin-right: 500px;
+  background: rgb(169, 219, 255);
+  background: linear-gradient(90deg, rgba(169, 219, 255, 0.8567149271818102) 0%, rgba(255, 255, 255, 1) 47%, rgba(229, 187, 255, 1) 100%);
+  padding: 1px 10px;
+  border-radius: 11px;
+  font-family: "Space Grotesk", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: bold;
+  font-size: 14px;
+  text-shadow:
+    0 0 5px #c3f9fc,
+    0 0 10px #f9cdfd,
+    0 0 20px #000000,
+    0 0 40px rgb(1, 16, 16),
+    0 0 80px rgb(0, 0, 0),
+    0 0 90px rgb(0, 0, 0),
+    0 0 4px rgb(0, 0, 0),
+    0 0 3px rgb(2, 0, 0);
+    text-decoration: wavy;
+}
+.financialInfo{
+  margin-right: 400px;
+  font-weight:light;
+  font-size:17px;
 }

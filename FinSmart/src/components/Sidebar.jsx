@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
+import { LuLogOut } from "react-icons/lu";
 import { SidebarData } from "./SidebarData";
 import SubMenu from "./SubMenu";
 import { IconContext } from "react-icons/lib";
@@ -27,6 +28,14 @@ const NavIcon = styled(Link)`
   height: 80px;
   display: flex;
   justify-content: flex-start;
+  align-items: center;
+`;
+const NavIcon2 = styled(Link)`
+  margin-left: 1100px;
+  font-size: 2rem;
+  height: 80px;
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
 `;
 
@@ -63,6 +72,9 @@ const Sidebar = () => {
           <NavIcon to="#">
             <FaIcons.FaBars onClick={showSidebar} />
           </NavIcon>
+          <NavIcon2 to="/">
+            <LuLogOut />
+          </NavIcon2>
         </Nav>
         <SidebarNav sidebar={sidebar}>
           <SidebarWrap>
@@ -72,7 +84,7 @@ const Sidebar = () => {
             {SidebarData.map((item, index) => {
               return <SubMenu item={item} key={index} />;
             })}
-          <img src={fLogo} className="logo2"/>
+            <img src={fLogo} className="logo2" />
           </SidebarWrap>
         </SidebarNav>
       </IconContext.Provider>

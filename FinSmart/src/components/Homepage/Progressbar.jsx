@@ -13,7 +13,7 @@ const Item = styled.div`
   margin: 6px;
 `;
 const StyledProgressBar = styled(ProgressBar)`
-  width: 400px;
+  width: 600px;
   display: flex;
   align-items: center;
   margin: 6px;
