@@ -51,23 +51,25 @@ const IncomeStatement = () => {
       <MonthlyFilter />
       <h4 className="incomeStatementLabel">Personal Income Statement</h4>
       <StatementContainer>
-        {/* Display totals */}
-          <h5 className="topRow">Total Income: </h5>
-          <span className="finValues">
-            {parseInt(totalIncome.toFixed(0)).toLocaleString()}Frw
-          </span>
-          <h5 className="topRow">Total Expenses</h5>
-          <span className="finValues">
-            {parseInt(totalExpenses.toFixed(0)).toLocaleString()}Frw
-          </span>
-          <h5 className="topRow">Net (Income - Expenses):</h5>
-          <span className="finValues">
-            {parseInt(netIncome.toFixed(2)).toLocaleString()}Frw
-          </span>
-          </StatementContainer>
-                <StatementContainer>
+        <h5 className="topRow">Total Income: </h5>
+        <span className="finValues">
+          {parseInt(totalIncome.toFixed(0)).toLocaleString()}Frw
+        </span>
+        <h5 className="topRow">Total Expenses</h5>
+        <span className="finValues">
+          {parseInt(totalExpenses.toFixed(0)).toLocaleString()}Frw
+        </span>
+        <h5 className="topRow">Net (Income - Expenses):</h5>
+        <span className="finValues">
+          {parseInt(netIncome.toFixed(2)).toLocaleString()}Frw
+        </span>
+      </StatementContainer>
 
-          <h3 className="budgetTitle"><i>INCOME</i></h3>
+      <StatementContainer>
+        <div className="incomeBox">
+          <h3 className="budgetTitle">
+            <i>INCOME</i>
+          </h3>
 
           {incomeData.map((income) => (
             <div key={income.id}>
@@ -78,9 +80,9 @@ const IncomeStatement = () => {
               </p>
             </div>
           ))}
-                </StatementContainer>
+        </div>
+      </StatementContainer>
       <StatementContainer>
-
         <h3 className="budgetTitle">EXPENSES</h3>
         {/* Housing */}
         <h5 className="categoryLabels">Housing:</h5>
@@ -169,8 +171,7 @@ const IncomeStatement = () => {
             </p>
           </div>
         ))}
-              </StatementContainer>
-
+      </StatementContainer>
     </div>
   );
 };
