@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { CiCircleMinus } from "react-icons/ci";
-import { CiCirclePlus } from "react-icons/ci";
+import { GoPlus } from "react-icons/go";
+import { HiMiniMinusSmall } from "react-icons/hi2";
 import ExpenseList from "./ExpenseList";
 import ExpenseForm from "./ExpenseForm";
 import IncomeList from "./IncomeList";
@@ -12,6 +12,13 @@ import IncomeForm from "./IncomeForm";
 import ExpensesFilter from "./ExpensesFilter";
 const Budget = styled.div``;
 
+const BudgetHeader = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  left: 100px;
+  top: 24px;
+`;
 const BudgetContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -27,25 +34,58 @@ const BudgetContainer = styled.div`
   box-shadow: 0px 5px 10px 0px rgba(255, 255, 255, 0.5),
     0 0 20px rgba(255, 255, 255, 0.2);
 `;
+const ModalOpen = styled.div`
+display:flex;
+flex-direction: row;
+margin: 0 auto;
+justify-content: flex-end;
+gap: 18px;
+`;
+
 const AddIcon = styled(Link)`
   display: flex;
-  font-size: 50px;
+  font-size: 24px;
   color: #03dbfc;
-  border-radius: 30px;
-  background-color: rgb(59, 10, 84);
-  position: absolute;
-  top: 190px;
-  right: 40px;
+  background: none;
+  border-radius: 1px;
+  border: dotted 1px #1d8a3a;
+  width: 80px;
+  text-decoration: none;
+  margin: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-size: 14px;
+  box-shadow: 0px 5px 10px 0px rgba(23, 254, 23, 0.587),
+    0 0 20px rgba(81, 253, 104, 0.443);
+  transition: transform 0.2s;
+
+  &:hover {
+    color: #ffffff;
+    transition-delay: 0s;
+    transform: scale(1.2);
+  }
 `;
 const MinusIcon = styled(Link)`
   display: flex;
-  font-size: 50px;
+  font-size: 24px;
   color: #03dbfc;
-  border-radius: 30px;
-  background-color: rgb(59, 10, 84);
-  position: absolute;
-  bottom: 20px;
-  right: 40px;
+  background-color: none;
+  border-radius: 1px;
+  border: dotted 1px #b30409;
+  width: 90px;
+  text-decoration: none;
+  margin: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  box-shadow: 0px 5px 10px 0px rgba(244, 32, 32, 0.5),
+    0 0 20px rgba(255, 0, 0, 0.2);
+  transition: transform 0.2s;
+
+  &:hover {
+    color: #ffffff;
+    transition-delay: 0s;
+    transform: scale(1.2);
+  }
 `;
 
 const Modal = styled.div`
@@ -122,7 +162,8 @@ const Budgets = () => {
 
 
   const [expenseData, setExpenseData] = useState([]);
-
+    const storedTotalIncome = localStorage.getItem("totalIncome");
+    const storedTotalExpenses = localStorage.getItem("totalExpenses");
   const handleAddExpense = (newData) => {
     setExpenseData([...expenseData, newData]);
      const updatedAccounts = expenses.map((item) => {
@@ -152,26 +193,55 @@ const Budgets = () => {
     // Update the income state with the updated account balances
     setIncome(updatedAccounts);
   };
+
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+  };
   return (
     <Budget>
+      <BudgetHeader>
+        <h3 className="Acc">Budget</h3>
+      </BudgetHeader>
+      <div className="totalsIE">
+        <div className="totalIERow">
+          <h3 className="totalHeading">Total Income:</h3>
+          <h4 className="totalValue">
+            {parseInt(storedTotalIncome).toLocaleString()}Frw
+          </h4>
+        </div>
+        <div className="totalIERow">
+          <h3 className="totalHeading">Total Expenses:</h3>
+          <h4 className="totalValue">
+            {parseInt(storedTotalExpenses).toLocaleString()}Frw
+          </h4>
+        </div>
+      </div>
       {/* INCOME */}
-      <h4 className="FinValuesI">Income:</h4>
-      <MonthlyFilter />
-      <BudgetContainer>
-        <IncomeList incomeData={incomeData} items={income} />
-      </BudgetContainer>
-      <AddIcon>
-        <CiCirclePlus onClick={() => toggleModal("income")} />
-      </AddIcon>
-
-      {/* EXPENSES Modal */}
+      {/* <h4 className="FinValuesI">Income:</h4> */}
+      {/* <MonthlyFilter /> */}
+      {/* Modal Button */}
+      <ModalOpen>
+        <AddIcon onClick={() => toggleModal("income")}>
+          <GoPlus />
+          <h5 className="incomeExpenseLabel">Earn</h5>
+        </AddIcon>
+        <MinusIcon onClick={() => toggleModal("expense")}>
+          <HiMiniMinusSmall />
+          <h5 className="incomeExpenseLabel">Spend</h5>
+        </MinusIcon>
+      </ModalOpen>
+      {/* Rendering Income List */}
+      <IncomeList incomeData={incomeData} items={income} />
+      {/* INCOME Modal */}
 
       {modal && modalType === "income" && (
         <Modal>
           <Overlay>
             <ModalContent>
-              <h5 style={{ color: "#ffff" }}>Add Income:</h5>
-              <IncomeForm addIncome={handleAddIncome} onSubmit={toggleModal} />
+              <h5 style={{ color: "#ffff" }}>Record Income</h5>
+              <IncomeForm addIncome={handleAddIncome} />
               <button
                 className="close-modal"
                 onClick={() => toggleModal("income")}
@@ -184,21 +254,21 @@ const Budgets = () => {
       )}
 
       {/* EXPENSES */}
-      <h4 className="FinValuesE">Expenses:</h4>
-      {/* <ExpensesFilter/> */}
-      <BudgetContainer>
-        <ExpenseList expenses={expenses} items={expenses} />
-      </BudgetContainer>
+      {/* <ExpensesFilter onChange={handleCategoryChange} /> */}
+     
+        <ExpenseList
+          expenses={expenses}
+          items={expenses}
+          selectedCategory={selectedCategory}
+        />
 
       {/* EXPENSES Modal */}
-      <MinusIcon>
-        <CiCircleMinus onClick={() => toggleModal("expense")} />
-      </MinusIcon>
+
       {modal && modalType === "expense" && (
         <Modal>
           <Overlay>
             <ModalContent>
-              <h5 style={{ color: "#ffff" }}>Add Expense:</h5>
+              <h5 style={{ color: "#ffff" }}>Recorde Expense:</h5>
 
               <ExpenseForm
                 addExpense={handleAddExpense}

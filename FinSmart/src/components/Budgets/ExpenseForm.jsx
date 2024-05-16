@@ -1,6 +1,9 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import "../../App.css";
 import styled from "styled-components";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 
 const ModalTimelines = styled.select`
   background: rgb(59, 10, 84);
@@ -24,6 +27,7 @@ const ModalTimelines = styled.select`
   }
 `;
 const ExpenseForm = () => {
+    const [selectedDate, setSelectedDate] = useState(null);
     const [expenseFormData, setExpenseFormData] = useState({});
 
     const onChangeHandler = (e) => {
@@ -45,20 +49,59 @@ const ExpenseForm = () => {
       };
       currentExpenseData.push(newExpense);
       localStorage.setItem("expenseData", JSON.stringify(currentExpenseData));
+
+      const expenseHistory =
+        JSON.parse(localStorage.getItem("expenseHistory")) || [];
+      const historyItem = {
+        id: id,
+        expenseDate: new Date().toISOString(),
+        name: newExpense.name,
+        accountName: newExpense.account,
+        amount: newExpense.amount,
+      };
+      expenseHistory.push(historyItem);
+      localStorage.setItem("expenseHistory", JSON.stringify(expenseHistory));
+
       const accounts = JSON.parse(localStorage.getItem("accountData")) || [];
       const account = accounts.find((acc) => acc.name === newExpense.account);
       if (account) {
-         let newAccountBalance = 0;
-       newAccountBalance = parseInt(account.balance) - parseInt(newExpense.amount);
-       account.balance = newAccountBalance; 
+        let newAccountBalance =
+          parseInt(account.balance) - parseInt(newExpense.amount);
+        account.balance = newAccountBalance;
         localStorage.setItem("accountData", JSON.stringify(accounts));
+        historyItem.difference =
+          parseInt(account.balance) -
+          parseInt(account.balance) +
+          parseInt(newExpense.amount);
       }
       window.location.reload();
     };
 
-    const accountData = JSON.parse(localStorage.getItem("accountData"));
+
+    const accountData = JSON.parse(localStorage.getItem("accountData")) ||[];
+    const categoryData = JSON.parse(localStorage.getItem("categoryData")) || [];
+      const subCatData = JSON.parse(localStorage.getItem("subCatData")) || [];
+      
+      const [subcategories, setSubcategories] = useState([]);
+      const getSubCat = (categoryName) => {
+        return subCatData.filter(
+          (subcategory) => subcategory.category === categoryName
+        );
+      };
+ 
+      useEffect(() => {
+        if (expenseFormData.category !== "") {
+          const selectedCategory = categoryData.find(
+            (cat) => cat.name === expenseFormData.category
+          );
+          if (selectedCategory) {
+            const subcategoriesForCategory = getSubCat(selectedCategory.name);
+            setSubcategories(subcategoriesForCategory);
+          }
+        }
+      }, [expenseFormData.category]);
   return (
-    <form action="" className="mb-5" onSubmit={onSubmit}>
+    <form action="" onSubmit={onSubmit}>
       {/* DESCRIPTION */}
       <label htmlFor="description" className="form-label">
         Description:
@@ -84,30 +127,24 @@ const ExpenseForm = () => {
 
       {/* MONTH */}
       <label form="" className="form-label">
-        Month:
+        Date
       </label>
-      <ModalTimelines
-        name="month"
-        id=""
-        className="form-select"
-        onChange={onChangeHandler}
-        required
-      >
-        <option value="">Select Month</option>
-        <option value="January">January</option>
-        <option value="February">February</option>
-        <option value="March">March</option>
-        <option value="April">April</option>
-        <option value="May">May</option>
-        <option value="June">June</option>
-        <option value="July">July</option>
-        <option value="August">August</option>
-        <option value="September">September</option>
-        <option value="October">October</option>
-        <option value="November">November</option>h
-        <option value="December">December</option>
-      </ModalTimelines>
-
+      <div>
+        <DatePicker
+          className="acctDetailsForm"
+          type="text"
+          name="date"
+          selected={selectedDate}
+          onChange={(date) => {
+            setSelectedDate(date);
+            onChangeHandler({ target: { name: "date", value: date } });
+          }}
+          isClearable
+          showYearDropdown
+          scrollableMonthYearDropdown
+          showTimeSelect
+        />
+      </div>
       <br></br>
       {/* ACCOUNT SELECTION*/}
       <label htmlFor="account" className="form-label">
@@ -129,7 +166,7 @@ const ExpenseForm = () => {
             ))}
           </>
         ) : (
-          <option value="">Loading...</option>
+          <option value="">Add Account</option>
         )}
       </ModalTimelines>
       <br></br>
@@ -143,15 +180,41 @@ const ExpenseForm = () => {
         className="form-select"
         onChange={onChangeHandler}
       >
-        <option value="Housing">Housing</option>
-        <option value="Utilities">Utilities</option>
-        <option value="Transport">Transport</option>
-        <option value="Savings">Savings & Investments</option>
-        <option value="Groceries">Groceries</option>
-        <option value="Education">Education</option>
-        <option value="Entertainment">Entertainment</option>
-        <option value="Shopping">Shopping</option>
-        <option value="Miscelleneous">Miscelleneous</option>
+        {categoryData ? (
+          <>
+            <option value="">Select Category</option>
+            {categoryData.map((category) => (
+              <option key={category.id} value={category.name}>
+                {category.name}
+              </option>
+            ))}
+          </>
+        ) : (
+          <option value="">Add Category</option>
+        )}
+      </ModalTimelines>
+      {/*  SUB-CATEGORY SELECTION */}
+      <label htmlFor="sub-category" className="form-label">
+        Sub-Category:
+      </label>
+      <ModalTimelines
+        name="subcategory"
+        id=""
+        className="form-select"
+        onChange={onChangeHandler}
+      >
+        {subcategories ? (
+          <>
+            <option value="">Select Sub-Category</option>
+            {subcategories.map((subcategory) => (
+              <option key={subcategory.id} value={subcategory.name}>
+                {subcategory.name}
+              </option>
+            ))}
+          </>
+        ) : (
+          <option value="">Add Subcategory</option>
+        )}
       </ModalTimelines>
       <button className="save-data" type="submit">
         Create

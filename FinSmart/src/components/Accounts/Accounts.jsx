@@ -6,20 +6,12 @@ import AccountsForm from "./AccountsForm";
 import { CiCirclePlus } from "react-icons/ci";
 import "../../App.css";
 
-const AccountInfo = styled.div`
+const AccountHeader = styled.div`
+  position: absolute;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  margin-top: 90px;
-  width: 900px;
-  height: 100%;
-  background: rgb(59, 10, 84);
-  color: "#05f7d3";
-  border-radius: 9px;
-  box-shadow: 0px 5px 10px 0px rgba(255, 255, 255, 0.5),
-    0 0 20px rgba(255, 255, 255, 0.2);
+  flex-direction: row;
+  left: 100px;
+  top: 24px;
 `;
 const AddIcon = styled(Link)`
   display: flex;
@@ -58,6 +50,7 @@ const ModalContent = styled.div`
   min-height: 200px;
   min-width: 300px;
 `;
+
 const Accounts = () => {
   const [modal, setModal] = useState(false);
   const toggleModal = () => {
@@ -70,32 +63,28 @@ const Accounts = () => {
     }
   };
 
-   const [accounts, setAccounts] = useState([
-     {
-       id: 1,
-       name: "Mobile Money",
-       balance: 20000,
-     },
- 
-   ]);
+  const [accounts, setAccounts] = useState([
+    {
+      id: 1,
+      name: "Mobile Money",
+      balance: 20000,
+    },
+  ]);
 
- const [accountData, setAccountData] = useState([]);
+  const [accountData, setAccountData] = useState([]);
 
- const handleAddAccount = (newData) => {
-   setAccountData(newData);
- };
-
-
-   const onSubmit = (data) => {
-     toggleModal();
-   };
+  const handleAddAccount = (newData) => {
+    setAccountData(newData);
+  };
 
   return (
-    <div>
-      <AccountInfo>
-        <h3 className="Acc"> Accounts</h3>
-        <AccountsList items={accounts} accountData={accountData} />
-      </AccountInfo>
+    <div className="accountsPage">
+      <AccountHeader>
+        <h3 className="Acc">Accounts</h3>
+      </AccountHeader>
+
+      <AccountsList items={accounts} accountData={accountData} />
+
       <AddIcon>
         <CiCirclePlus onClick={toggleModal} />
       </AddIcon>

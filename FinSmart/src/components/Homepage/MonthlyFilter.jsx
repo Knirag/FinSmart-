@@ -1,4 +1,5 @@
-import React from 'react';
+import React,
+{useState} from 'react';
 import styled from "styled-components";
 
 const Timelines = styled.select`
@@ -38,9 +39,23 @@ const MonthlyFilter = () => {
     "December",
   ];
  
+const [selectedCategory, setSelectedCategory] = useState("");
 
+const handleCategoryChange = (e) => {
+  const category = e.target.value;
+  setSelectedCategory(category);
+  onChangeCategory(category);
+};
+  const expenseData = JSON.parse(localStorage.getItem("expenseData")) || [];
+  const categories = [
+    ...new Set(expenseData.map((expense) => expense.category)),
+  ];
   return (
-    <Timelines name="" id="" >
+    <Timelines
+      id="category"
+      value={selectedCategory}
+      onChange={handleCategoryChange}
+    >
       {months.map((month) => (
         <option key={month} value={month}>
           {month}

@@ -3,11 +3,17 @@ import * as FaIcons from "react-icons/fa";
 import * as IoIcons from "react-icons/io";
 import * as RiIcons from "react-icons/ri";
 import * as GrIcons from "react-icons/gr";
+import { MdSettingsSuggest } from "react-icons/md";
 export const SidebarData = [
   {
     title: "My Dashboard",
     path: "/dashboard",
     icon: <RiIcons.RiDashboardFill />,
+  },
+  {
+    title: "Accounts",
+    path: "/accounts",
+    icon: <GrIcons.GrMoney />,
   },
   {
     title: "Budgets",
@@ -18,9 +24,12 @@ export const SidebarData = [
     iconOpened: <RiIcons.RiArrowUpSFill />,
   },
   {
-    title: "Accounts",
-    path: "/accounts",
-    icon: <GrIcons.GrMoney />,
+    title: "Settings",
+    path: "/settings",
+    icon: <MdSettingsSuggest />,
+
+    iconClosed: <RiIcons.RiArrowDownSFill />,
+    iconOpened: <RiIcons.RiArrowUpSFill />,
   },
   {
     title: "Statements",

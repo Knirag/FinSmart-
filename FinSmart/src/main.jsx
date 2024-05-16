@@ -8,6 +8,8 @@ import Budgets from "./components/Budgets/budgetpage";
 import Accounts from "./components/Accounts/Accounts";
 import Dashboard from "./components/Homepage/dashboard";
 import IncomeStatement from "./components/Statements/incomestatement";
+import Settings from "./components/Settings/settingsPage";
+import "react-tooltip/dist/react-tooltip.css";
 import "./App.css";
 
 export default function App() {
@@ -24,7 +26,7 @@ export default function App() {
           <Route path="/accounts" element={<Accounts />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/statement" element={<IncomeStatement />} />
-          
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </div>
     </BrowserRouter>

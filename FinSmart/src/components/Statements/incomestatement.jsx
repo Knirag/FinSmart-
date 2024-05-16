@@ -31,7 +31,7 @@ const IncomeStatement = () => {
       JSON.parse(localStorage.getItem("expenseData")) || [];
     setIncomeData(storedIncomeData);
     setExpenseData(storedExpenseData);
-    const totalIncome = parseFloat(localStorage.getItem("totalIncome")) || 0;
+    const totalIncome = parseInt(localStorage.getItem("totalIncome")) || 0;
     setTotalIncome(totalIncome);
 
     // Retrieve total expenses from local storage

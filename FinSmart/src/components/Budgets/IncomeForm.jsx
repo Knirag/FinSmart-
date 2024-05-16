@@ -1,5 +1,8 @@
 import {useState} from "react";
 import styled from "styled-components";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 
 const ModalTimelines = styled.select`
   background: rgb(59, 10, 84);
@@ -25,7 +28,7 @@ const ModalTimelines = styled.select`
 `;
 
 const IncomeForm = () => {
-
+  const [selectedDate, setSelectedDate] = useState(null);
     const [incomeFormData, setIncomeFormData] = useState({});
 
     const onChangeHandler = (e) => {
@@ -94,31 +97,27 @@ const IncomeForm = () => {
       </label>
       <input id="amount" type="text" name="amount" onChange={onChangeHandler} />
 
-      {/* MONTH */}
-      <label htmlFor="month" className="form-label">
-        Month:
-      </label>
+      {/* Date */}
 
-      <ModalTimelines
-        name="month"
-        id=""
-        className="form-select"
-        onChange={onChangeHandler}
-      >
-        <option value="">Select Month</option>
-        <option value="January">January</option>
-        <option value="February">February</option>
-        <option value="March">March</option>
-        <option value="April">April</option>
-        <option value="May">May</option>
-        <option value="June">June</option>
-        <option value="July">July</option>
-        <option value="August">August</option>
-        <option value="September">September</option>
-        <option value="October">October</option>
-        <option value="November">November</option>h
-        <option value="December">December</option>
-      </ModalTimelines>
+      <label htmlFor="date" className="form-label1">
+        Date:
+      </label>
+      <div>
+        <DatePicker
+          className="form-select"
+          type="text"
+          name="date"
+          selected={selectedDate}
+          onChange={(date) => {
+            setSelectedDate(date);
+            onChangeHandler({ target: { name: "date", value: date } });
+          }}
+          isClearable
+          showYearDropdown
+          scrollableMonthYearDropdown
+          showTimeSelect
+        />
+      </div>
 
       {/* ACCOUNT SELECTION */}
       <label htmlFor="account" className="form-label">

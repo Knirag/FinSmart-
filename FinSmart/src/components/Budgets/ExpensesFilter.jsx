@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const ExpenseCategory = styled.select`
@@ -21,29 +21,37 @@ const ExpenseCategory = styled.select`
   }
 `;
 
-const ExpensesFilter = ({ expenses, filterItem }) => {
-  
+const ExpensesFilter = ({ onChange }) => {
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const categories = [
+    "",
+    "Housing",
+    "Utilities",
+    "Transport",
+    "Savings & Investments",
+    "Groceries",
+    "Education",
+    "Entertainment",
+    "Shopping",
+    "Miscellaneous",
+  ];
+
+  const handleChange = (e) => {
+    const category = e.target.value;
+    setSelectedCategory(category);
+    onChange(category);
+  };
+
   return (
-    <>
-      <ExpenseCategory
-        name=""
-        id=""
-        mb-3
-        onChange={(event) => filterItem(event.target.value)}
-      >
-        <option value="">Category</option>
-        <option value="Housing">Housing</option>
-        <option value="Utilities">Utilities</option>
-        <option value="Transport">Transport</option>
-        <option value="Savings">Savings & Investments</option>
-        <option value="Groceries">Groceries</option>
-        <option value="Education">Education</option>
-        <option value="Entertainment">Entertainment</option>
-        <option value="Shopping">Shopping</option>
-        <option value="Miscelleneous">Miscelleneous</option>
-      </ExpenseCategory>
-    </>
+    <ExpenseCategory value={selectedCategory} onChange={handleChange}>
+      {categories.map((category) => (
+        <option key={category} value={category}>
+          {category}
+        </option>
+      ))}
+    </ExpenseCategory>
   );
 };
 
-export default ExpensesFilter
+export default ExpensesFilter;
