@@ -2,6 +2,7 @@ import {useState} from "react";
 import styled from "styled-components";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { v4 as uuidv4 } from "uuid";
 
 
 const ModalTimelines = styled.select`
@@ -47,12 +48,23 @@ const IncomeForm = () => {
          JSON.parse(localStorage.getItem("incomeData")) || [];
 
        // Add new income
-       const id = currentIncomeData.length + 1;
+       const id = uuidv4();
        const newIncome = {
          id: id,
          ...incomeFormData,
        };
        currentIncomeData.push(newIncome);
+
+    const incomeHistory = JSON.parse(localStorage.getItem("incomeHistory")) || [];
+        const historyItem = {
+          id: id,
+          incomeDate: newIncome.date,
+          incomeDescription: newIncome.description,
+          accountName: newIncome.account,
+          amount: newIncome.amount,
+        };
+        incomeHistory.push(historyItem);
+        localStorage.setItem("incomeHistory", JSON.stringify(incomeHistory));
 
        // Update income data in local storage
        localStorage.setItem("incomeData", JSON.stringify(currentIncomeData));
@@ -107,6 +119,7 @@ const IncomeForm = () => {
           className="form-select"
           type="text"
           name="date"
+          autocomplete="off"
           selected={selectedDate}
           onChange={(date) => {
             setSelectedDate(date);
@@ -118,6 +131,49 @@ const IncomeForm = () => {
           showTimeSelect
         />
       </div>
+<div className="frequencyForm">
+        <label className="formFrequency">Is this transaction Reoccuring:</label>
+        <div className="frequencyCheckbox">
+          <div class="checkbox-wrapper-52">
+            <label for="yes-52" className="item">
+              <input
+                type="checkbox"
+                id="yes-52"
+                className="hidden"
+                name="frequency"
+                onChange={onChangeHandler}
+              />
+              <label for="yes-52" className="cbx">
+                <svg width="14px" height="12px" viewBox="0 0 14 12">
+                  <polyline points="1 7.6 5 11 13 1"></polyline>
+                </svg>
+              </label>
+              <label for="yes-52" className="cbx-lbl">
+                Yes
+              </label>
+            </label>
+          </div>
+          </div>
+          <div className="checkbox-wrapper-52">
+            <label for="no-52" className="item">
+              <input
+                type="checkbox"
+                id="no-52"
+                className="hidden"
+                name="frequency"
+                onChange={onChangeHandler}
+              />
+              <label for="no-52" className="cbx">
+                <svg width="14px" height="12px" viewBox="0 0 14 12">
+                  <polyline points="1 7.6 5 11 13 1"></polyline>
+                </svg>
+              </label>
+              <label for="no-52" className="cbx-lbl">
+                No
+              </label>
+            </label>
+          </div>
+        </div>
 
       {/* ACCOUNT SELECTION */}
       <label htmlFor="account" className="form-label">

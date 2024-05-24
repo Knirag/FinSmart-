@@ -4,6 +4,7 @@ import * as IoIcons from "react-icons/io";
 import * as RiIcons from "react-icons/ri";
 import * as GrIcons from "react-icons/gr";
 import { MdSettingsSuggest } from "react-icons/md";
+import { HiArrowsUpDown } from "react-icons/hi2";
 export const SidebarData = [
   {
     title: "My Dashboard",
@@ -27,6 +28,14 @@ export const SidebarData = [
     title: "Settings",
     path: "/settings",
     icon: <MdSettingsSuggest />,
+
+    iconClosed: <RiIcons.RiArrowDownSFill />,
+    iconOpened: <RiIcons.RiArrowUpSFill />,
+  },
+  {
+    title: "Transactions",
+    path: "/finsmartTransactions",
+    icon: <HiArrowsUpDown />,
 
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,

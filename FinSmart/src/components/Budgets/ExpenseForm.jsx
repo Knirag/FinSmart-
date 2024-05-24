@@ -1,8 +1,9 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import "../../App.css";
 import styled from "styled-components";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { v4 as uuidv4 } from "uuid";
 
 
 const ModalTimelines = styled.select`
@@ -27,79 +28,65 @@ const ModalTimelines = styled.select`
   }
 `;
 const ExpenseForm = () => {
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [expenseFormData, setExpenseFormData] = useState({});
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [expenseFormData, setExpenseFormData] = useState({});
 
-    const onChangeHandler = (e) => {
-      const { name, value } = e.target;
-      setExpenseFormData({
-        ...expenseFormData,
-        [name]: value,
-      });
+  const onChangeHandler = (e) => {
+    const { name, value } = e.target;
+    setExpenseFormData({
+      ...expenseFormData,
+      [name]: value,
+    });
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const currentExpenseData =
+      JSON.parse(localStorage.getItem("expenseData")) || [];
+    const id = uuidv4();
+    const newExpense = {
+      id: id,
+      ...expenseFormData,
     };
+    currentExpenseData.push(newExpense);
+    localStorage.setItem("expenseData", JSON.stringify(currentExpenseData));
+    const expenseHistory =
+      JSON.parse(localStorage.getItem("expenseHistory")) || [];
+    const historyItem = {
+      id: id,
+      expenseDate: newExpense.date,
+      expenseDescription: newExpense.description,
+      accountName: newExpense.account,
+      amount: newExpense.amount,
+    };
+    expenseHistory.push(historyItem);
+    localStorage.setItem("expenseHistory", JSON.stringify(expenseHistory));
 
-    const onSubmit = (e) => {
-      e.preventDefault();
-      const currentExpenseData =
-        JSON.parse(localStorage.getItem("expenseData")) || [];
-      const id = currentExpenseData.length + 1;
-      const newExpense = {
-        id: id,
-        ...expenseFormData,
-      };
-      currentExpenseData.push(newExpense);
-      localStorage.setItem("expenseData", JSON.stringify(currentExpenseData));
+    window.location.reload();
+  };
 
-      const expenseHistory =
-        JSON.parse(localStorage.getItem("expenseHistory")) || [];
-      const historyItem = {
-        id: id,
-        expenseDate: new Date().toISOString(),
-        name: newExpense.name,
-        accountName: newExpense.account,
-        amount: newExpense.amount,
-      };
-      expenseHistory.push(historyItem);
-      localStorage.setItem("expenseHistory", JSON.stringify(expenseHistory));
+  const accountData = JSON.parse(localStorage.getItem("accountData")) || [];
+  const categoryData = JSON.parse(localStorage.getItem("categoryData")) || [];
+  const subCatData = JSON.parse(localStorage.getItem("subCatData")) || [];
 
-      const accounts = JSON.parse(localStorage.getItem("accountData")) || [];
-      const account = accounts.find((acc) => acc.name === newExpense.account);
-      if (account) {
-        let newAccountBalance =
-          parseInt(account.balance) - parseInt(newExpense.amount);
-        account.balance = newAccountBalance;
-        localStorage.setItem("accountData", JSON.stringify(accounts));
-        historyItem.difference =
-          parseInt(account.balance) -
-          parseInt(account.balance) +
-          parseInt(newExpense.amount);
+  const [subcategories, setSubcategories] = useState([]);
+  const getSubCat = (categoryName) => {
+    return subCatData.filter(
+      (subcategory) => subcategory.category === categoryName
+    );
+  };
+
+  useEffect(() => {
+    if (expenseFormData.category !== "") {
+      const selectedCategory = categoryData.find(
+        (cat) => cat.name === expenseFormData.category
+      );
+      if (selectedCategory) {
+        const subcategoriesForCategory = getSubCat(selectedCategory.name);
+        setSubcategories(subcategoriesForCategory);
       }
-      window.location.reload();
-    };
-
-
-    const accountData = JSON.parse(localStorage.getItem("accountData")) ||[];
-    const categoryData = JSON.parse(localStorage.getItem("categoryData")) || [];
-      const subCatData = JSON.parse(localStorage.getItem("subCatData")) || [];
-      
-      const [subcategories, setSubcategories] = useState([]);
-      const getSubCat = (categoryName) => {
-        return subCatData.filter(
-          (subcategory) => subcategory.category === categoryName
-        );
-      };
- 
-      useEffect(() => {
-        if (expenseFormData.category !== "") {
-          const selectedCategory = categoryData.find(
-            (cat) => cat.name === expenseFormData.category
-          );
-          if (selectedCategory) {
-            const subcategoriesForCategory = getSubCat(selectedCategory.name);
-            setSubcategories(subcategoriesForCategory);
-          }
-        }
-      }, [expenseFormData.category]);
+    }
+  }, [expenseFormData.category]);
   return (
     <form action="" onSubmit={onSubmit}>
       {/* DESCRIPTION */}
@@ -146,6 +133,51 @@ const ExpenseForm = () => {
         />
       </div>
       <br></br>
+      <div className="frequencyForm">
+        <label className="formFrequency">Is this transaction Reoccuring:</label>
+        <div className="frequencyCheckbox">
+          <div className="checkbox-wrapper-52">
+            <label for="yes-52" className="item">
+              <input
+                type="checkbox"
+                id="yes-52"
+                className="hidden"
+                name="frequency"
+                onChange={onChangeHandler}
+              />
+              <label for="yes-52" className="cbx">
+                <svg width="14px" height="12px" viewBox="0 0 14 12">
+                  <polyline points="1 7.6 5 11 13 1"></polyline>
+                </svg>
+              </label>
+              <label for="yes-52" className="cbx-lbl">
+                Yes
+              </label>
+            </label>
+          </div>
+          <div className="checkbox-wrapper-52">
+            <label for="no-52" className="item">
+              <input
+                type="checkbox"
+                id="no-52"
+                className="hidden"
+                name="frequency"
+                onChange={onChangeHandler}
+              />
+              <label for="no-52" className="cbx">
+                <svg width="14px" height="12px" viewBox="0 0 14 12">
+                  <polyline points="1 7.6 5 11 13 1"></polyline>
+                </svg>
+              </label>
+              <label for="no-52" className="cbx-lbl">
+                No
+              </label>
+            </label>
+          </div>
+        </div>
+
+        <br></br>
+      </div>
       {/* ACCOUNT SELECTION*/}
       <label htmlFor="account" className="form-label">
         Account:

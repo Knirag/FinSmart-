@@ -10,7 +10,7 @@ const BudgetContainer = styled.div`
   justify-content: center;
   align-items: center;
   margin: 0 auto;
-  margin-top: 43px;
+  margin-top: 40px;
   width: 900px;
   height: 100%;
   background: rgb(59, 10, 84);

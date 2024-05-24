@@ -4,7 +4,6 @@ import { BsDashCircleDotted } from "react-icons/bs";
 import styled from "styled-components";
 import moment from "moment";
 
-
 const BudgetContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -30,13 +29,22 @@ const ExpenseList = ({ selectedCategory }) => {
         )
       : listExpenseData
     : [];
+  
+    const getExpenseHistory = () => {
+    return JSON.parse(localStorage.getItem("expenseHistory")) || [];
+  };
+
   const handleDeleteExpense = (expenseId) => {
     const expenses = JSON.parse(localStorage.getItem("expenseData")) || [];
+    const expenseHistory = getExpenseHistory();
+
     const updatedExpenses = expenses.filter(
       (expense) => expense.id !== expenseId
     );
     localStorage.setItem("expenseData", JSON.stringify(updatedExpenses));
+
     const deletedExpense = expenses.find((expense) => expense.id === expenseId);
+
     if (deletedExpense) {
       const accounts = JSON.parse(localStorage.getItem("accountData")) || [];
       const account = accounts.find(
@@ -48,7 +56,17 @@ const ExpenseList = ({ selectedCategory }) => {
         account.balance = newAccountBalance;
         localStorage.setItem("accountData", JSON.stringify(accounts));
       }
+
+      const updatedExpenseHistory = expenseHistory.filter(
+        (history) => history.id !== expenseId
+      );
+      localStorage.setItem(
+        "expenseHistory",
+        JSON.stringify(updatedExpenseHistory)
+      );
     }
+
+    // Reload the page to reflect changes
     window.location.reload();
   };
 
@@ -69,6 +87,14 @@ const ExpenseList = ({ selectedCategory }) => {
                   <BsDashCircleDotted />
                   <h5 className="expenseNameLabel">{expense.description}</h5>
                 </h4>
+                <div className="expenseBalanceTransaction">
+                  <div className="checkbox-wrapper-39">
+                    <label>
+                      <input type="checkbox" />
+                      <span className="checkbox"></span>
+                    </label>
+                  </div>
+                </div>
               </div>
               <div className="expenseRow">
                 <h5 className="expenseLabel">Amount:</h5>
@@ -94,7 +120,6 @@ const ExpenseList = ({ selectedCategory }) => {
               <div className="expenseRow">
                 <h5 className="expenseLabel">Date:</h5>
                 <span className="expenseValue">
-                  {" "}
                   {moment(expense.date).format("MMMM Do YYYY")}
                 </span>
               </div>

@@ -9,11 +9,11 @@ import Accounts from "./components/Accounts/Accounts";
 import Dashboard from "./components/Homepage/dashboard";
 import IncomeStatement from "./components/Statements/incomestatement";
 import Settings from "./components/Settings/settingsPage";
+import Transactions from "./components/Transactions/transactionPage";
 import "react-tooltip/dist/react-tooltip.css";
 import "./App.css";
 
 export default function App() {
-
   return (
     <BrowserRouter>
       <div className="app-container">
@@ -27,6 +27,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/statement" element={<IncomeStatement />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/finsmartTransactions" element={<Transactions />} />
         </Routes>
       </div>
     </BrowserRouter>
