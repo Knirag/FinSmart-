@@ -99,84 +99,82 @@ body{
 }
 
 .container {
-  display: flex;
-  flex-direction: column;
   margin: 0 auto;
-  align-items: center;
-  justify-content: center;
   margin-top: 20px;
-  padding-bottom: 100px;
   background: rgb(71, 9, 121);
   background: linear-gradient(180deg, rgba(71, 9, 121, 0.5149782325039391) 0%, rgba(71, 9, 121, 0.5121771120557599) 3%, rgba(71, 9, 121, 0.5177793529521184) 97%, rgba(71, 9, 121, 0.49256926891850494) 100%);
   border-radius: 3%;
   width: 400px;
-  height: 400px;
+  height: 500px;
+  box-shadow: 0px 5px 10px 0px rgba(255, 255, 255, 0.5),
+        0 0 20px rgba(255, 255, 255, 0.2), inset 0 0 10px hsl(214, 100%, 78%),
+        0 0 40px #9e25d69d, 0 0 80px #f953d5ab;
 
 }
 
-.header {
+.headerAuth {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+}
+.logo1 {
+  display: flex;
   align-items: center;
-  margin-bottom: 390px;
-position: absolute;
+  justify-content: center;
+  
+  margin-top: 50px; 
 }
 
+.finSmartLogo {
+  display: flex;
+  width: 400px;
+  height: 200px;
+  margin: -200px ;
+  z-index: 0;
+ 
+}
 .status-container {
   display: flex;
-  gap: 10%;
+  flex-direction: row;
+  align-items: center;
   justify-content: center;
-    position: fixed;
+  gap: 9px;
+  margin-top: 20px;
+  z-index: 1;
+
 }
 
 .stroke {
-  width: 2px;
-  height: 30px;
-  color: rgb(25, 6, 6);
-  font-weight: bold;
+  width: 1 rem;
+  height: 19px;
+  border: solid 1px rgb(255, 255, 255);
+  background:rgb(255, 255, 255);
 }
 
-.status,
-.status2 {
-  margin-top: -5px;
-  font-size: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: -240px;
-  font-weight: bold;
-  /* position: absolute; */
-}
 
-.logo1 {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 60%;
-  height: 200px;
-  margin: 0 auto;
-  margin-bottom: -150px;
-  z-index: -99px;
-}
-.wmga{
+.statusButton{
   background: none;
   border: none;
-  outline: none;
-  font-family: "Space Grotesk", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 700;
-    font-style: bold;
-    text-shadow:
-        0 0 5px #68c7ea,
-        0 0 10px #84d6ff,
-        0 0 20px #000000,
-        0 0 40px rgb(1, 16, 16),
-        0 0 80px rgb(0, 0, 0),
-        0 0 90px rgb(0, 0, 0),
-        0 0 4px rgb(0, 0, 0),
-        0 0 3px rgb(2, 0, 0);
+  outline: none;  
+}
+.statusButton:hover {
+border-bottom: solid 2px;
+}
+.statusLabels{
+font-family: "Inconsolata", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: lighter;
+  margin: 10px;
+  font-size: 17px;
+  text-shadow:
+    0 0 5px #ff00b3,
+    0 0 10px #c800ff,
+    0 0 20px #000000,
+    0 0 40px rgb(1, 16, 16),
+    0 0 80px rgb(0, 0, 0),
+    0 0 90px rgb(0, 0, 0),
+    0 0 4px rgb(0, 0, 0),
+    0 0 3px rgb(2, 0, 0);
 }
 input {
   display: flex;
@@ -185,61 +183,73 @@ input {
   align-items: center;
   background: none;
   outline: none;
-  border-color: #732982;
-  width: 300px;
-  margin: 0 auto;
-  padding: 7px 15px;
-  border: 1px solid #732982;
+  border-color: #4795e9;
+  width: 250px;
+  padding: 6px 17px;
+  border: 1px solid #7013db;
   border-radius: 4px;
 }
+.inputsSection{
+ display: flex;
+ flex-direction: column;
+margin-top: 40px; 
+}
 
-.email-field {
-margin-top: 60px;
-margin-bottom: 40px;
+.fieldLabel{
+  margin: 5px;
+  font-family: "Inconsolata", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: lighter;
+}
+.userNameField{
+  margin-bottom:10px;
+}
+.password-row{
+  margin-top:15px;
+}
+.userNameFieldInput{
+  display: flex;
+  justify-content: center;
+  margin: 3px;
+}
+.passwordField{
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+  margin: 3px;
+  margin-right:-15px;
+}
+.showPassword{
   background: none;
+  border: none;
+  outline: none;
 }
 
-.password-field {
-  margin-top: 20px;
-    margin-bottom: 20px;
-}
 
-.signup {
-margin-top: 20px;
-margin-bottom: 20px;
-}
 
-.email-field2 {
-margin-top: 80px;
-  margin-bottom: 20px;
+.submitBtn{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
 }
-.password-field2 {
-  margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-.repeat-password-field {
-  margin-top: 20px;
-    margin-bottom: 20px;
-} 
-
 .submit {
-  margin: 0 auto;
-  position: absolute;
-  margin-top: 20px;
-  margin-left: -50px; 
-  margin-bottom: 20px;
   background: none;
   color: white;
   font-weight: bold;
-  padding: 10px 15px;
-  border: 1px solid #c95fe1;
+  border:  none;
   border-radius: 4px;
   cursor: pointer;
+  width: 90px;
+  height:40px;
+  box-shadow: 
+        0 0 20px #f76dfe33, inset 0 0 10px hsl(287, 27%, 42%),
+        0 0 40px #9e25d69d, 0 0 80px #53d5f9ab;
 }
 
 .submit:hover {
-  /* background-image: linear-gradient(90deg, #380052 0%, #b522ff7b 49%, #b522ffab 80%, #380052 100%); */
   border: 1px solid;
   box-shadow: inset 0 0 20px rgba(255, 255, 255, .5), 0 0 20px rgba(255, 255, 255, .2);
   outline-color: rgba(255, 255, 255, 0);
@@ -283,55 +293,26 @@ margin-top: 80px;
 
 /* Income */
 /* ---------------------------------------------------------------------------------------------------------------- */
-.totalsIE{
-  display: flex;
-  justify-content: center;
-  padding: 3px;
-}
-.totalIERow{
-  display: flex;
-  justify-content: center;
-  flex-direction: row;
-  margin: 7px;
-  padding:22px 40px;
-  gap: 4px;
-}
-.totalHeading{
-  font-family: "Syne", sans-serif;
-    font-optical-sizing: auto;
-    color: #ffffff;
-    font-weight: 600;
-    font-style: bold;
-    border:groove #ffffff;
-    padding: 3px 6px;
-
-}
-.totalValue{
-  font-family: "Space Grotesk", sans-serif;
-  font-weight: 500;
-  font-style: bold;
-  border: groove #ffffff;
-  border-left:none;
-  padding: 4px 6px;
-
-}
-.incomeHeading{
-font-size: 21px;
-  display: flex;
+.incomeHeading {
+  font-size: 21px;
+  display: flex;  
   margin-top: 19px;
   margin-bottom: 14px;
-  flex-direction: column;
+  width: 800px;
+  padding: 4px;
+  justify-content: space-between;
+  border-bottom: #2bff00 2px solid;
 }
 
-.incomeExpenseLabel{
+.incomeExpenseLabel {
   font-family: "Space Grotesk", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: light;
-    font-style: normal;
-    margin: 3px;
-    font-size: 17px;
-    align-items: center;
-text-shadow:
+  font-optical-sizing: auto;
+  font-weight: light;
+  font-style: normal;
+  margin: 3px;
+  font-size: 17px;
+  align-items: center;
+  text-shadow:
     0 0 5px hsl(313, 100%, 90%),
     0 0 10px #efd7ff,
     0 0 20px #000000,
@@ -343,9 +324,22 @@ text-shadow:
 
 }
 
-.incomeTiltle{
+.incomeTitle {
   display: flex;
-  gap: 16px;
+  flex-direction: row;
+  gap: 13px;
+}
+.income-Icon{
+  font-size: 24px;
+  z-index: 0;
+}
+.incomeLabelName {
+  font-size: 29px;
+  margin:-3px;
+  font-family: "Syne", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: bold;
+  font-style: normal;
   text-shadow:
       0 0 5px #80259b,
       0 0 10px #b784ff,
@@ -355,56 +349,73 @@ text-shadow:
       0 0 90px rgb(0, 0, 0),
       0 0 4px rgb(0, 0, 0),
       0 0 3px rgb(2, 0, 0);
+
 }
-.incomeLabelName{
-    font-size: 27px;
-      margin: -6.5px;
-      font-family: "Syne", sans-serif;
-      font-optical-sizing: auto;
-      font-weight: bold;
-      font-style: normal;
-      
+.incomeAmountColumn{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
 }
-.incomeRow{
-    display: flex;
-      padding: 6px 35px;
-      gap: 8px;
+.incomeRow {
+  display: flex;
+  padding: 6px 35px;
+  gap: 8px;
 }
-.incomeDetailHeadings{
+.incomeDetailsCol{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-self: first baseline;
+  margin-left: 23px;
+ 
+}
+
+.incomeDetailHeadings {
   font-size: 16px;
-    display: flex;
-    font-family: "Space Grotesk", sans-serif;
-    font-optical-sizing: auto;
-    justify-content: flex-start;
-    font-weight: bold;
-    padding: 0px;
-    margin: 1px;
-    text-shadow:
-      0 0 5px #dcf4fd,
-      0 0 10px #efd7ff,
-      0 0 20px #000000,
-      0 0 40px rgb(1, 16, 16),
-      0 0 80px rgb(0, 0, 0),
-      0 0 90px rgb(0, 0, 0),
-      0 0 4px rgb(0, 0, 0),
-      0 0 3px rgb(2, 0, 0);
+  display: flex;
+  font-family: "Space Grotesk", sans-serif;
+  font-optical-sizing: auto;
+  justify-content: flex-start;
+  font-weight: 200;
+  padding: 0px;
+  margin: 1px;
+  text-shadow:
+    0 0 5px #dcf4fd,
+    0 0 10px #efd7ff,
+    0 0 20px #000000,
+    0 0 40px rgb(1, 16, 16),
+    0 0 80px rgb(0, 0, 0),
+    0 0 90px rgb(0, 0, 0),
+    0 0 4px rgb(0, 0, 0),
+    0 0 3px rgb(2, 0, 0);
 }
-.incomeDetails{
-  font-size: 14px;
-    font-family: "Space Grotesk", sans-serif;
-    font-weight: light;
-    font-style: normal;
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-    text-align: center;
-    margin: 3px;
+
+.incomeDetails {
+  font-size: 15px;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: light;
+  font-style: normal;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  text-align: center;
+  margin: 3px;
+}
+.incomeActions{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  align-self: last baseline;
+  margin-right: 30px;
+  z-index: 1;
+  margin-top:-20px;
 }
 .close-modal{
-  display: flex;
-  justify-content: flex-start;
-      position: relative;
-        display: inline-block;
+        display: flex;
+        flex-direction: column;
         padding: 10px 6px;
         color: #ffffff;
         text-transform: uppercase;
@@ -416,8 +427,6 @@ text-shadow:
         background: none;
         border:  1px solid #c603fc;
         border-radius: 2px;
-        margin-top: 30px;
-        margin-left: 170px;
  }
  .close-modal:hover {
    color: #ffffff;
@@ -426,10 +435,7 @@ text-shadow:
    transition-delay: 0s;
  }
  .save-data{
-    display: flex;
-      justify-content: flex-start;
-      position: absolute;
-      display: inline-block;
+      display: flex;
       padding: 10px 6px;
       color: #ffffff;
       text-transform: uppercase;
@@ -441,8 +447,7 @@ text-shadow:
       background: none;
       border: 1px solid #c603fc;
       border-radius: 2px;
-      margin-top: 30px;
-      margin-left: -100px;
+      /* margin-left: -100px; */
  }
  .save-data:hover {
    color: #ffffff;
@@ -450,98 +455,174 @@ text-shadow:
    box-shadow: 0 0 10px #5af1f6, 0 0 40px #9bddf39d, 0 0 80px #ffffffab;
    transition-delay: 0s;
  }
+ .expField{
+display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  outline: none;
+  border-color: #732982;
+  width: 300px;
+  margin: 0 auto;
+  padding: 7px 15px;
+  border: 1px solid #732982;
+  border-radius: 4px;
+ }
 /* ---------------------------------------------------------------------------------------------------------------- */
 
 /* Expense List */
-/* .incomeList{} */
-.expenseHeading{
+.expenseHeading {
   font-size: 21px;
     display: flex;
     margin-top: 19px;
     margin-bottom: 14px;
-    flex-direction: column;
-}
-.expenseTitle{
-  display: flex;
-    gap: 16px;
-    text-shadow:
-      0 0 5px #80259b,
-      0 0 10px #b784ff,
-      0 0 20px #000000,
-      0 0 40px rgb(1, 16, 16),
-      0 0 80px rgb(0, 0, 0),
-      0 0 90px rgb(0, 0, 0),
-      0 0 4px rgb(0, 0, 0),
-      0 0 3px rgb(2, 0, 0);
-}
-.expenseNameLabel{
-  font-size: 27px;
-    margin: -6.5px;
-    font-family: "Syne", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: bold;
-    font-style: normal;
-}
-.expenseRow{
-display: flex;
-  padding: 6px 35px;
-  gap: 8px;
- 
-}
-.expenseLabel{
-  font-size: 16px;
-    display: flex;
-    font-family: "Space Grotesk", sans-serif;
-    font-optical-sizing: auto;
-    justify-content: flex-start;
-    font-weight: bold;
-    padding: 0px;
-    margin: 1px;
-    text-shadow:
-      0 0 5px #dcf4fd,
-      0 0 10px #efd7ff,
-      0 0 20px #000000,
-      0 0 40px rgb(1, 16, 16),
-      0 0 80px rgb(0, 0, 0),
-      0 0 90px rgb(0, 0, 0),
-      0 0 4px rgb(0, 0, 0),
-      0 0 3px rgb(2, 0, 0);
-}
-.expenseValue{
-  font-size: 14px;
-    font-family: "Space Grotesk", sans-serif;
-    font-weight: light;
-    font-style: normal;
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-    text-align: center;
-    margin: 3px;
-}
-.deleteItems {
-  width: 80px;
-    display: flex;
-    margin-left: 700px;
-    padding: 4px 0px;
-    color: #ffffff;
-    text-transform: uppercase;
-    letter-spacing: 1.4px;
-    text-decoration: none;
-    overflow: hidden;
-    /* transition: 0.1s; */
-    background: none;
-    border: solid 1px #c4081584;
-    margin-bottom: 10px;
-    transition: transform .2s;
-    
+    width: 800px;
+    padding: 4px;
+    justify-content: space-between;
+    border-bottom: #ff0000 2px solid;
 }
 
+.expenseTitle {
+  display: flex;
+  gap: 16px;
+  text-shadow:
+    0 0 5px #80259b,
+    0 0 10px #b784ff,
+    0 0 20px #000000,
+    0 0 40px rgb(1, 16, 16),
+    0 0 80px rgb(0, 0, 0),
+    0 0 90px rgb(0, 0, 0),
+    0 0 4px rgb(0, 0, 0),
+    0 0 3px rgb(2, 0, 0);
+}
+
+.expenseNameLabel {
+  font-size: 27px;
+  margin: -3px;
+  font-family: "Syne", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: bold;
+  font-style: normal;
+}
+.expenseAmountCol{
+  flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.expenseRow {
+  display: flex;
+    padding: 6px 35px;
+    gap: 8px;
+}
+.expenseDetailsCol{
+  display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-self: first baseline;
+    margin-left: 23px;
+}
+
+.expenseLabel {
+  font-size: 16px;
+  display: flex;
+  font-family: "Space Grotesk", sans-serif;
+  font-optical-sizing: auto;
+  justify-content: flex-start;
+  font-weight: bold;
+  padding: 0px;
+  margin: 1px;
+  text-shadow:
+    0 0 5px #dcf4fd,
+    0 0 10px #efd7ff,
+    0 0 20px #000000,
+    0 0 40px rgb(1, 16, 16),
+    0 0 80px rgb(0, 0, 0),
+    0 0 90px rgb(0, 0, 0),
+    0 0 4px rgb(0, 0, 0),
+    0 0 3px rgb(2, 0, 0);
+}
+
+.expenseValue {
+  font-size: 14px;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: light;
+  font-style: normal;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  text-align: center;
+  margin: 3px;
+}
+.deleteItems {
+  width: 100px;
+  display: flex;
+  padding: 4px 10px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  text-decoration: none;
+  overflow: hidden;
+  transition: 0.1s;
+  background: none;
+  border: 1px solid #9a00b5b3;
+  gap: 2px;
+  transition: transform .2s
+}
 .deleteItems:hover {
   color: #ffffff;
     transition-delay: 0s;
     transform: scale(1.5);
       background: #ffffff00;
         box-shadow: 0 0 10px #f65a5a, 0 0 40px #f0152f9d, 0 0 80px #3b015aab;
+}
+.delete-Message{
+display: flex;
+flex-wrap: wrap;
+align-items: center;
+justify-content: center;
+font-size: 17px;
+font-family: "Space Grotesk", sans-serif;
+  font-weight: light;
+  font-style: normal;
+}
+.popup-button{
+display: flex;
+margin: 0 auto;
+margin-top: 20px;  
+align-items: center;
+justify-content: center;
+gap: 50px;
+}
+.editItems {
+  width: 80px;
+  display: flex;
+  padding: 4px 10px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  text-decoration: none;
+  overflow: hidden;
+  transition: 0.1s;
+  background: none;
+  border: 1px solid #9a00b5b3;
+  gap: 2px;
+  transition: transform .2s
+}
+.editItems:hover {
+  color: #ffffff;
+  transition-delay: 0s;
+  transform: scale(1.5);
+  background: #ffffff00;
+  box-shadow: 0 0 10px #f440b5, 0 0 40px #ab15f09d, 0 0 80px #3b015aab;
+}
+.modify_Items{
+ display: flex;
+ align-items: center; 
+ gap:40px;
+ margin-bottom: 13px;
 }
 
 .listOptions {
@@ -557,13 +638,16 @@ display: flex;
 
 .frequencyCheckbox {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
-
   align-items: center;
-  gap: 40px;
+  
 }
-
+.checkbox-processed{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
 .checkbox-wrapper-52 input[type="checkbox"] {
   visibility: hidden;
   display: none;
@@ -608,7 +692,7 @@ display: flex;
 
 .checkbox-wrapper-52 .item .cbx svg polyline {
   stroke-width: 2;
-  stroke: #bb18cd;
+  stroke: #18b2cd;
 }
 
 .checkbox-wrapper-52 .item .cbx:before {
@@ -691,6 +775,9 @@ display: flex;
 .checkbox-wrapper-39 *::before,
 .checkbox-wrapper-39 *::after {
   box-sizing: border-box;
+  margin-top: -30px;
+  margin-bottom: 12px;
+  margin-right: 12px;
 }
 
 .checkbox-wrapper-39 label {
@@ -709,7 +796,7 @@ display: flex;
   transform: rotate(45deg);
   width: 14px;
   margin-left: 12px;
-  border-color: #24c78e;
+  border-color: #00df13;
   border-top-color: transparent;
   border-left-color: transparent;
   border-radius: 0;
@@ -719,8 +806,8 @@ display: flex;
   display: block;
   width: inherit;
   height: inherit;
-  border: 3px solid #7d0671;
-  border-radius: 6px;
+  border: 2px solid #400d84;
+  border-radius: 2px;
   transition: all 0.375s;
   }
 
@@ -758,7 +845,7 @@ font-family: "Syne", sans-serif;
 .acctHeading {
   font-size: 27px;
   display: flex;
-  margin-top: 7px;
+  margin-top: 11px;
   flex-direction: column;
   text-shadow:
     0 0 5px #80259b,
@@ -899,63 +986,79 @@ font-family: "Syne", sans-serif;
       font-style:normal;
       margin:2px;
 }
+.modify_ItemsAccounts{
+  float: right;
+  display: flex;
+    align-items: center;
+    align-items: center;
+    width: 300px;
+    gap: 40px;
+    margin-top: 10px;
+    margin-bottom: 15px;    
+}
 /* ---------------------------------------------------------------------------------------------------------------- */
 
 /* Progress Bar Component */
 
 /* ---------------------------------------------------------------------------------------------------------------- */
 .budgetLabel{
-
+  font-size: 15px;
+  text-transform:capitalize;
     text-shadow:
       0 0 5px #68c7ea,
-      0 0 10px #84d6ff,
+      0 0 10px #000000,
       0 0 20px #000000,
       0 0 40px rgb(1, 16, 16),
       0 0 80px rgb(0, 0, 0),
       0 0 90px rgb(0, 0, 0),
       0 0 4px rgb(0, 0, 0),
       0 0 3px rgb(2, 0, 0);
+      font-family: "DM Sans", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 500;
+        font-style: italic;
 }
-.budgetLabels{
-font-family: "Space Grotesk", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 700;
-  font-style: bold;
-  font-size: 14px;
-  display:block;
-  z-index: index 99px;;
+.progress-bar{
+  display: flex;
   flex-direction: column;
-  margin-left:400px;
-  padding: 1px;
-  margin:1px;
-  text-shadow:
-      0 0 5px #dcf4fd,
-      0 0 10px #efd7ff,
-      0 0 20px #000000,
-      0 0 40px rgb(1, 16, 16),
-      0 0 80px rgb(0, 0, 0),
-      0 0 90px rgb(0, 0, 0),
-      0 0 4px rgb(0, 0, 0),
-      0 0 3px rgb(2, 0, 0);
+  align-items: flex-end;
+  justify-content: flex-end;
+  margin-top: -44px;
+  padding: 9px;
+  margin-right: 48px;
 
 }
-
+.prog-category-Name{
+  display: flex;
+  flex-direction: row;
+  align-items:flex-start;
+  justify-content: flex-start;
+  margin: 18px;
+  z-index: 0;
+  margin-left: 79px;
+  
+}
 .label{
-  font-size: 13px;
-  font-weight: bold;
+  font-size: 17px;
+  font-weight: normal;
   display: center;
   justify-content: center;
   align-items: center;
-  flex-direction: row;
-  margin-inline-end: 40px;
-  padding: 8px;
+  flex-direction: column;
+  margin-inline-end: 4px;
+  padding: 3px;
   margin: 0 auto;
+  font-family: "Inconsolata", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: italic;
 }
 .expenseBalanceTransaction{
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
 }
+
 
 /* ---------------------------------------------------------------------------------------------------------------- */
 
@@ -963,17 +1066,16 @@ font-family: "Space Grotesk", sans-serif;
 /* ---------------------------------------------------------------------------------------------------------------- */
 .totalsAndDonughts{
   display: flex;
-  margin-bottom: 30px;
 }
 .budgetData{
     display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      margin-left: 157px;
+      margin-left: 153px;
       align-items: center;
-      width: 240px;
-      height:170px;
-      margin-top: 90px;
+      width: 260px;
+      height:200px;
+      margin-top: 30px;
       background: rgb(59, 10, 84);
       color: "#05f7d3";
       border-radius: 9px;
@@ -1017,8 +1119,8 @@ font-family: "Space Grotesk", sans-serif;
   flex-direction: column;
   width: 300px;
   height: 176px;
-  margin-left: 28px;
-  margin-top: 90px;
+  margin-left: 13px;
+  margin-top: 30px;
     background: rgb(59, 10, 84);
     /* color: "#05f7d3"; */
     border-radius: 9px;
@@ -1039,8 +1141,8 @@ font-family: "Space Grotesk", sans-serif;
     flex-direction: column;
     width: 300px;
     height: 100%;
-    margin-left: 20px;
-    margin-top: 90px;
+    margin-left: 13px;
+    margin-top: 30px;
     background: rgb(59, 10, 84);
     color: "#05f7d3";
     border-radius: 9px;
@@ -1131,6 +1233,85 @@ box-shadow: 0px 5px 10px 0px rgba(255, 40, 223, 0.5),
           0 0 4px rgb(0, 0, 0),
           0 0 3px rgb(2, 0, 0);
 }
+.reminder-Label{
+  font-family: "Syne", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    display: flex;
+    /* width: 100%; */
+    margin: 6px;
+    font-size:18px;
+    border-bottom: solid 2px #f48bf8fb ;
+    padding:3px 7px;
+    text-shadow:0 0 5px #ffffff,
+      0 0 10px #ef14ff,
+      0 0 20px #000000,
+      0 0 40px rgb(1, 16, 16),
+      0 0 80px rgb(0, 0, 0),
+      0 0 90px rgb(0, 0, 0),
+      0 0 4px rgb(0, 0, 0),
+      0 0 3px rgb(2, 0, 0);
+}
+.reminder-Expense-Row{
+  display: flex;
+  flex-direction: row;
+  width: 900px;
+  margin: 0px 12px;
+}
+.expReminder-Label{
+  display: flex;
+  gap: 7px;  
+}
+.expReminder-Label-Icon{
+  font-size: 20px;
+}
+.expReminder-Label-Name{
+  font-size: 18px;
+  font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: italic;
+    text-shadow: 0 0 5px #ffffff,
+        0 0 10px #ff1414,
+        0 0 20px #230101,
+        0 0 40px rgb(1, 16, 16),
+        0 0 80px rgb(0, 0, 0),
+        0 0 90px rgb(0, 0, 0),
+        0 0 4px rgb(0, 0, 0),
+        0 0 3px rgb(2, 0, 0);
+}
+.incReminder-Label-Name{
+  font-size: 18px;
+    font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: italic;
+    text-shadow: 0 0 5px #ffffff,
+      0 0 10px #3bff14,
+      0 0 20px #230101,
+      0 0 40px rgb(1, 16, 16),
+      0 0 80px rgb(0, 0, 0),
+      0 0 90px rgb(0, 0, 0),
+      0 0 4px rgb(0, 0, 0),
+      0 0 3px rgb(2, 0, 0);
+}
+.expReminder-Amount{
+  display: flex;
+  flex-direction: column;
+align-items: center;
+justify-content: center;
+  font-family: "Space Grotesk", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 100;
+}
+.expReminder-Date{
+  font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    padding: 2px 9px;
+    font-style: italic;
+}
 /* ---------------------------------------------------------------------------------------------------------------- */
 
 /* Income Statement */
@@ -1166,6 +1347,24 @@ box-shadow: 0px 5px 10px 0px rgba(255, 40, 223, 0.5),
           0 0 20px rgba(255, 255, 255, 0.2),
           inset 0px 5px 10px 0px rgba(203, 15, 255, 0.5),
             0 0 20px rgba(255, 255, 255, 0.2);
+}
+.export-button-cont{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+.exportButton{
+  background: none;
+  outline: none;
+  border: solid 1px #18b2cd;
+  padding: 7px 5px;
+  font-family: "Syne", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
 }
 .statementSortingLabel {
   font-family: "Syne", sans-serif;
@@ -1245,7 +1444,18 @@ box-shadow: 0px 5px 10px 0px rgba(255, 40, 223, 0.5),
           0 0 4px rgb(0, 0, 0),
           0 0 3px rgb(2, 0, 0);
 }
-
+.popup {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
 .subcategoryLabels{
 font-family: "Space Grotesk", sans-serif;
   font-optical-sizing: auto;
@@ -1538,7 +1748,7 @@ border-image: linear-gradient(#9819f8, #6d027e) 20;
   background: none;
   outline: none;
   border: none;
-    font-size: 20px;
+  
 }
 .transactionMonthValue{
   font-size: 28px;
@@ -1569,9 +1779,24 @@ border-image: linear-gradient(#9819f8, #6d027e) 20;
   background: none;
     outline: none;
     border: dotted 1px;
-    width: 70px;
     padding: 4px;
-    box-shadow: inset 0 0 10px #89aafe, 0 0 40px #5038ba9d, 0 0 80px #537df9ab;
+      font-size: 12px;
+        width: 90px;
+    box-shadow: inset 0 0 10px #fa89fe, 0 0 40px #5038ba9d, 0 0 80px #537df9ab;
+}
+.total-trans{
+  font-family: "Syne", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: light;
+    font-style: normal;
+}
+.total-trans-amount{
+font-family: "Inconsolata", monospace;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+  display: flex;
 }
 .transactionLabel{
   display: flex;
@@ -1591,6 +1816,7 @@ border-image: linear-gradient(#9819f8, #6d027e) 20;
     padding: 4px;
     gap: 400px;
 }
+
 .transactionValueAmount{
   font-family: "Inconsolata", monospace;
     font-optical-sizing: auto;
@@ -1615,4 +1841,26 @@ border-image: linear-gradient(#9819f8, #6d027e) 20;
               0 0 90px rgba(0, 0, 0, 0.637),
               0 0 4px rgb(0, 0, 0),
               0 0 3px rgb(2, 0, 0);
+}
+/* Financial Education: */
+/* Swiper */
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

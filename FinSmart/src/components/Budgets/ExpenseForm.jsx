@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import "../../App.css";
-import styled from "styled-components";
+import axios from "axios";
+import { baseUrl } from "../../utils";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { v4 as uuidv4 } from "uuid";
-
+import "../../App.css";
+import styled from "styled-components";
+import moment from "moment";
 
 const ModalTimelines = styled.select`
   background: rgb(59, 10, 84);
@@ -27,123 +28,277 @@ const ModalTimelines = styled.select`
     outline-offset: 15px;
   }
 `;
-const ExpenseForm = () => {
+
+const ExpenseForm = ({toggleModal, fetchExpenses, exp}) => {
+  const [accountList, setAccountList] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
+  const [subCategoryData, setSubCategoryData] = useState([]);
+  const [filteredSubCategories, setFilteredSubCategories] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
+  const [expenseFrequency, setExpenseFrequency] = useState(null);
   const [expenseFormData, setExpenseFormData] = useState({});
 
-  const onChangeHandler = (e) => {
-    const { name, value } = e.target;
-    setExpenseFormData({
-      ...expenseFormData,
-      [name]: value,
-    });
-  };
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const currentExpenseData =
-      JSON.parse(localStorage.getItem("expenseData")) || [];
-    const id = uuidv4();
-    const newExpense = {
-      id: id,
-      ...expenseFormData,
-    };
-    currentExpenseData.push(newExpense);
-    localStorage.setItem("expenseData", JSON.stringify(currentExpenseData));
-    const expenseHistory =
-      JSON.parse(localStorage.getItem("expenseHistory")) || [];
-    const historyItem = {
-      id: id,
-      expenseDate: newExpense.date,
-      expenseDescription: newExpense.description,
-      accountName: newExpense.account,
-      amount: newExpense.amount,
-    };
-    expenseHistory.push(historyItem);
-    localStorage.setItem("expenseHistory", JSON.stringify(expenseHistory));
-
-    window.location.reload();
-  };
-
-  const accountData = JSON.parse(localStorage.getItem("accountData")) || [];
-  const categoryData = JSON.parse(localStorage.getItem("categoryData")) || [];
-  const subCatData = JSON.parse(localStorage.getItem("subCatData")) || [];
-
-  const [subcategories, setSubcategories] = useState([]);
-  const getSubCat = (categoryName) => {
-    return subCatData.filter(
-      (subcategory) => subcategory.category === categoryName
-    );
-  };
-
+  // const updateExpenseFormData = () =>{
+  //   if (exp) {
+      
+  //   } 
+  // }
   useEffect(() => {
-    if (expenseFormData.category !== "") {
-      const selectedCategory = categoryData.find(
-        (cat) => cat.name === expenseFormData.category
-      );
-      if (selectedCategory) {
-        const subcategoriesForCategory = getSubCat(selectedCategory.name);
-        setSubcategories(subcategoriesForCategory);
+    if(exp){
+    setExpenseFormData({
+      processed: exp.processed || 0 ,
+      accountId: exp.account.accountId || "",
+      expenseDescription: exp.expenseDescription || "",
+      expenseAmount: exp.expenseAmount || "",
+      expenseFrequency: exp.expenseFrequency || "",
+      expenseDate: exp.expenseDate|| "",
+      endDate: exp.endDate ||"",
+      subcategoryId: exp.category.subcategory.subcategoryId || "",
+      categoryId: exp.category.categoryId || "",
+    });
+    setSelectedEndDate(exp.endDate);
+    setExpenseFrequency(exp.expensefrequency);
+    setSelectedDate(new Date(exp.expenseDate));
+}}, [exp]);
+    const onChangeHandler = (e) => {
+      const { name, value, type } = e.target;
+      const finalValue = type === "radio" ? parseInt(value, 10) : value;
+      setExpenseFrequency(value);
+      setExpenseFormData({
+        processed: 0,
+        ...expenseFormData,
+        [name]: value,
+      });
+
+    };
+    const onSubmit = async (e) => {
+      e.preventDefault();
+
+      const authToken = localStorage.getItem("authToken");
+      const currentMonth = moment().format("YYYY-MM");
+
+      try {
+        const [incomeRes, expensesRes] = await Promise.all([
+          axios.get(`${baseUrl}/income`, {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+            params: {
+              month: currentMonth,
+            },
+          }),
+          axios.get(`${baseUrl}/expense`, {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+            params: {
+              month: currentMonth,
+            },
+          }),
+        ]);
+
+        const totalIncome = incomeRes.data.reduce(
+          (total, income) => total + parseFloat(income.incomeAmount),
+          0
+        );
+        const totalExpenses = expensesRes.data.reduce(
+          (total, expense) => total + parseFloat(expense.expenseAmount),
+          0
+        );
+
+        if (
+          totalExpenses + parseFloat(expenseFormData.expenseAmount) >
+          totalIncome
+        ) {
+          alert("Expenses are too high for this month.");
+        }
+      if (exp) {
+          await axios.put(
+            `${baseUrl}/expense/${exp.expenseId}`,
+            expenseFormData,
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            }
+          );
+          console.log("Expense updated:", expenseFormData);
+        } else {
+          const response = await axios.post(
+            `${baseUrl}/expense`,
+            expenseFormData,
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            }
+          );
+          console.log("Expense added:", response.data);
+        }
+
+        fetchExpenses();
+        toggleModal("expense");
+      } catch (error) {
+        console.error("Error processing expense data:", error);
       }
-    }
-  }, [expenseFormData.category]);
+    };
+
+    useEffect(() => {
+      const authToken = localStorage.getItem("authToken");
+
+      axios
+        .get(`${baseUrl}/accounts`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        })
+        .then((res) => {
+          setAccountList(res.data);
+        })
+        .catch((err) => {
+          console.error("Error fetching accounts:", err);
+        });
+
+      axios
+        .get(`${baseUrl}/category`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        })
+        .then((res) => {
+          setCategoryData(res.data);
+        })
+        .catch((err) => {
+          console.error("Error fetching categories:", err);
+        });
+
+  axios
+    .get(`${baseUrl}/category/subcategory`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+    .then((res) => {
+      setSubCategoryData(res.data);
+    })
+    .catch((err) => {
+      console.error("Error fetching categories:", err);
+    });
+
+    }, []);
+
+       useEffect(() => {
+         if (expenseFormData.categoryId) {
+           const selectedCategory = categoryData.find(
+             (category) =>
+               category.categoryId === parseInt(expenseFormData.categoryId, 10)
+           );
+           if (selectedCategory) {
+             setFilteredSubCategories(selectedCategory.subcategory);
+           } else {
+             setFilteredSubCategories([]);
+           }
+         } else {
+           setFilteredSubCategories([]);
+         }
+       }, [expenseFormData.categoryId, categoryData]);
+const buttonLabel = exp? "Update" : "Create";
   return (
-    <form action="" onSubmit={onSubmit}>
+    <form onSubmit={onSubmit}>
       {/* DESCRIPTION */}
-      <label htmlFor="description" className="form-label">
+      <label htmlFor="expenseDescription" className="form-label">
         Description:
       </label>
       <input
-        id="description"
+        id="expenseDescription"
+        className="expField"
         type="text"
-        name="description"
+        name="expenseDescription"
         onChange={onChangeHandler}
+        required
+        value={expenseFormData.expenseDescription || ""}
       />
 
       {/* AMOUNT */}
-      <label htmlFor="amount" className="form-label">
+      <label htmlFor="expenseAmount" className="form-label">
         Amount:
       </label>
       <input
-        id="amount"
-        type="text"
-        name="amount"
+        id="expenseAmount"
+        type="number"
+        name="expenseAmount"
+        className="expField"
         onChange={onChangeHandler}
         required
+        value={expenseFormData.expenseAmount || ""}
       />
 
-      {/* MONTH */}
-      <label form="" className="form-label">
-        Date
+      {/* ACCOUNT SELECTION */}
+      <label htmlFor="accountId" className="form-label">
+        Account:
+      </label>
+      <ModalTimelines
+        name="accountId"
+        className="form-select"
+        onChange={onChangeHandler}
+        required
+        value={expenseFormData.accountId || ""}
+      >
+        {accountList.length > 0 ? (
+          <>
+            <option value="">Select account</option>
+            {accountList.map((account) => (
+              <option key={account.accountId} value={account.accountId}>
+                {account.accountName}
+              </option>
+            ))}
+          </>
+        ) : (
+          <option value="">Loading...</option>
+        )}
+      </ModalTimelines>
+      <br />
+      {/* DATE SELECTION */}
+
+      <label htmlFor="name" className="form-label1">
+        Date:
       </label>
       <div>
         <DatePicker
           className="acctDetailsForm"
           type="text"
-          name="date"
+          name="expenseDate"
           selected={selectedDate}
           onChange={(date) => {
             setSelectedDate(date);
-            onChangeHandler({ target: { name: "date", value: date } });
+            const formattedDate = moment(date).format("YYYY-MM-DD ");
+            onChangeHandler({
+              target: { name: "expenseDate", value: formattedDate },
+            });
           }}
+          value={expenseFormData.expenseDate || ""}
           isClearable
           showYearDropdown
           scrollableMonthYearDropdown
           showTimeSelect
         />
       </div>
-      <br></br>
+      <br />
+      {/* EXPENSE Frequency */}
       <div className="frequencyForm">
         <label className="formFrequency">Is this transaction Reoccuring:</label>
         <div className="frequencyCheckbox">
           <div className="checkbox-wrapper-52">
             <label for="yes-52" className="item">
               <input
-                type="checkbox"
+                type="radio"
                 id="yes-52"
                 className="hidden"
-                name="frequency"
+                name="expenseFrequency"
                 onChange={onChangeHandler}
+                value={expenseFormData.expenseFrequency || 1}
               />
               <label for="yes-52" className="cbx">
                 <svg width="14px" height="12px" viewBox="0 0 14 12">
@@ -155,102 +310,107 @@ const ExpenseForm = () => {
               </label>
             </label>
           </div>
-          <div className="checkbox-wrapper-52">
-            <label for="no-52" className="item">
-              <input
-                type="checkbox"
-                id="no-52"
-                className="hidden"
-                name="frequency"
-                onChange={onChangeHandler}
-              />
-              <label for="no-52" className="cbx">
-                <svg width="14px" height="12px" viewBox="0 0 14 12">
-                  <polyline points="1 7.6 5 11 13 1"></polyline>
-                </svg>
-              </label>
-              <label for="no-52" className="cbx-lbl">
-                No
-              </label>
-            </label>
-          </div>
         </div>
 
-        <br></br>
+        <div className="checkbox-wrapper-52">
+          <label for="no-52" className="item">
+            <input
+              type="radio"
+              id="no-52"
+              className="hidden"
+              name="expenseFrequency"
+              onChange={onChangeHandler}
+              value={expenseFormData.expenseFrequency || 0}
+            />
+            <label for="no-52" className="cbx">
+              <svg width="14px" height="12px" viewBox="0 0 14 12">
+                <polyline points="1 7.6 5 11 13 1"></polyline>
+              </svg>
+            </label>
+            <label for="no-52" className="cbx-lbl">
+              No
+            </label>
+          </label>
+        </div>
       </div>
-      {/* ACCOUNT SELECTION*/}
-      <label htmlFor="account" className="form-label">
-        Account:
-      </label>
-      <ModalTimelines
-        name="account"
-        id=""
-        className="form-select"
-        onChange={onChangeHandler}
-      >
-        {accountData ? (
-          <>
-            <option value="">Select account</option>
-            {accountData.map((account) => (
-              <option key={account.id} value={account.name}>
-                {account.name}
-              </option>
-            ))}
-          </>
-        ) : (
-          <option value="">Add Account</option>
-        )}
-      </ModalTimelines>
-      <br></br>
+      <br />
+      {/* END DATE */}
+      {expenseFrequency === "1" && (
+        <div>
+          <label htmlFor="endDate" className="form-label1">
+            Add End date (Optional):
+          </label>
+          <div>
+            <DatePicker
+              className="acctDetailsForm"
+              type="text"
+              name="endDate"
+              selected={selectedEndDate}
+              onChange={(date) => {
+                setSelectedEndDate(date);
+                const formattedDate = moment(date).format("YYYY-MM-DD");
+                onChangeHandler({
+                  target: { name: "endDate", value: formattedDate || null },
+                });
+              }}
+              value={expenseFormData.endDate || null}
+              isClearable
+            />
+          </div>
+        </div>
+      )}
+      <br />
       {/* CATEGORY SELECTION */}
-      <label htmlFor="category" className="form-label">
+      <label htmlFor="categoryId" className="form-label">
         Category:
       </label>
-      <ModalTimelines
-        name="category"
-        id=""
-        className="form-select"
-        onChange={onChangeHandler}
-      >
-        {categoryData ? (
+      <ModalTimelines name="categoryId" onChange={onChangeHandler} required>
+        {categoryData.length > 0 ? (
           <>
             <option value="">Select Category</option>
             {categoryData.map((category) => (
-              <option key={category.id} value={category.name}>
-                {category.name}
+              <option key={category.categoryId} value={category.categoryId}>
+                {category.categoryName}
               </option>
             ))}
           </>
         ) : (
-          <option value="">Add Category</option>
+          <option value="">Loading...</option>
         )}
       </ModalTimelines>
-      {/*  SUB-CATEGORY SELECTION */}
-      <label htmlFor="sub-category" className="form-label">
+      <br />
+
+      {/* SUB-CATEGORY SELECTION */}
+      <label htmlFor="subCategoryId" className="form-label">
         Sub-Category:
       </label>
       <ModalTimelines
-        name="subcategory"
-        id=""
+        name="subCategoryId"
         className="form-select"
         onChange={onChangeHandler}
+        required
       >
-        {subcategories ? (
+        {filteredSubCategories.length > 0 ? (
           <>
             <option value="">Select Sub-Category</option>
-            {subcategories.map((subcategory) => (
-              <option key={subcategory.id} value={subcategory.name}>
-                {subcategory.name}
+            {filteredSubCategories.map((subcat) => (
+              <option key={subcat.subCategoryId} value={subcat.subCategoryId}>
+                {subcat.subCategoryName}
               </option>
             ))}
           </>
         ) : (
-          <option value="">Add Subcategory</option>
+          <option value="">Select a category first</option>
         )}
       </ModalTimelines>
+      <div className="popup-button">
       <button className="save-data" type="submit">
         Create
       </button>
+      <button className="close-modal" onClick={() => toggleModal("expense")}>
+        Cancel
+      </button>
+      </div>
     </form>
   );
 };

@@ -6,10 +6,10 @@ const Finsmart2024 = () => {
 return (
   <div className="finSmart">
     <form className="start">
-      <Link to="/auth">
+      <Link to="/auth?type=login">
         <button className="btn">LOGIN</button>
       </Link>
-      <Link to="/auth">
+      <Link to="/auth?type=signup">
         <button className="btn">SIGNUP</button>
       </Link>
     </form>

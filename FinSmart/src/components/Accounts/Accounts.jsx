@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AccountsList from "./AccountsList";
 import AccountsForm from "./AccountsForm";
+import axios from "axios";
+import { baseUrl } from "../../utils";
 import { CiCirclePlus } from "react-icons/ci";
 import "../../App.css";
 
@@ -23,7 +25,7 @@ const AddIcon = styled(Link)`
   bottom: 50px;
   right: 40px;
 `;
-const Modal = styled.div`
+export const Modal = styled.div`
   width: 100vw;
   height: 100vh;
   top: 0;
@@ -32,50 +34,62 @@ const Modal = styled.div`
   bottom: 0;
   position: fixed;
 `;
-const Overlay = styled.div`
+export const Overlay = styled.div`
   width: 100vw;
   height: 100vh;
   background: rgba(49, 49, 49, 0.8);
   position: fixed;
 `;
-const ModalContent = styled.div`
+export const ModalContent = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   line-height: 1.4;
-  background: rgb(59, 10, 84);
+  background: rgb(70, 32, 88);
   padding: 14px 28px;
-  border-radius: 3px;
+  border-radius: 12px;
   min-height: 200px;
   min-width: 300px;
+  box-shadow: inset 0 0 20px rgba(144, 11, 206, 0.5),
+    0 0 20px rgba(252, 105, 220, 0.2);
+  outline-offset: 15px;
 `;
 
 const Accounts = () => {
   const [modal, setModal] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [accounts, setAccounts] = useState([]);
+
   const toggleModal = () => {
     setModal(!modal);
-
-    if (modal) {
+    if (!modal) {
       document.body.classList.add("active-modal");
     } else {
       document.body.classList.remove("active-modal");
+      setSelectedAccount(null); // Clear selected account when closing modal
     }
   };
 
-  const [accounts, setAccounts] = useState([
-    {
-      id: 1,
-      name: "Mobile Money",
-      balance: 20000,
-    },
-  ]);
-
-  const [accountData, setAccountData] = useState([]);
-
-  const handleAddAccount = (newData) => {
-    setAccountData(newData);
+  const fetchAccountsData = async () => {
+    const authToken = localStorage.getItem("authToken");
+    try {
+      const response = await axios.get(`${baseUrl}/accounts`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      setAccounts(response.data);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
   };
+
+  useEffect(() => {
+    fetchAccountsData();
+  }, []);
+
+  const receiveAccount = (data) => setSelectedAccount(data);
 
   return (
     <div className="accountsPage">
@@ -83,7 +97,11 @@ const Accounts = () => {
         <h3 className="Acc">Accounts</h3>
       </AccountHeader>
 
-      <AccountsList items={accounts} accountData={accountData} />
+      <AccountsList
+        accountData={accounts}
+        toggleModal={toggleModal}
+        sendAccount={receiveAccount}
+      />
 
       <AddIcon>
         <CiCirclePlus onClick={toggleModal} />
@@ -92,15 +110,14 @@ const Accounts = () => {
         <Modal>
           <Overlay>
             <ModalContent>
-              <h5 style={{ color: "#ffff" }}>Add Acccount:</h5>
+              <h5 style={{ color: "#ffff" }}>
+                {selectedAccount ? "Edit Account" : "Add Account"}
+              </h5>
               <AccountsForm
-                addAccount={handleAddAccount}
-                onSubmit={toggleModal}
+                fetchAccounts={fetchAccountsData}
+                toggleModal={toggleModal}
+                account={selectedAccount}
               />
-              {/* Button */}
-              <button className="close-modal" onClick={toggleModal}>
-                Cancel
-              </button>
             </ModalContent>
           </Overlay>
         </Modal>

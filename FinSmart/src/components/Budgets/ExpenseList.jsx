@@ -1,6 +1,9 @@
-import React from "react"; // Corrected import statement
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { baseUrl } from "../../utils";
 import { GoTrash } from "react-icons/go";
 import { BsDashCircleDotted } from "react-icons/bs";
+import { ImPencil2 } from "react-icons/im";
 import styled from "styled-components";
 import moment from "moment";
 
@@ -16,121 +19,230 @@ const BudgetContainer = styled.div`
   background: rgb(59, 10, 84);
   color: "#05f7d3";
   border-radius: 9px;
-  box-shadow: 0px 5px 10px 0px rgba(255, 78, 78, 0.5),
-    0 0 20px rgba(255, 0, 0, 0.2);
+  box-shadow: 0px 5px 10px 0px rgba(255, 13, 13, 0.838),
+    0 0 20px rgba(255, 208, 54, 0.2);
 `;
-const ExpenseList = ({ selectedCategory }) => {
-  const listExpenseData = JSON.parse(localStorage.getItem("expenseData"));
-
-  const filteredExpenses = listExpenseData
-    ? selectedCategory
-      ? listExpenseData.filter(
-          (expense) => expense.category === selectedCategory
-        )
-      : listExpenseData
-    : [];
-  
-    const getExpenseHistory = () => {
-    return JSON.parse(localStorage.getItem("expenseHistory")) || [];
-  };
-
-  const handleDeleteExpense = (expenseId) => {
-    const expenses = JSON.parse(localStorage.getItem("expenseData")) || [];
-    const expenseHistory = getExpenseHistory();
-
-    const updatedExpenses = expenses.filter(
-      (expense) => expense.id !== expenseId
-    );
-    localStorage.setItem("expenseData", JSON.stringify(updatedExpenses));
-
-    const deletedExpense = expenses.find((expense) => expense.id === expenseId);
-
-    if (deletedExpense) {
-      const accounts = JSON.parse(localStorage.getItem("accountData")) || [];
-      const account = accounts.find(
-        (acc) => acc.name === deletedExpense.account
-      );
-      if (account) {
-        let newAccountBalance =
-          parseInt(account.balance) + parseInt(deletedExpense.amount);
-        account.balance = newAccountBalance;
-        localStorage.setItem("accountData", JSON.stringify(accounts));
+const ExpenseList = ({expenseData, toggleModal,sendExpense }) => {
+  const [expensesList, setExpensesList] = useState([]);
+  const [accounts, setAccounts] = useState([]);
+  const [checkedState, setCheckedState] = useState({});
+useEffect(() => {
+  setExpensesList(expenseData);
+}, [expenseData]);
+ 
+  useEffect(() => {
+    const authToken = localStorage.getItem("authToken");
+    const fetchAccounts = async () => {
+      try {
+        const accountsRes = await axios.get(`${baseUrl}/accounts`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        setAccounts(accountsRes.data);
+      } catch (err) {
+        console.log("Error fetching accounts:", err);
       }
+    };
 
-      const updatedExpenseHistory = expenseHistory.filter(
-        (history) => history.id !== expenseId
-      );
-      localStorage.setItem(
-        "expenseHistory",
-        JSON.stringify(updatedExpenseHistory)
-      );
-    }
+    fetchAccounts();
+  }, []);
+ useEffect(() => {
+   const initialCheckedState = {};
+   const updatedExpenses = expenseData.map((expense) => {
+     const expenseDate = moment(expense.expenseDate);
+     if (
+       expenseDate.isSameOrBefore(moment(), "day") &&
+       expense.processed !== 1
+     ) {
+       updateAccountBalance(
+         expense.account.accountName,
+         expense.expenseAmount,
+         expense.expenseId
+       );
+       initialCheckedState[expense.expenseId] = true;
+       return { ...expense, processed: 1 };
+     } else {
+       initialCheckedState[expense.expenseId] = expense.processed === 1;
+       return expense;
+     }
+   });
 
-    // Reload the page to reflect changes
-    window.location.reload();
+   setCheckedState(initialCheckedState);
+   setExpensesList(updatedExpenses);
+ }, [expenseData]);
+
+ const updateAccountBalance = async (accountName, expenseAmount, expenseId) => {
+   const account = accounts.find((acc) => acc.accountName === accountName);
+   if (account) {
+     const newAccountBalance =
+       parseInt(account.accountBalance) - parseInt(expenseAmount);
+     const updatedAccount = { ...account, accountBalance: newAccountBalance };
+
+     try {
+       await axios.put(
+         `${baseUrl}/expense/${expenseId}`,
+         { processed: 1 },
+         {
+           headers: {
+             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+           },
+         }
+       );
+
+       await axios.put(
+         `${baseUrl}/accounts/${account.accountId}`,
+         updatedAccount,
+         {
+           headers: {
+             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+           },
+         }
+       );
+
+       setAccounts((prevAccounts) =>
+         prevAccounts.map((acc) =>
+           acc.accountId === account.accountId ? updatedAccount : acc
+         )
+       );
+
+       setExpensesList((prevExpensesList) =>
+         prevExpensesList.map((expense) =>
+           expense.expenseId === expenseId
+             ? { ...expense, processed: 1 }
+             : expense
+         )
+       );
+     } catch (err) {
+       console.error(
+         "Error updating account balance or processing expense:",
+         err
+       );
+     }
+   }
+ };
+
+ const handleCheckboxChange = (
+   expenseId,
+   accountName,
+   expenseAmount,
+   event
+ ) => {
+   const checked = event.target.checked;
+   setCheckedState((prevState) => ({
+     ...prevState,
+     [expenseId]: checked,
+   }));
+   if (checked) {
+     updateAccountBalance(accountName, expenseAmount, expenseId);
+   }
+ };
+
+
+  const deleteExpense = (expenseId) => {
+    const authToken = localStorage.getItem("authToken");
+    axios
+      .delete(`${baseUrl}/expense/${expenseId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      .then((res) => {
+        console.log("Expense deleted:", res.data);
+        setExpensesList((prevExp) =>
+          prevExp.filter((exp) => exp.expenseId !== expenseId)
+        );
+      })
+      .catch((err) => {
+        console.error("Error deleting expense:", err);
+      });
   };
 
-  const totalExpenses = listExpenseData
-    ? listExpenseData
-        .reduce((total, expense) => total + parseInt(expense.amount), 0)
-        .toFixed(2)
-    : "0.00";
-  localStorage.setItem("totalExpenses", totalExpenses);
   return (
-    <div className="ExpensesTable">
-      {listExpenseData ? (
-        listExpenseData.map((expense) => (
-          <BudgetContainer key={expense.id}>
-            <div className="expenseList">
-              <div className="expenseHeading">
-                <h4 className="expenseTitle">
+    <div className="expenseTable">
+      {expensesList.length > 0 ? (
+        expensesList.map((exp) => (
+          <BudgetContainer key={exp.expenseId}>
+            <div className="expenseHeading">
+              <div className="expenseTitle">
+                <i className="income-Icon">
                   <BsDashCircleDotted />
-                  <h5 className="expenseNameLabel">{expense.description}</h5>
-                </h4>
-                <div className="expenseBalanceTransaction">
-                  <div className="checkbox-wrapper-39">
-                    <label>
-                      <input type="checkbox" />
-                      <span className="checkbox"></span>
-                    </label>
-                  </div>
-                </div>
+                </i>
+                <h5 className="expenseNameLabel">{exp.expenseDescription}</h5>
               </div>
+              <div className="expenseAmountCol">
+                {parseInt(exp.expenseAmount).toLocaleString()} Frw
+              </div>
+            </div>
+            <div className="expenseDetailsCol">
               <div className="expenseRow">
-                <h5 className="expenseLabel">Amount:</h5>
+                <h5 className="expenseLabel">Category:</h5>
                 <span className="expenseValue">
-                  {parseInt(expense.amount).toLocaleString()}Frw
+                  {exp.category.categoryName}
                 </span>
               </div>
               <div className="expenseRow">
-                <h5 className="expenseLabel">Category:</h5>
-
-                <span className="expenseValue">{expense.category}</span>
-              </div>
-              <div className="expenseRow">
                 <h5 className="expenseLabel">Sub-Category:</h5>
-
-                <span>{expense.subcategory}</span>
+                <span>{exp.subCategory.subCategoryName}</span>
               </div>
               <div className="expenseRow">
                 <h5 className="expenseLabel">Account:</h5>
-
-                <span className="expenseValue">{expense.account}</span>
+                <span className="expenseValue">{exp.account.accountName}</span>
               </div>
               <div className="expenseRow">
                 <h5 className="expenseLabel">Date:</h5>
                 <span className="expenseValue">
-                  {moment(expense.date).format("MMMM Do YYYY")}
+                  {moment(exp.expenseDate).format("MMMM Do YYYY")}
                 </span>
               </div>
-
-              <button
-                className="deleteItems"
-                onClick={() => handleDeleteExpense(expense.id)}
-              >
-                <GoTrash />
-                <h6 className="historyBtnLabel">DELETE</h6>
-              </button>
+              <div className="expenseRow">
+                <h5 className="expenseLabelFreq">
+                  {exp.expenseFrequency ? "Recurring" : ""}
+                  {exp.endDate
+                    ? ` till ${moment(exp.endDate).format("MMMM Do YYYY")}`
+                    : ""}
+                </h5>
+              </div>
+            </div>
+            <div className="incomeActions">
+              <div className="incomeBalanceTransaction">
+                <div className="checkbox-wrapper-39">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={checkedState[exp.expenseId] || false}
+                      onChange={(e) =>
+                        handleCheckboxChange(
+                          exp.expenseId,
+                          exp.account.accountName,
+                          exp.expenseAmount,
+                          e
+                        )
+                      }
+                    />
+                    <span className="checkbox"></span>
+                  </label>
+                </div>
+              </div>
+              <div className="modify_Items">
+                <button
+                  className="editItems"
+                  onClick={() => {
+                    toggleModal("expense", exp);
+                    sendExpense(exp);
+                  }}
+                >
+                  <ImPencil2 />
+                  <h6 className="historyBtnLabel">EDIT</h6>
+                </button>
+                <button
+                  className="deleteItems"
+                  onClick={() => deleteExpense(exp.expenseId)}
+                >
+                  <GoTrash />
+                  <h6 className="historyBtnLabel">Delete</h6>
+                </button>
+              </div>
             </div>
           </BudgetContainer>
         ))

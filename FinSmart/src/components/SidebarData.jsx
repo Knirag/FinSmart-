@@ -5,6 +5,7 @@ import * as RiIcons from "react-icons/ri";
 import * as GrIcons from "react-icons/gr";
 import { MdSettingsSuggest } from "react-icons/md";
 import { HiArrowsUpDown } from "react-icons/hi2";
+import { FaBookReader } from "react-icons/fa";
 export const SidebarData = [
   {
     title: "My Dashboard",
@@ -44,6 +45,14 @@ export const SidebarData = [
     title: "Statements",
     path: "/statement",
     icon: <FaIcons.FaPaperclip />,
+
+    iconClosed: <RiIcons.RiArrowDownSFill />,
+    iconOpened: <RiIcons.RiArrowUpSFill />,
+  },
+  {
+    title: "Learning Center",
+    path: "/finEducation",
+    icon: <FaBookReader />,
 
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,

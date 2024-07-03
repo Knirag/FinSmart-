@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from "react";
-import MonthlyFilter from "../Homepage/MonthlyFilter";
+import React, { useState, useEffect, useRef } from "react";
+import { PiDownloadSimpleLight } from "react-icons/pi";
+import axios from "axios";
+import { baseUrl } from "../../utils";
+import moment from "moment";
+import { utils, writeFile } from "xlsx";
 import styled from "styled-components";
 import "../../App.css";
 
@@ -59,58 +63,7 @@ const Timelines = styled.select`
   }
 `;
 
-const IncomeStatement = () => {
-  const [incomeData, setIncomeData] = useState([]);
-  const [expenseData, setExpenseData] = useState([]);
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [totalExpenses, setTotalExpenses] = useState(0);
-  
-  useEffect(() => {
-    const storedIncomeData =
-    JSON.parse(localStorage.getItem("incomeData")) || [];
-    const storedExpenseData =
-    JSON.parse(localStorage.getItem("expenseData")) || [];
-    setIncomeData(storedIncomeData);
-    setExpenseData(storedExpenseData);
-    const totalIncome = parseInt(localStorage.getItem("totalIncome")) || 0;
-    setTotalIncome(totalIncome);
 
-    // Retrieve total expenses from local storage
-    const totalExpenses =
-      parseFloat(localStorage.getItem("totalExpenses")) || 0;
-    setTotalExpenses(totalExpenses);
-  }, []);
-  const netIncome = totalIncome - totalExpenses;
-
-  // Function to get unique categories
-  const getUniqueCategories = () => {
-    const categories = expenseData.map((expense) => expense.category);
-    return [...new Set(categories)];
-  };
-
-  // Function to get unique subcategories for a category
-  const getUniqueSubcategories = (category) => {
-    const subcategories = expenseData
-      .filter((expense) => expense.category === category)
-      .map((expense) => expense.subcategory);
-    return [...new Set(subcategories)];
-  };
-
-  // Function to filter expense data by category and subcategory
-  const getExpensesByCategoryAndSubcategory = (category, subcategory) => {
-    return expenseData.filter(
-      (expense) =>
-        expense.category === category && expense.subcategory === subcategory
-    );
-  };
-
-  // Function to calculate total expenses for a category
- const calculateCategoryTotal = (category) => {
-   return expenseData
-     .filter((expense) => expense.category === category)
-     .reduce((total, expense) => total + parseInt(expense.amount), 0)
-     .toLocaleString();
- };
 const months = [
   "Select Month",
   "January",
@@ -127,6 +80,136 @@ const months = [
   "December",
 ];
 
+const IncomeStatement = () => {
+  const [incomeData, setIncomeData] = useState([]);
+  const [expenseData, setExpenseData] = useState([]);
+  const currentMonth = moment().format("MMMM");
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const authToken = localStorage.getItem("authToken");
+      try {
+        const [expenseRes, incomeRes, accountRes] = await Promise.all([
+          axios.get(`${baseUrl}/expense`, {
+            headers: { Authorization: `Bearer ${authToken}` },
+          }),
+          axios.get(`${baseUrl}/income`, {
+            headers: { Authorization: `Bearer ${authToken}` },
+          }),
+          axios.get(`${baseUrl}/accounts`, {
+            headers: { Authorization: `Bearer ${authToken}` },
+          }),
+        ]);
+        setExpenseData(expenseRes.data);
+        setIncomeData(incomeRes.data);
+        setAccountData(accountRes.data);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleMonthChange = (event) => {
+    setSelectedMonth(event.target.value);
+  };
+
+  const filterDataByMonth = (data) => {
+    return data.filter((item) => {
+      const itemStartDate = moment(item.date);
+      const itemEndDate = item.endDate
+        ? moment(item.endDate)
+        : moment(item.date);
+      const startMonth = itemStartDate.month() ;
+      console.log(startMonth);
+      const endMonth = itemEndDate.month() ;
+      const selected = months.indexOf(selectedMonth);
+      if (
+        startMonth === selected  ||
+        endMonth === selected ||
+        (startMonth < selected && endMonth > selected)
+      ) {
+        return true;
+      }
+      return false;
+    });
+  };
+
+  const filteredIncomeData = filterDataByMonth(incomeData);
+  const filteredExpenseData = filterDataByMonth(expenseData);
+
+  const totalIncome = () => {
+    return filteredIncomeData
+      .reduce((total, income) => total + parseInt(income.incomeAmount), 0)
+      .toFixed(2);
+  };
+
+  const totalExpenses = () => {
+    return filteredExpenseData
+      .reduce((total, expense) => total + parseInt(expense.expenseAmount), 0)
+      .toFixed(2);
+  };
+
+  const balance = () => {
+    return (totalIncome() - totalExpenses()).toFixed(2);
+  };
+
+  const getUniqueCategories = () => {
+    const categories = filteredExpenseData.map(
+      (expense) => expense.category.categoryName
+    );
+    return [...new Set(categories)];
+  };
+
+  const getUniqueSubcategories = (category) => {
+    const subcategories = filteredExpenseData
+      .filter((expense) => expense.category.categoryName === category)
+      .map((expense) => expense.subCategory.subCategoryName);
+    return [...new Set(subcategories)];
+  };
+
+  const getExpensesByCategoryAndSubcategory = (category, subcategory) => {
+    return filteredExpenseData.filter(
+      (expense) =>
+        expense.category.categoryName === category &&
+        expense.subCategory.subCategoryName === subcategory
+    );
+  };
+
+  const calculateCategoryTotal = (category) => {
+    return filteredExpenseData
+      .filter((expense) => expense.category.categoryName === category)
+      .reduce((total, expense) => total + parseInt(expense.expenseAmount), 0)
+      .toLocaleString();
+  };
+ const exportToExcel = () => {
+   const incomeSheet = utils.json_to_sheet(
+     filteredIncomeData.map((income) => ({
+       Description: income.incomeDescription,
+       Amount: income.incomeAmount,
+       Date: income.incomeDate,
+     }))
+   );
+
+   const expenseSheet = utils.json_to_sheet(
+     filteredExpenseData.map((expense) => ({
+       Description: expense.expenseDescription,
+       Amount: expense.expenseAmount,
+       Date: expense.expenseDate,
+       Category: expense.category.categoryName,
+       Subcategory: expense.subCategory.subCategoryName,
+     }))
+   );
+
+   const wb = utils.book_new();
+   utils.book_append_sheet(wb, incomeSheet, "Income");
+   utils.book_append_sheet(wb, expenseSheet, "Expenses");
+
+   writeFile(wb, "finSmartIncomeStatement.xlsx");
+ };
   return (
     <div>
       <h4 className="incomeStatementLabel">Personal Income Statement</h4>
@@ -134,6 +217,8 @@ const months = [
         <h5 className="statementSortingLabel">Statement Period: </h5>
         <Timelines
           id="month"
+          value={selectedMonth}
+          onChange={handleMonthChange}
         >
           {months.map((month) => (
             <option key={month} value={month}>
@@ -142,36 +227,42 @@ const months = [
           ))}
         </Timelines>
       </div>
-      <StatementContainer>
+      <div className="export-button-cont">
+      <button className="exportButton" onClick={exportToExcel}>
+        <PiDownloadSimpleLight />
+        Export
+      </button>
+      </div>
+      <StatementContainer >
         <div className="statementAligning">
           <div className="statementList">
             <div className="statementRows">
               <h5 className="statementTotals">Total Income </h5>
               <span className="statementTotalValues">
-                {parseInt(totalIncome.toFixed(0)).toLocaleString()}Frw
+                {parseInt(totalIncome()).toLocaleString()}
               </span>
             </div>
             <div className="statementRows">
               <h5 className="statementTotals">Total Expenses</h5>
               <span className="statementTotalValues">
-                {parseInt(totalExpenses.toFixed(0)).toLocaleString()}Frw
+                {parseInt(totalExpenses()).toLocaleString()}
               </span>
             </div>
             <div className="statementRows">
               <h5 className="statementTotals">Net(Income - Expenses)</h5>
               <span className="statementTotalValues">
-                {parseInt(netIncome.toFixed(2)).toLocaleString()}Frw
+                {parseInt(balance()).toLocaleString()} Frw
               </span>
             </div>
             <div className="statementRows">
               <h3 className="statementIE">INCOME</h3>
             </div>
 
-            {incomeData.map((income) => (
-              <div key={income.id} className="statementRows">
-                <h6 className="statementTotals">{income.description} </h6>
+            {filteredIncomeData.map((income) => (
+              <div key={income.incomeId} className="statementRows">
+                <h6 className="statementTotals">{income.incomeDescription} </h6>
                 <span className="statementTotalValues">
-                  {parseInt(income.amount).toLocaleString()}
+                  {parseInt(income.incomeAmount).toLocaleString()}
                   Frw
                 </span>
               </div>
@@ -193,10 +284,10 @@ const months = [
                     ).map((expense) => (
                       <div key={expense.id} className="statementRows">
                         <h5 className="statementTotals">
-                          {expense.description}
+                          {expense.expenseDescription}
                         </h5>
                         <span className="statementTotalValues">
-                          {parseInt(expense.amount).toLocaleString()}Frw
+                          {parseInt(expense.expenseAmount).toLocaleString()}Frw
                         </span>
                       </div>
                     ))}

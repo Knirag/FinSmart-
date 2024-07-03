@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { GoTrash } from "react-icons/go";
 import styled from "styled-components";
 import { MdHistoryToggleOff } from "react-icons/md";
+import { ImPencil2 } from "react-icons/im";
+import axios from "axios";
+import { baseUrl } from "../../utils";
 import { GrMoney } from "react-icons/gr";
 import moment from "moment";
 import "../../App.css";
@@ -22,7 +25,6 @@ const AccountInfo = styled.div`
     0 0 20px rgba(255, 255, 255, 0.2), inset 0 0 10px hsl(310, 100%, 54%),
     0 0 40px #9e25d69d, 0 0 80px #d553f9ab;
 `;
-
 const Modal = styled.div`
   width: 100vw;
   height: 100vh;
@@ -56,237 +58,383 @@ const ModalContent = styled.div`
     0 0 40px #9e25d69d, 0 0 80px #d553f9ab;
 `;
 
-const AccountsList = () => {
-  const [modal, setModal] = useState(false);
+const AccountsList = ({accountData, toggleModal, sendAccount}) => {
+  const [incomeData, setIncomeData] = useState([]);
+  const [expenseData, setExpenseData] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [transactionHistory, setTransactionHistory] = useState([]);
-  const [accounts, setAccounts] = useState([]);
+  const [accounts, setAccounts] = useState([])
+
 
   useEffect(() => {
-    const accountData = JSON.parse(localStorage.getItem("accountData")) || [];
-    const expenseData = JSON.parse(localStorage.getItem("expenseData")) || [];
-    const incomeData = JSON.parse(localStorage.getItem("incomeData")) || [];
+    const authToken = localStorage.getItem("authToken");
+    const fetchExpenses = axios.get(`${baseUrl}/expense`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+    const fetchIncomes = axios.get(`${baseUrl}/income`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
 
-    const updatedAccounts = accountData.map((account) => {
+    Promise.all([ fetchExpenses, fetchIncomes])
+      .then(([expensesRes, incomesRes]) => {
+        setExpenseData(expensesRes.data);
+        setIncomeData(incomesRes.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching data:", err);
+      });
+  }, []);
+
+
+useEffect(() => {
+  if (accounts.length > 0 && incomeData.length > 0 && expenseData.length > 0) {
+    const authToken = localStorage.getItem("authToken");
+
+    const updateAccountBalance = async (account) => {
+      try {
+        await axios.put(`${baseUrl}/accounts/${account.accountId}`, account, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+      } catch (error) {
+        console.error(`Error updating account ${account.accountId}:`, error);
+      }
+    };
+
+    const updatedAccounts = accounts.map((account) => {
       const todayExpenses = expenseData.filter((expense) => {
-        const expenseDate = moment(expense.date);
+        const expenseDate = moment(expense.expenseDate);
         return (
-          expense.account === account.name &&
+          expense.account.accountName === account.accountName &&
           expenseDate.isSameOrBefore(moment(), "day")
         );
-      }
-    );
-    const todayIncome = incomeData.filter((income) => {
-        const incomeDate = moment(income.date);
+      });
+      const todayIncome = incomeData.filter((income) => {
+        const incomeDate = moment(income.incomeDate);
         return (
-          income.account === account.name &&
+          income.account.accountName === account.accountName &&
           incomeDate.isSameOrBefore(moment(), "day")
         );
       });
-const totalIncomeToday = todayIncome.reduce(
-  (sum, income) => sum + parseInt(income.amount),
-  0
-);
-      const totalExpensesToday = todayExpenses.reduce(
-        (sum, expense) => sum + parseInt(expense.amount),
+      const totalIncomeToday = todayIncome.reduce(
+        (sum, income) => sum + parseInt(income.incomeAmount),
         0
       );
-      const updatedBalance = account.initialBalance - totalExpensesToday 
-      + totalIncomeToday;
+      const totalExpensesToday = todayExpenses.reduce(
+        (sum, expense) => sum + parseInt(expense.expenseAmount),
+        0
+      );
+      const updatedBalance =
+        account.accountInitialBalance - totalExpensesToday + totalIncomeToday;
 
-      return {
+      const updatedAccount = {
         ...account,
-        balance: updatedBalance,
+        accountBalance: updatedBalance,
       };
+
+      updateAccountBalance(updatedAccount);
+      return updatedAccount;
     });
 
     setAccounts(updatedAccounts);
-    localStorage.setItem("accountData", JSON.stringify(updatedAccounts));
-  }, []);
+  }
+}, [accounts.length, incomeData, expenseData]);
 
-  const toggleModal = (account) => {
-    setModal(!modal);
-    if (!modal) {
-      document.body.classList.add("active-modal");
-      setSelectedAccount(account);
-      fetchTransactionHistory(account.name);
-    } else {
-      document.body.classList.remove("active-modal");
-      setSelectedAccount(null);
-      setTransactionHistory([]);
+useEffect(() => {
+   if (accounts.length > 0 && incomeData.length > 0 && expenseData.length > 0) {
+  const processRecurringIncomes = async () => {
+    const today = moment();
+    const authToken = localStorage.getItem("authToken");
+
+    const updatedAccounts = accounts.map((account) => {
+      let newBalance = account.accountBalance;
+
+      incomeData.forEach((income) => {
+        if (
+          income.incomeFrequency &&
+          income.account.accountName === account.accountName
+        ) {
+          const incomeDate = moment(income.incomeDate);
+
+          if (today.date() === incomeDate.date()) {
+            newBalance += parseInt(income.incomeAmount, 10);
+          }
+        }
+      });
+
+expenseData.forEach((expense) => {
+  if (
+    expense.expenseFrequency &&
+    expense.account.accountName === account.accountName
+  ) {
+    const expenseDate = moment(expense.expenseDate);
+
+    if (today.date() === expenseDate.date()) {
+      newBalance += parseInt(expense.expenseAmount, 10);
+    }
+  }
+});
+      return { ...account, accountBalance: newBalance };
+    });
+
+    setAccounts(updatedAccounts);
+
+    for (const account of updatedAccounts) {
+      try {
+        await axios.put(`${baseUrl}/accounts/${account.accountId}`, account, {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+      } catch (err) {
+        console.error(`Error updating account ${account.accountName}:`, err);
+      }
     }
   };
 
-  const fetchTransactionHistory = (accountName) => {
-    const expenseHistory =
-      JSON.parse(localStorage.getItem("expenseHistory")) || [];
-    const incomeHistory =
-      JSON.parse(localStorage.getItem("incomeHistory")) || [];
+  processRecurringIncomes();
+}
+}, [incomeData, accounts.length, expenseData]);
 
-    const filteredExpenses = expenseHistory.filter(
-      (transaction) => transaction.accountName === accountName
+
+const fetchTransactionHistory = (accountName) => {
+  const filteredExpenses = expenseData.filter(
+    (transaction) => transaction.account.accountName === accountName
+  );
+
+  const filteredIncomes = incomeData.filter(
+    (transaction) => transaction.account.accountName === accountName
+  );
+
+  const combinedHistory = [
+    ...filteredExpenses.map((expense) => ({
+      ...expense,
+      type: "expense",
+      date: new Date(expense.expenseDate),
+    })),
+    ...filteredIncomes.map((income) => ({
+      ...income,
+      type: "income",
+      date: new Date(income.incomeDate),
+    })),
+  ].sort((a, b) => b.date - a.date);
+
+  setTransactionHistory(combinedHistory);
+};
+ const openAccountModal = (account) => {
+   setOpenModal(true);
+   document.body.classList.add("active-modal");
+   setSelectedAccount(account);
+   fetchTransactionHistory(account.accountName);
+ };
+
+  const deleteAccount = (accountId) => {
+    const authToken = localStorage.getItem("authToken");
+    axios
+    .delete(`${baseUrl}/accounts/${accountId}`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+    .then((res) => {
+      console.log("Account deleted:", res.data);
+      setAccounts((prevAccounts) =>
+        prevAccounts.filter((acc) => acc.accountId !== accountId)
     );
+  })
+  .catch((err) => {
+    console.error("Error deleting account:", err);
+  });
+  
+  toggleDeleteModal(()=> window.location.reload());
+};
+const toggleDeleteModal = () => {
+  setDeleteModal(!deleteModal);
+  if (!deleteModal) {
+    document.body.classList.add("active-modal");
+  } else {
+    document.body.classList.remove("active-modal");
+  }
+};
 
-    const filteredIncomes = incomeHistory.filter(
-      (transaction) => transaction.accountName === accountName
-    );
-
-    const combinedHistory = [
-      ...filteredExpenses.map((expense) => ({
-        ...expense,
-        type: "expense",
-        date: new Date(expense.expenseDate),
-      })),
-      ...filteredIncomes.map((income) => ({
-        ...income,
-        type: "income",
-        date: new Date(income.incomeDate),
-      })),
-    ].sort((a, b) => b.date - a.date);
-
-    setTransactionHistory(combinedHistory);
-  };
-
-  const handleDeleteAccount = (accountName) => {
-    const updatedAccounts = accounts.filter(
-      (account) => account.name !== accountName
-    );
-    setAccounts(updatedAccounts);
-    localStorage.setItem("accountData", JSON.stringify(updatedAccounts));
-    window.location.reload();
-  };
 
   return (
     <div className="accountsListingContainer">
-      {accounts.length > 0 ? (
-        accounts.map((account) => (
-          <AccountInfo key={account.name}>
+      {accountData.length > 0 ? (
+        accountData.map((account) => (
+          <AccountInfo key={account.accountId}>
             <div className="accountListing">
               <div className="acctHeading">
-                <h4 className="acctName">
+                <div className="acctName">
                   <GrMoney />
-                  <h5 className="acctNameLabel">{account.name}</h5>
-                </h4>
-                {/* opens account History modal */}
+                  <h5 className="acctNameLabel">
+                    {account.accountName} - {account.accountNumber}
+                  </h5>
+                </div>
                 <button
                   className="acctHistory"
-                  onClick={() => toggleModal(account)}
+                  onClick={() => openAccountModal(account)}
                 >
                   <MdHistoryToggleOff />
                   <h6 className="historyBtnLabel">History</h6>
                 </button>
-                {modal && selectedAccount?.name === account.name && (
-                  <Modal>
-                    <Overlay>
-                      <ModalContent>
-                        <div className="accountHistoryList">
-                          <div className="accountHistoryHeading">
-                            <h6 className="accountName">
-                              {selectedAccount.name} Transaction History:
-                            </h6>
+                {openModal &&
+                  selectedAccount?.accountName === account.accountName && (
+                    <Modal>
+                      <Overlay>
+                        <ModalContent>
+                          <div className="accountHistoryList">
+                            <div className="accountHistoryHeading">
+                              <h6 className="accountName">
+                                {selectedAccount.accountName} Transaction
+                                History:
+                              </h6>
+                            </div>
+                            <div className="accountHistoryRow">
+                              <h6 className="transactionHistoryLabel">
+                                Date Created:
+                              </h6>
+                              <span className="transactionHistoryData">
+                                {moment(selectedAccount.date).format(
+                                  "MMMM Do YYYY"
+                                )}
+                              </span>
+                            </div>
+                            <div className="accountHistoryRow">
+                              <h6 className="transactionHistoryLabel">
+                                Current Balance:
+                              </h6>
+                              <span className="transactionHistoryData">
+                                {parseInt(
+                                  selectedAccount.accountBalance
+                                ).toLocaleString()}{" "}
+                                Frw
+                              </span>
+                            </div>
+                            <div className="accountHistoryRow">
+                              <h6 className="transactionHistoryLabel">
+                                Opening Balance:
+                              </h6>
+                              <span className="transactionHistoryData">
+                                {parseInt(
+                                  selectedAccount.accountInitialBalance
+                                ).toLocaleString()}
+                                Frw
+                              </span>
+                            </div>
+                            <div className="acctHeading">
+                              <h5 className="acctName">History:</h5>
+                            </div>
+                            {transactionHistory.length > 0 ? (
+                              transactionHistory.map((transaction, index) => (
+                                <ol key={index}>
+                                  <li className="accountHistoryRow">
+                                    <span className="transactionInfo">
+                                      {moment(transaction.date).format(
+                                        "MMMM Do YYYY"
+                                      )}
+                                    </span>
+                                    <span className="transactionInfo">
+                                      {transaction.expenseDescription ||
+                                        transaction.incomeDescription}
+                                    </span>
+                                    <span className="transactionInfo">
+                                      {transaction.type === "expense"
+                                        ? "-"
+                                        : "+"}
+                                      {parseInt(
+                                        transaction.expenseAmount ||
+                                          transaction.incomeAmount
+                                      ).toLocaleString()}
+                                    </span>
+                                  </li>
+                                </ol>
+                              ))
+                            ) : (
+                              <p>No transactions found.</p>
+                            )}
                           </div>
-                          <div className="accountHistoryRow">
-                            <h6 className="transactionHistoryLabel">
-                              Date Created:
-                            </h6>
-                            <span className="transactionHistoryData">
-                              {moment(selectedAccount.date).format(
-                                "MMMM Do YYYY"
-                              )}
-                            </span>
+                        <div className="popup-button">
+
+                          {/* Button */}
+                          <button className="close-modal" onClick={openAccountModal}>
+                            Close
+                          </button>
                           </div>
-                          <div className="accountHistoryRow">
-                            <h6 className="transactionHistoryLabel">
-                              Current Balance:
-                            </h6>
-                            <span className="transactionHistoryData">
-                              {parseInt(
-                                selectedAccount.balance
-                              ).toLocaleString()}{" "}
-                              Frw
-                            </span>
-                          </div>
-                          <div className="accountHistoryRow">
-                            <h6 className="transactionHistoryLabel">
-                              Opening Balance:
-                            </h6>
-                            <span className="transactionHistoryData">
-                              {parseInt(
-                                selectedAccount.initialBalance
-                              ).toLocaleString()}{" "}
-                              Frw
-                            </span>
-                          </div>
-                          <div className="acctHeading">
-                            <h5 className="acctName">History:</h5>
-                          </div>
-                          {transactionHistory.length > 0 ? (
-                            transactionHistory.map((transaction, index) => (
-                              <ol key={index}>
-                                <li className="accountHistoryRow">
-                                  <span className="transactionInfo">
-                                    {moment(transaction.date).format(
-                                      "MMMM Do YYYY"
-                                    )}
-                                    -
-                                  </span>
-                                  <span className="transactionInfo">
-                                    {transaction.expenseDescription ||
-                                      transaction.incomeDescription}
-                                    -
-                                  </span>
-                                  <span className="transactionInfo">
-                                    {transaction.type === "expense" ? "-" : "+"}
-                                    {parseInt(
-                                      transaction.amount
-                                    ).toLocaleString()}{" "}
-                                    Frw
-                                  </span>
-                                </li>
-                              </ol>
-                            ))
-                          ) : (
-                            <p>No transactions found.</p>
-                          )}
-                        </div>
-                        {/* Button */}
-                        <button className="close-modal" onClick={toggleModal}>
-                          Close
-                        </button>
-                      </ModalContent>
-                    </Overlay>
-                  </Modal>
-                )}
+                        </ModalContent>
+                      </Overlay>
+                    </Modal>
+                  )}
               </div>
               <div className="acctDetailRow">
-                <h4 className="acctDetailsHeadings">Account Type:</h4>
-                <span className="acctDetails">{account.accttype}</span>
+                <h4 className="acctDetailsHeadings">Account type:</h4>
+                <span className="acctDetails">{account.accountType}</span>
               </div>
               <div className="acctDetailRow">
                 <h4 className="acctDetailsHeadings">Current Balance:</h4>
                 <span className="acctDetails">
-                  {parseInt(account.balance).toLocaleString()} Frw
+                  {parseInt(account.accountBalance).toLocaleString()} Frw
                 </span>
               </div>
               <div className="acctDetailRow">
                 <h4 className="acctDetailsHeadings">Opening Balance:</h4>
                 <span className="acctDetails">
-                  {parseInt(account.initialBalance).toLocaleString()} Frw
+                  {parseInt(account.accountInitialBalance).toLocaleString()} Frw
                 </span>
               </div>
               <div className="acctDetailRow">
-                <h4 className="acctDetailsHeadings">Date Created:</h4>
+                <h4 className="acctDetailsHeadings">Account Created On:</h4>
                 <span className="acctDetails">
-                  {moment(account.date).format("MMMM Do YYYY")}
+                  {moment(account.createdAt).format("MMMM Do YYYY")}
                 </span>
               </div>
-              <button
-                className="deleteItems"
-                onClick={() => handleDeleteAccount(account.name)}
-              >
-                <GoTrash />
-                <h6 className="historyBtnLabel">DELETE</h6>
-              </button>
+              <div className="modify_ItemsAccounts">
+                <button
+                  className="editItems"
+                  onClick={() =>{ toggleModal(account);
+                    sendAccount(account);
+                  }}
+                >
+                  <ImPencil2 />
+                  <h6 className="historyBtnLabel">EDIT</h6>
+                </button>
+                <button
+                  className="deleteItems"
+                  onClick={toggleDeleteModal}
+                >
+                  <GoTrash />
+                  <h6 className="historyBtnLabel">DELETE</h6>
+                </button>
+                {deleteModal && (
+                  <Modal>
+                    <Overlay>
+                      <ModalContent>
+                        <span className="delete-Message">
+                          Are You Sure You Want To Delete this Account and all
+                          Data associated With This Account?
+                        </span>
+                        <div className="popup-button">
+                          <button
+                            className="close-modal"
+                            type="submit"
+                            onClick={() => deleteAccount(account.accountId)}
+                          >
+                            Yes
+                          </button>
+                          <button className="save-data" onClick={toggleDeleteModal}>
+                            No
+                          </button>
+                        </div>
+                      </ModalContent>
+                    </Overlay>
+                  </Modal>
+                )}
+              </div>
             </div>
           </AccountInfo>
         ))

@@ -1,96 +1,136 @@
 import { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-const AccountsForm = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [initialBalance, setInitialBalance] = useState(0);
+import axios from "axios";
+import { baseUrl } from "../../utils";
+
+
+const AccountsForm = ({ fetchAccounts, toggleModal, account }) => {
+  const [accountInitialBalance, setInitialBalance] = useState(0);
   const [formInput, setFormInput] = useState({});
+
+  useEffect(() => {
+    if (account) {
+      setFormInput({
+        accountId: account.accountId || "",
+        accountName: account.accountName || "",
+        accountBalance: account.accountInitialBalance || "",
+        accountType: account.accountType || "",
+        accountNumber: account.accountNumber || "",
+      });
+    setInitialBalance(account.accountInitialBalance || 0);
+    }
+  }, [account]);
+
   const onChangeHandler = (e) => {
-    const { name } = e.target;
-    const { value } = e.target;
-    setFormInput({
-      ...formInput,
+    const { name, value } = e.target;
+    setFormInput((prevFormInput) => ({
+      ...prevFormInput,
+      accountInitialBalance: accountInitialBalance,
       [name]: value,
-    });
-    // setSelectedDate(date);
+    }));
   };
- 
-  const onSubmit = (e) => {
+
+  const onSubmit = async (e) => {
     e.preventDefault();
-    const currentAccountData =
-      JSON.parse(localStorage.getItem("accountData")) || [];
-    const id = currentAccountData.length + 1;
-    currentAccountData.push({
-      id: id,
+    const dataToSend = {
       ...formInput,
-      initialBalance: formInput.balance,
-    });
-    console.log("Form data:", currentAccountData)
-    localStorage.setItem("accountData", JSON.stringify(currentAccountData));
-    window.location.reload();
+      accountInitialBalance: formInput.accountBalance,
+    };
+
+    const authToken = localStorage.getItem("authToken");
+
+    try {
+      if (account) {
+        
+        await axios.put(
+          `${baseUrl}/accounts/${account.accountId}`,
+          dataToSend,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+        console.log("Account updated:", dataToSend);
+      } else {
+        // Create new account
+        await axios.post(`${baseUrl}/accounts`, dataToSend, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        console.log("Account added:", dataToSend);
+      }
+      fetchAccounts();
+      toggleModal();
+    } catch (error) {
+      console.error("Error adding/updating account:", error);
+    }
   };
+
+ const buttonLabel = account ? "Update" : "Create";
+ 
   return (
-    <form action="" onSubmit={onSubmit}>
-      <label htmlFor="name" className="form-label1">
+    <form onSubmit={onSubmit}>
+      <label htmlFor="accountName" className="form-label1">
         Name:
       </label>
       <input
         className="acctDetailsForm"
         type="text"
-        name="name"
+        name="accountName"
         onChange={onChangeHandler}
         required
+        value={formInput.accountName || ""}
       />
-      <label htmlFor="name" className="form-label1">
+
+      <label htmlFor="accountNumber" className="form-label1">
+        Account Number:
+      </label>
+      <input
+        className="acctDetailsForm"
+        type="text"
+        name="accountNumber"
+        onChange={onChangeHandler}
+        required
+        value={formInput.accountNumber || ""}
+      />
+
+      <label htmlFor="accountType" className="form-label1">
         Account Type:
       </label>
       <input
         className="acctDetailsForm"
         type="text"
-        name="accttype"
+        name="accountType"
         onChange={onChangeHandler}
+        value={formInput.accountType || ""}
       />
-      <label htmlFor="name" className="form-label1">
+
+      <label htmlFor="accountBalance" className="form-label1">
         Balance:
       </label>
       <input
         className="acctDetailsForm"
         type="text"
-        name="balance"
-        value={initialBalance}
+        name="accountBalance"
+        value={formInput.accountBalance || ""}
         onChange={(e) => {
           const newBalance = e.target.value;
-          setInitialBalance(newBalance); 
-          onChangeHandler({
-            target: { name: "balance", value: newBalance },
-          });
-          console.log("DamitaJo", newBalance);
+          setFormInput((prevFormInput) => ({
+            ...prevFormInput,
+            accountBalance: newBalance,
+          }));
         }}
         required
-        placeholder="AcctBalance"
       />
-      <label htmlFor="name" className="form-label1">
-        Date:
-      </label>
-      <div>
-        <DatePicker
-          className="acctDetailsForm"
-          type="text"
-          name="date"
-          selected={selectedDate}
-          onChange={(date) => {
-            setSelectedDate(date);
-            onChangeHandler({ target: { name: "date", value: date } });
-          }}
-          isClearable
-          showYearDropdown
-          scrollableMonthYearDropdown
-          showTimeSelect
-        />
+      <div className="popup-button">
+        <button className="save-data" type="submit">
+          {buttonLabel}
+        </button>
+        <button className="close-modal" onClick={toggleModal}>
+          Cancel
+        </button>
       </div>
-      <button className="save-data" type="submit" onClick={onSubmit}>
-        Add
-      </button>
     </form>
   );
 };

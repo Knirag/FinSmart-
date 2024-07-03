@@ -1,4 +1,6 @@
 import React, {useEffect, useState} from "react";
+import axios from "axios";
+import { baseUrl } from "../../utils";
 import styled from "styled-components";
 import { HiMiniPencil } from "react-icons/hi2";
 import { GoTrash } from "react-icons/go";
@@ -17,51 +19,77 @@ const CategoryContainer = styled.div`
   background: none;
   outline: none;
   border: none;
-  color: "#05f7d3";
 `;
 
-const CategoryList = ({toggleModal}) => {
-   const [categoryData, setCategoryData] = useState([]);
+const CategoryList = ({ catData, SubCategoryData, sendCategory, toggleModal }) => {
+  const [categoryData, setCategoryData] = useState([]);
 
-   useEffect(() => {
-     const storedCategoryData = JSON.parse(
-       localStorage.getItem("categoryData")
-     );
-     if (storedCategoryData !== null) {
-       setCategoryData(storedCategoryData);
-     }
-   }, []);
+  useEffect(() => {
+    setCategoryData(catData);
+  }, [catData,SubCategoryData]);
 
-    const deleteCategory = (id) => {
-      const updatedCategoryData = categoryData.filter(
-        (category) => category.id !== id
-      );
-      setCategoryData(updatedCategoryData);
-      localStorage.setItem("categoryData", JSON.stringify(updatedCategoryData));
-      windows.location.reload()
-    };
+  useEffect(() => {
+    const authToken = localStorage.getItem("authToken");
+    axios
+      .get(`${baseUrl}/category`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        return setCategoryData(res.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching categories:", err);
+      });
+  }, []);
+
+  const deleteCategory = (categoryId) => {
+    const authToken = localStorage.getItem("authToken");
+    axios
+      .delete(`${baseUrl}/category/${categoryId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      .then((res) => {
+        console.log("Category deleted:", res.data);
+        setCategoryData((prevCategories) =>
+          prevCategories.filter(
+            (category) => category.categoryId !== categoryId
+          )
+        );
+      })
+      .catch((err) => {
+        console.error("Error deleting category:", err);
+      });
+  };
   return (
     <CategoryContainer>
       <div className="categoryList">
-      {categoryData?.map((category) => (
-          <div key={category.id}>
+        {categoryData?.map((category) => (
+          <div key={category.categoryId}>
             <div className="categoryContainer">
-              <h6 className="categoryDivLabel">{category.name}</h6>
+              <h6 className="categoryDivLabel">{category.categoryName}</h6>
               <button
                 className="editCategory"
-                onClick={() => toggleModal("category", category)}
+                onClick={() =>{
+                  toggleModal("category", category);
+                  sendCategory(category);
+                }}
               >
                 <HiMiniPencil />
               </button>
               <button
                 className="deleteCategory"
-                onClick={() => deleteCategory(category.id)}
+                onClick={() => deleteCategory(category.categoryId)}
               >
                 <GoTrash />
               </button>
             </div>
           </div>
-      ))}
+        ))}
       </div>
     </CategoryContainer>
   );

@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { baseUrl } from "../../utils";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { MdOutlineCategory } from "react-icons/md";
 import { MdCategory } from "react-icons/md";
-
 import CategoryList from "./categoryData";
 import CategoryForm from "./categoryForm";
 import SubCatForm from "./subcategoryform";
@@ -16,6 +17,9 @@ const SettingsHeader = styled.div`
   flex-direction: row;
   left: 100px;
   top: 24px;
+  box-shadow: 0px 5px 10px 0px rgba(255, 255, 255, 0.5),
+    0 0 20px rgba(255, 255, 255, 0.2), inset 0 0 10px hsl(310, 100%, 54%),
+    0 0 40px #9e25d69d, 0 0 80px #d553f9ab;
 `;
 const BudgetContainer = styled.div`
   display: flex;
@@ -27,10 +31,11 @@ const BudgetContainer = styled.div`
   width: 900px;
   height: 100%;
   background: rgb(59, 10, 84);
-  color: "#05f7d3";
+  color: #05f7d3;
   border-radius: 9px;
   box-shadow: 0px 5px 10px 0px rgba(255, 255, 255, 0.5),
-    0 0 20px rgba(255, 255, 255, 0.2);
+    0 0 20px rgba(255, 255, 255, 0.2), inset 0 0 10px hsl(310, 100%, 54%),
+    0 0 40px #9e25d69d, 0 0 80px #d553f9ab;
 `;
 const Modal = styled.div`
   width: 100vw;
@@ -63,20 +68,37 @@ const ModalContent = styled.div`
 const Settings = () => {
   const [modal, setModal] = useState(false);
   const [modalType, setModalType] = useState(null);
-  //Category State
+  const [category, setCategoryData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const toggleModal = (type, category = null) => {
+  const fetchCategoryData = async () => {
+  const authToken = localStorage.getItem("authToken");
+  const category = await axios
+    .get(`${baseUrl}/category`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+    .catch((err) => {
+      console.error("Error fetching data:", err);
+    });
+  setCategoryData(category.data);
+};
+
+useEffect(() => {
+  fetchCategoryData();
+}, []);
+
+  const toggleModal = (type) => {
     setModalType(type);
-    setSelectedCategory(category);
-    setModal(true);
-    if (modal) {
+    setModal(!modal);
+    if (!modal) {
       document.body.classList.add("active-modal");
     } else {
       document.body.classList.remove("active-modal");
     }
   };
-
+const fetchedCategory = (data) => setSelectedCategory(data);
   return (
     <div>
       <SettingsHeader>
@@ -98,17 +120,18 @@ const Settings = () => {
           <HiOutlinePlus />
           <h6 className="addCatLabel">Category</h6>
         </button>
-        <CategoryList toggleModal={toggleModal} />
+        <CategoryList catData={category} toggleModal={toggleModal} sendCategory={fetchedCategory}/>
         {/* CATEGORY MODAL */}
         {modal && (modalType === "category" || modalType === "addCategory") && (
           <Modal>
             <Overlay>
               <ModalContent>
                 <h5 style={{ color: "#ffff" }}>Category</h5>
-                <CategoryForm category={selectedCategory} />
-                <button className="close-modal" onClick={toggleModal}>
-                  Cancel
-                </button>
+                <CategoryForm
+                  fetchCategory={fetchCategoryData}
+                  toggleModal={toggleModal}
+                  category={selectedCategory}
+                />
               </ModalContent>
             </Overlay>
           </Modal>
@@ -128,18 +151,19 @@ const Settings = () => {
             <h6 className="subCatBtnLabel">SubCategory</h6>
           </button>
         </div>
-        <SubCategoryData />
+        <SubCategoryData catData={category} fetchCategory={fetchCategoryData} />
         {/* SubCategory Modal */}
         {modal && modalType === "subcategory" && (
           <Modal>
             <Overlay>
               <ModalContent>
                 <h5 style={{ color: "#ffff" }}>Subcategory</h5>
-                <SubCatForm />
+                <SubCatForm
+                  fetchSubCat={fetchCategoryData}
+                  toggleModal={toggleModal}
+                />
                 {/* Button */}
-                <button className="close-modal" onClick={toggleModal}>
-                  Cancel
-                </button>
+              
               </ModalContent>
             </Overlay>
           </Modal>

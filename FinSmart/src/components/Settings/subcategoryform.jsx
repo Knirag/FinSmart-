@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { baseUrl } from "../../utils";
 import styled from "styled-components";
 
 const ModalTimelines = styled.select`
@@ -22,13 +24,14 @@ const ModalTimelines = styled.select`
     outline-offset: 15px;
   }
 `;
-const SubCatForm = () => {
-const [formInput, setFormInput] = useState({
-  name: "",
-  category: "",
-});
 
-  const handleChange = (e) => {
+const SubCatForm = ({ toggleModal, fetchSubCat }) => {
+  const [categories, setCategories] = useState([]);
+  const [formInput, setFormInput] = useState({
+
+  });
+
+  const onChangeHandler = (e) => {
     const { name, value } = e.target;
     setFormInput({
       ...formInput,
@@ -36,60 +39,85 @@ const [formInput, setFormInput] = useState({
     });
   };
 
-  const onSubmit = (e) => {
-   e.preventDefault();
-   const currentSubCatData =
-     JSON.parse(localStorage.getItem("subCatData")) || [];
-   const id = currentSubCatData.length + 1;
-   currentSubCatData.push({
-     id: id,
-     ...formInput
-   });
-   localStorage.setItem("subCatData", JSON.stringify(currentSubCatData));
-    window.location.reload();
-}
-const deleteSubCategory = (id) => {
-  const updatedSubCategoryData = subCatData.filter(
-    (subcategory) => subcategory.id !== id
-  );
-  setSubCategoryData(updatedSubCategoryData);
-  localStorage.setItem("subCatData", JSON.stringify(updatedSubCategoryData));
-};
-const categoryData = JSON.parse(localStorage.getItem("categoryData")) || [];
-    return (
-      <div>
-        <form action="" onSubmit={onSubmit}>
+  useEffect(() => {
+    const authToken = localStorage.getItem("authToken");
+    axios
+      .get(`${baseUrl}/category`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      .then((res) => {
+        setCategories(res.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching categories:", err);
+      });
 
-          <ModalTimelines
-            name="category"
-            className="form-select"
-            onChange={handleChange}
-            required
-          >
-            {categoryData ? (
-              <>
-                <option value="">Select Category</option>
-                {categoryData.map((category) => (
-                  <option key={category.id} value={category.name}>
-                    {category.name}
-                  </option>
-                ))}
-              </>
-            ) : (
-              <option value="">Loading...</option>
-            )}
-          </ModalTimelines>
-          <label htmlFor="name" className="form-label">
-            Name
-          </label>
-          <input type="text" name="name" onChange={handleChange} required />
+  }, []);
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    const authToken = localStorage.getItem("authToken");
+    axios
+      .post(`${baseUrl}/category/subcategory`, formInput, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      .then((response) => {
+        console.log("Subcategory Added:", response.data);
+        fetchSubCat();
+      })
+      .catch((error) => {
+        console.error("Error adding subcategory:", error);
+      });
+      toggleModal("subcategory");
+  };
+
+  return (
+    <div>
+      <form onSubmit={onSubmit}>
+        <ModalTimelines
+          name="categoryId"
+          value={formInput.categoryId}
+          onChange={onChangeHandler}
+          required
+        >
+          <option value="">Select Category</option>
+          {categories.map((category) => (
+            <option key={category.categoryId} value={category.categoryId}>
+              {category.categoryName}
+            </option>
+          ))}
+        </ModalTimelines>
+
+        <label htmlFor="subCategoryName" className="form-label">
+          Name
+        </label>
+        <input
+          type="text"
+          name="subCategoryName"
+          className="expField"
+          value={formInput.subCategoryName}
+          onChange={onChangeHandler}
+          required
+        />
+        <div className="popup-button">
           <button className="save-data" type="submit">
             Save
           </button>
-        </form>{" "}
-      </div>
-    );
-}
+          <button
+            className="close-modal"
+            onClick={() => toggleModal("subcategory")}
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
 
-export default SubCatForm
-
+export default SubCatForm;

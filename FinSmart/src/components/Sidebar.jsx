@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+// import axios from "axios";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import { LuLogOut } from "react-icons/lu";
@@ -15,10 +16,9 @@ const Nav = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  border-shadow: #8cf3fa;
   position: fixed;
   top: 0;
-  left:0;
+  left: 0;
   width: 100vw;
 `;
 
@@ -30,7 +30,7 @@ const NavIcon = styled(Link)`
   justify-content: flex-start;
   align-items: center;
 `;
-const NavIcon2 = styled(Link)`
+const NavIcon2 = styled.div`
   margin-left: 1100px;
   font-size: 2rem;
   height: 80px;
@@ -40,31 +40,33 @@ const NavIcon2 = styled(Link)`
 `;
 
 const SidebarNav = styled.nav`
-  background: rgb(59, 10, 84);
+  background: rgb(71, 0, 96);
   width: 250px;
   height: 100vh;
   display: flex;
   justify-content: center;
-
   position: fixed;
   top: 0;
   left: ${({ sidebar }) => (sidebar ? "0" : "-100%")};
   transition: 350ms;
   z-index: 10;
-  scroll-effect: smooth;
-  `;
+`;
 
 const SidebarWrap = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  
 `;
 
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(false);
-
+ const navigate = useNavigate();
   const showSidebar = () => setSidebar(!sidebar);
-
+ const logOut = () => {
+   localStorage.removeItem("authToken");
+   navigate("/auth"); // Navigate to the auth page
+ };
   return (
     <>
       <IconContext.Provider value={{ color: "#fff" }}>
@@ -72,8 +74,8 @@ const Sidebar = () => {
           <NavIcon to="#">
             <FaIcons.FaBars onClick={showSidebar} />
           </NavIcon>
-          <NavIcon2 to="/">
-            <LuLogOut />
+          <NavIcon2 onClick={logOut}>
+            <LuLogOut/>
           </NavIcon2>
         </Nav>
         <SidebarNav sidebar={sidebar}>
