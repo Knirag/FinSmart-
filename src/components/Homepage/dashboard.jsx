@@ -353,7 +353,6 @@ const todayIncome = useMemo(() => {
                     align: "start",
                     fontSize: 15,
                     color: "#fff",
-                    align: "center",
                   },
                   cutoutPercentage: 80,
                 },
