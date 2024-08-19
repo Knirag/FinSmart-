@@ -562,7 +562,7 @@ display: flex;
   padding: 4px 10px;
   color: #ffffff;
   text-transform: uppercase;
-  letter-spacing: 1.4px;
+  
   text-decoration: none;
   overflow: hidden;
   transition: 0.1s;
@@ -1843,19 +1843,104 @@ font-family: "Inconsolata", monospace;
               0 0 3px rgb(2, 0, 0);
 }
 /* Financial Education: */
+
+/* ---------------------------------------------------------------------------------------------------------------- */
+
+/* Learning Center */
+
+/* ---------------------------------------------------------------------------------------------------------------- */
+/* Main page */
+.learning-content{
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+}
+.budgeting-Title{
+  font-size: 22px;
+  font-family: "Syne", sans-serif;
+    font-optical-sizing: auto;
+    
+    font-style: normal;
+              text-shadow:
+                  0 0 5px #ff1bf7,
+                  0 0 10px #efe4ff,
+                  0 0 20px #000000,
+                  0 0 40px rgb(1, 16, 16),
+                  0 0 80px rgba(249, 215, 215, 0),
+                  0 0 90px rgba(0, 0, 0, 0.637),
+                  0 0 4px rgb(0, 0, 0),
+                  0 0 3px rgb(2, 0, 0);
+}
+.definition-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.benefits-container{
+  margin-top: 20px;
+}
+.budget-definition{
+  display: flex;
+justify-content:left;
+flex-wrap: wrap;
+  width: 650px;
+  font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings:
+      "slnt" 0;
+      margin-top: 10px;
+}
+.benefits-list{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 850px;
+  margin-left: 320px;
+
+}
+.benefits-row{
+  display: flex;
+  margin: 4px;
+  gap: 6px;
+}
+.benefit-label{
+font-family: "Syne", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-size: 17px;
+  /* font-style: italic; */
+}
+.benefit-info{
+  font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings:
+      "slnt" 0;
+      margin: 1px;
+}
 /* Swiper */
 .swiper {
   width: 100%;
   height: 100%;
+  margin-top: 20px;
+
 }
 
 .swiper-slide {
   text-align: center;
   font-size: 18px;
-  background: #fff;
+  background: none;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 0 auto;
+  margin-left: 130px;
+
 }
 
 .swiper-slide img {
@@ -1863,4 +1948,334 @@ font-family: "Inconsolata", monospace;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-top-left-radius: 9px;
+  border-top-right-radius: 9px;
+  border: 1px solid #fff;
+}
+
+.swiper-slide {
+  text-decoration: none;
+  color: #fff;
+}
+
+.course-label {
+  text-decoration: none;
+}
+
+.course-name {
+  margin-top: 12px;
+  font-size: 14px;
+  font-family: "Syne", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  text-shadow:
+    0 0 5px #ff1bf7,
+    0 0 10px #efe4ff,
+    0 0 20px #000000,
+    0 0 40px rgb(1, 16, 16),
+    0 0 80px rgba(249, 215, 215, 0),
+    0 0 90px rgba(0, 0, 0, 0.637),
+    0 0 4px rgb(0, 0, 0),
+    0 0 3px rgb(2, 0, 0);
+}
+.swiper-container{
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Account Management */
+.acct-management-Label{
+    font-size: 17px;
+    font-family: "Syne", sans-serif;
+      font-optical-sizing: auto;
+      font-style: normal;
+      text-shadow:
+        0 0 5px #ff1bf7,
+        0 0 10px #efe4ff,
+        0 0 20px #000000,
+        0 0 40px rgb(1, 16, 16),
+        0 0 80px rgba(249, 215, 215, 0),
+        0 0 90px rgba(0, 0, 0, 0.637),
+        0 0 4px rgb(0, 0, 0),
+        0 0 3px rgb(2, 0, 0);
+}
+.acct-management-Info{
+  font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings:
+      "slnt" 0;
+      margin: 7px;
+}
+.acct-management-Tutorial{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.acct-management-Tutorial img{
+  margin-top: 12px;
+  width: 900px;
+  border: 2px solid #fff;
+}
+.image-tutorial-label{
+  margin-top:7px;
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings:
+      "slnt" 0;
+}
+.acct-management-List{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-left: 56px;
+  margin-top: 10px;
+  list-style: inside;
+}
+.acct-management-Row{
+  display: flex;
+  gap: 4px;
+  padding: 7px;
+  list-style: inside;
+}
+.acct-managemnt-accounts-Label{
+  font-family: "Syne", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-size: 18px;
+    
+}
+.acct-managemnt-accounts-Info{
+font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-variation-settings:
+    "slnt" 1;
+    font-size: 14px;
+}
+.learn-more{
+  font-size: 17px;
+    font-family: "Syne", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    text-shadow:
+      0 0 5px #ff1bf7,
+      0 0 10px #efe4ff,
+      0 0 20px #000000,
+      0 0 40px rgb(1, 16, 16),
+      0 0 80px rgba(249, 215, 215, 0),
+      0 0 90px rgba(0, 0, 0, 0.637),
+      0 0 4px rgb(0, 0, 0),
+      0 0 3px rgb(2, 0, 0);
+      text-transform: capitalize;
+      letter-spacing: 1.4px;
+}
+.learn-more-link{
+  text-decoration: none;
+  margin: 9px;
+  text-transform: uppercase;
+  color: #000000;
+}
+.bills-info{
+  display: flex;
+  flex-direction: column;
+  margin-top: 14px;
+  font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+      font-style: italic;
+    font-weight: 500;
+    font-variation-settings:
+      "slnt" 1;
+    font-size: 14px;
+}
+.bills-info-2{
+  display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-variation-settings:
+      "slnt" 1;
+    font-size: 14px;
+}
+.bills-info-example{
+font-size: 11px;
+  font-family: "DM Sans",
+  sans-serif;
+  font-optical-sizing: auto;
+  font-weight: light;
+  font-style:italic;
+  margin-top: 5px;
+}
+.next-page{
+align-self: last baseline;
+  background-color: #a12fc0a7;
+  background-image: none;
+  background-position: 0 90%;
+  background-repeat: repeat no-repeat;
+  background-size: 4px 3px;
+  border-radius: 15px 225px 255px 15px 15px 255px 225px 15px;
+  border-style: solid;
+  border-width: 2px;
+  box-shadow: rgba(0, 0, 0, .2) 15px 28px 25px -18px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Neucha, sans-serif;
+  font-size: 1rem;
+  line-height: 23px;
+  outline: none;
+  padding: .75rem;
+  text-decoration: none;
+  transition: all 235ms ease-in-out;
+  border-bottom-left-radius: 15px 255px;
+  border-bottom-right-radius: 225px 15px;
+  border-top-left-radius: 255px 15px;
+  border-top-right-radius: 15px 225px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+
+}
+
+.next-page:hover {
+box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
+transform: translate3d(0, 2px, 0);
+}
+.next-page:focus{
+  box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
+}
+.tools-paragraph{
+  font-family: "Syne", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings:
+      "slnt" 1;
+    font-size: 17px;
+}
+.tools-list{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-left: 56px;
+  margin-top:5px;
+  
+}
+.tools-row{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.tool-label{
+  font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings:
+      "slnt" 1;
+    font-size: 16px;
+    text-decoration: underline;
+}
+.tool-info{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: left;
+  justify-content: left;
+  margin-top: 4px;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-style: italic;
+    font-weight: 500;
+    font-variation-settings:
+      "slnt" 1;
+    font-size: 14px;
+}
+.planning-info{
+  display: flex;
+  flex-direction: row;
+  
+  align-items: first baseline;
+  justify-content: first baseline;
+  margin-top: 12px;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-style: italic;
+    font-weight: 400;
+    font-variation-settings:
+      "slnt" 1;
+    font-size: 14px
+}
+.resources-list{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-left: 56px;
+  margin-top: 10px;
+}
+.resource-info{
+  font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-variation-settings:
+      "slnt" 1;
+    font-size: 16px;
+    text-transform: capitalize;
+    text-decoration: underline;
+}
+
+/* Tutorial */
+.video-thumbnail {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.video-thumbnail iframe {
+  width: 100%;
+  height: 100%;
+  margin-top: 20px;
+}
+.tutorial-row{
+  display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-top: 3px;
+}
+.tutorial-features{
+  font-family: "Syne", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings:
+      "slnt" 1;
+    font-size: 17px;
+    text-decoration: underline;
+}
+.feature-label{
+font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 1;
+  font-size: 16px;
+  text-decoration: underline;
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef} from "react";
 import { GoTrash } from "react-icons/go";
 import styled from "styled-components";
 import { MdHistoryToggleOff } from "react-icons/md";
@@ -58,16 +58,17 @@ const ModalContent = styled.div`
     0 0 40px #9e25d69d, 0 0 80px #d553f9ab;
 `;
 
-const AccountsList = ({accountData, toggleModal, sendAccount}) => {
+const AccountsList = ({ accountData, toggleModal, sendAccount }) => {
   const [incomeData, setIncomeData] = useState([]);
   const [expenseData, setExpenseData] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [transactionHistory, setTransactionHistory] = useState([]);
-  const [accounts, setAccounts] = useState([])
+  const [accounts, setAccounts] = useState([]);
+  const isFirstRender = useRef(true);
 
-
+  // Fetching income and expense data once on component mount
   useEffect(() => {
     const authToken = localStorage.getItem("authToken");
     const fetchExpenses = axios.get(`${baseUrl}/expense`, {
@@ -81,7 +82,7 @@ const AccountsList = ({accountData, toggleModal, sendAccount}) => {
       },
     });
 
-    Promise.all([ fetchExpenses, fetchIncomes])
+    Promise.all([fetchExpenses, fetchIncomes])
       .then(([expensesRes, incomesRes]) => {
         setExpenseData(expensesRes.data);
         setIncomeData(incomesRes.data);
@@ -91,177 +92,204 @@ const AccountsList = ({accountData, toggleModal, sendAccount}) => {
       });
   }, []);
 
+  // Updating account balances based on income and expense data
+  useEffect(() => {
+    if (isFirstRender.current) {
+      // Skip the first render
+      isFirstRender.current = false;
+      return;
+    }
 
-useEffect(() => {
-  if (accounts.length > 0 && incomeData.length > 0 && expenseData.length > 0) {
-    const authToken = localStorage.getItem("authToken");
+    if (
+      accounts.length > 0 &&
+      incomeData.length > 0 &&
+      expenseData.length > 0
+    ) {
+      const authToken = localStorage.getItem("authToken");
 
-    const updateAccountBalance = async (account) => {
-      try {
-        await axios.put(`${baseUrl}/accounts/${account.accountId}`, account, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
-      } catch (error) {
-        console.error(`Error updating account ${account.accountId}:`, error);
-      }
-    };
-
-    const updatedAccounts = accounts.map((account) => {
-      const todayExpenses = expenseData.filter((expense) => {
-        const expenseDate = moment(expense.expenseDate);
-        return (
-          expense.account.accountName === account.accountName &&
-          expenseDate.isSameOrBefore(moment(), "day")
-        );
-      });
-      const todayIncome = incomeData.filter((income) => {
-        const incomeDate = moment(income.incomeDate);
-        return (
-          income.account.accountName === account.accountName &&
-          incomeDate.isSameOrBefore(moment(), "day")
-        );
-      });
-      const totalIncomeToday = todayIncome.reduce(
-        (sum, income) => sum + parseInt(income.incomeAmount),
-        0
-      );
-      const totalExpensesToday = todayExpenses.reduce(
-        (sum, expense) => sum + parseInt(expense.expenseAmount),
-        0
-      );
-      const updatedBalance =
-        account.accountInitialBalance - totalExpensesToday + totalIncomeToday;
-
-      const updatedAccount = {
-        ...account,
-        accountBalance: updatedBalance,
+      const updateAccountBalance = async (account) => {
+        try {
+          await axios.put(`${baseUrl}/accounts/${account.accountId}`, account, {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          });
+        } catch (error) {
+          console.error(`Error updating account ${account.accountId}:`, error);
+        }
       };
 
-      updateAccountBalance(updatedAccount);
-      return updatedAccount;
-    });
-
-    setAccounts(updatedAccounts);
-  }
-}, [accounts.length, incomeData, expenseData]);
-
-useEffect(() => {
-   if (accounts.length > 0 && incomeData.length > 0 && expenseData.length > 0) {
-  const processRecurringIncomes = async () => {
-    const today = moment();
-    const authToken = localStorage.getItem("authToken");
-
-    const updatedAccounts = accounts.map((account) => {
-      let newBalance = account.accountBalance;
-
-      incomeData.forEach((income) => {
-        if (
-          income.incomeFrequency &&
-          income.account.accountName === account.accountName
-        ) {
+      const updatedAccounts = accounts.map((account) => {
+        const todayExpenses = expenseData.filter((expense) => {
+          const expenseDate = moment(expense.expenseDate);
+          return (
+            expense.account.accountName === account.accountName &&
+            expenseDate.isSameOrBefore(moment(), "day")
+          );
+        });
+        const todayIncome = incomeData.filter((income) => {
           const incomeDate = moment(income.incomeDate);
+          return (
+            income.account.accountName === account.accountName &&
+            incomeDate.isSameOrBefore(moment(), "day")
+          );
+        });
+        const totalIncomeToday = todayIncome.reduce(
+          (sum, income) => sum + parseInt(income.incomeAmount),
+          0
+        );
+        const totalExpensesToday = todayExpenses.reduce(
+          (sum, expense) => sum + parseInt(expense.expenseAmount),
+          0
+        );
+        const updatedBalance =
+          account.accountInitialBalance - totalExpensesToday + totalIncomeToday;
 
-          if (today.date() === incomeDate.date()) {
-            newBalance += parseInt(income.incomeAmount, 10);
-          }
-        }
+        const updatedAccount = {
+          ...account,
+          accountBalance: updatedBalance,
+        };
+
+        updateAccountBalance(updatedAccount);
+        return updatedAccount;
       });
 
-expenseData.forEach((expense) => {
-  if (
-    expense.expenseFrequency &&
-    expense.account.accountName === account.accountName
-  ) {
-    const expenseDate = moment(expense.expenseDate);
-
-    if (today.date() === expenseDate.date()) {
-      newBalance += parseInt(expense.expenseAmount, 10);
+      setAccounts(updatedAccounts);
     }
-  }
-});
-      return { ...account, accountBalance: newBalance };
-    });
+  }, [accounts.length, incomeData, expenseData]);
 
-    setAccounts(updatedAccounts);
+  // Process recurring incomes and expenses
+  useEffect(() => {
+    if (
+      accounts.length > 0 &&
+      incomeData.length > 0 &&
+      expenseData.length > 0
+    ) {
+      const processRecurringTransactions = async () => {
+        const today = moment();
+        const authToken = localStorage.getItem("authToken");
 
-    for (const account of updatedAccounts) {
-      try {
-        await axios.put(`${baseUrl}/accounts/${account.accountId}`, account, {
-          headers: { Authorization: `Bearer ${authToken}` },
+        const updatedAccounts = accounts.map((account) => {
+          let newBalance = account.accountBalance;
+
+          incomeData.forEach((income) => {
+            if (
+              income.incomeFrequency &&
+              income.account.accountName === account.accountName
+            ) {
+              const incomeDate = moment(income.incomeDate);
+
+              if (today.date() === incomeDate.date()) {
+                newBalance += parseInt(income.incomeAmount, 10);
+              }
+            }
+          });
+
+          expenseData.forEach((expense) => {
+            if (
+              expense.expenseFrequency &&
+              expense.account.accountName === account.accountName
+            ) {
+              const expenseDate = moment(expense.expenseDate);
+
+              if (today.date() === expenseDate.date()) {
+                newBalance -= parseInt(expense.expenseAmount, 10); // Note: Expenses should subtract from balance
+              }
+            }
+          });
+
+          return { ...account, accountBalance: newBalance };
         });
-      } catch (err) {
-        console.error(`Error updating account ${account.accountName}:`, err);
-      }
+
+        setAccounts(updatedAccounts);
+
+        for (const account of updatedAccounts) {
+          try {
+            await axios.put(
+              `${baseUrl}/accounts/${account.accountId}`,
+              account,
+              {
+                headers: { Authorization: `Bearer ${authToken}` },
+              }
+            );
+          } catch (err) {
+            console.error(
+              `Error updating account ${account.accountName}:`,
+              err
+            );
+          }
+        }
+      };
+
+      processRecurringTransactions();
     }
+  }, [incomeData, accounts.length, expenseData]);
+
+  // Fetch transaction history
+  const fetchTransactionHistory = (accountName) => {
+    const filteredExpenses = expenseData.filter(
+      (transaction) => transaction.account.accountName === accountName
+    );
+
+    const filteredIncomes = incomeData.filter(
+      (transaction) => transaction.account.accountName === accountName
+    );
+
+    const combinedHistory = [
+      ...filteredExpenses.map((expense) => ({
+        ...expense,
+        type: "expense",
+        date: new Date(expense.expenseDate),
+      })),
+      ...filteredIncomes.map((income) => ({
+        ...income,
+        type: "income",
+        date: new Date(income.incomeDate),
+      })),
+    ].sort((a, b) => b.date - a.date);
+
+    setTransactionHistory(combinedHistory);
   };
 
-  processRecurringIncomes();
-}
-}, [incomeData, accounts.length, expenseData]);
+  // Handle account modal open
+  const openAccountModal = (account) => {
+    setOpenModal(true);
+    document.body.classList.add("active-modal");
+    setSelectedAccount(account);
+    fetchTransactionHistory(account.accountName);
+  };
 
-
-const fetchTransactionHistory = (accountName) => {
-  const filteredExpenses = expenseData.filter(
-    (transaction) => transaction.account.accountName === accountName
-  );
-
-  const filteredIncomes = incomeData.filter(
-    (transaction) => transaction.account.accountName === accountName
-  );
-
-  const combinedHistory = [
-    ...filteredExpenses.map((expense) => ({
-      ...expense,
-      type: "expense",
-      date: new Date(expense.expenseDate),
-    })),
-    ...filteredIncomes.map((income) => ({
-      ...income,
-      type: "income",
-      date: new Date(income.incomeDate),
-    })),
-  ].sort((a, b) => b.date - a.date);
-
-  setTransactionHistory(combinedHistory);
-};
- const openAccountModal = (account) => {
-   setOpenModal(true);
-   document.body.classList.add("active-modal");
-   setSelectedAccount(account);
-   fetchTransactionHistory(account.accountName);
- };
-
+  // Handle account deletion
   const deleteAccount = (accountId) => {
     const authToken = localStorage.getItem("authToken");
     axios
-    .delete(`${baseUrl}/accounts/${accountId}`, {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
-    })
-    .then((res) => {
-      console.log("Account deleted:", res.data);
-      setAccounts((prevAccounts) =>
-        prevAccounts.filter((acc) => acc.accountId !== accountId)
-    );
-  })
-  .catch((err) => {
-    console.error("Error deleting account:", err);
-  });
-  
-  toggleDeleteModal(()=> window.location.reload());
-};
-const toggleDeleteModal = () => {
-  setDeleteModal(!deleteModal);
-  if (!deleteModal) {
-    document.body.classList.add("active-modal");
-  } else {
-    document.body.classList.remove("active-modal");
-  }
-};
+      .delete(`${baseUrl}/accounts/${accountId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      .then((res) => {
+        console.log("Account deleted:", res.data);
+        setAccounts((prevAccounts) =>
+          prevAccounts.filter((acc) => acc.accountId !== accountId)
+        );
+      })
+      .catch((err) => {
+        console.error("Error deleting account:", err);
+      });
 
+    toggleDeleteModal();
+  };
+
+  // Toggle delete modal
+  const toggleDeleteModal = () => {
+    setDeleteModal(!deleteModal);
+    if (!deleteModal) {
+      document.body.classList.add("active-modal");
+    } else {
+      document.body.classList.remove("active-modal");
+    }
+  };
 
   return (
     <div className="accountsListingContainer">
@@ -359,12 +387,14 @@ const toggleDeleteModal = () => {
                               <p>No transactions found.</p>
                             )}
                           </div>
-                        <div className="popup-button">
-
-                          {/* Button */}
-                          <button className="close-modal" onClick={openAccountModal}>
-                            Close
-                          </button>
+                          <div className="popup-button">
+                            {/* Button */}
+                            <button
+                              className="close-modal"
+                              onClick={openAccountModal}
+                            >
+                              Close
+                            </button>
                           </div>
                         </ModalContent>
                       </Overlay>
@@ -396,17 +426,15 @@ const toggleDeleteModal = () => {
               <div className="modify_ItemsAccounts">
                 <button
                   className="editItems"
-                  onClick={() =>{ toggleModal(account);
+                  onClick={() => {
+                    toggleModal(account);
                     sendAccount(account);
                   }}
                 >
                   <ImPencil2 />
                   <h6 className="historyBtnLabel">EDIT</h6>
                 </button>
-                <button
-                  className="deleteItems"
-                  onClick={toggleDeleteModal}
-                >
+                <button className="deleteItems" onClick={toggleDeleteModal}>
                   <GoTrash />
                   <h6 className="historyBtnLabel">DELETE</h6>
                 </button>
@@ -426,7 +454,10 @@ const toggleDeleteModal = () => {
                           >
                             Yes
                           </button>
-                          <button className="save-data" onClick={toggleDeleteModal}>
+                          <button
+                            className="save-data"
+                            onClick={toggleDeleteModal}
+                          >
                             No
                           </button>
                         </div>

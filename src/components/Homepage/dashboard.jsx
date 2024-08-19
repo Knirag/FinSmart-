@@ -229,16 +229,16 @@ const Dashboard = () => {
   }, [filteredExpenseData]);
 
 const todayExpenses = useMemo(() => {
-  return expenseData.filter((exp) =>
+  return filteredExpenseData.filter((exp) =>
     moment(exp.expenseDate).isSame(moment(), "day")
   );
-}, [expenseData]);
+}, [filteredExpenseData]);
 
 const todayIncome = useMemo(() => {
-  return incomeData.filter((inc) =>
+  return filteredIncomeData.filter((inc) =>
     moment(inc.incomeDate).isSame(moment(), "day")
   );
-}, [incomeData]);
+}, [filteredIncomeData]);
 
   const chartData = {
     labels: ["Expenses", "Income"],

@@ -74,7 +74,7 @@ const Transactions = () => {
 
         const combinedData = [
           ...incomeResponse.data.map((income) => ({
-            id: income.incomeId,
+            id: `income-${income.incomeId}`,
             description: income.incomeDescription,
             date: income.incomeDate,
             amount: income.incomeAmount,
@@ -84,7 +84,7 @@ const Transactions = () => {
             type: "income",
           })),
           ...expenseResponse.data.map((expense) => ({
-            id: expense.expenseId,
+            id:`expense-${expense.expenseId}`,
             description: expense.expenseDescription,
             date: expense.expenseDate,
             amount: expense.expenseAmount,

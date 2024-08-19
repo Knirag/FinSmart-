@@ -34,6 +34,7 @@ const Authentication = () => {
 
   const handleSignUpSubmit = (e) => {
     e.preventDefault();
+    console.log("Base url:", baseUrl);
     if (formData.password !== formData.repeatpswd) {
       setError("Passwords do not match");
       console.log("password one:", formData.password);
@@ -46,43 +47,39 @@ const Authentication = () => {
       .post(`${baseUrl}/users/register`, dataToSubmit)
       .then((response) => {
         console.log("You Are Successfully Signed Up", response.data);
-        navigateTo("/dashboard");
+        navigateTo("/finEducation/tutorial");
       })
       .catch((error) => {
         console.error("There was an error signing up:", error);
       });
   };
 
-  const handleLogin = (e) =>{
-    e.preventDefault()
-    fetch(`${baseUrl}/users/login`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-    .then(res => res.json())
-    .then(res => console.log(res))
-    .catch(error => console.log(error))
-  }
-
-  const handleLoginSubmit = (e) => {
-    e.preventDefault();
-    axios
-      .post(`${baseUrl}/users/login`, formData)
-      .then((response) => {
-        const { token } = response.data;
-        console.log("You Are Logged In 👍🏽", response.data);
-        navigateTo("/dashboard");
-        localStorage.setItem("authToken", token);
-      })
-      .catch((error) => {
-        console.error("Error on Login:", error);
-        alert("Email or Password is not matching with our record");
-      });
-  };
+ const handleLoginSubmit = async (e) => {
+   e.preventDefault();
+   console.log(
+     "base url:",baseUrl
+   );
+   try {
+     const response = await axios.post(`${baseUrl}/users/login`, formData);
+     if (response.status === 200 && response.data.token) {
+       const { token } = response.data;
+       console.log("You Are Logged In 👍🏽", response.data);
+       localStorage.setItem("authToken", token);
+       navigateTo("/dashboard");
+     } else {
+       console.error("Login failed with status:", response.status);
+       alert("Login failed. Please check your credentials and try again.");
+     }
+   } catch (error) {
+     if (error.response && error.response.status === 401) {
+       console.error("Error on Login:", error.response.data);
+       alert("Email or Password is not matching with our record");
+     } else {
+       console.error("An unexpected error occurred:", error);
+       alert("An unexpected error occurred. Please try again later.");
+     }
+   }
+ };
    const togglePasswordVisibility = () => {
      setPasswordVisible(!passwordVisible);
    };
@@ -116,7 +113,7 @@ const Authentication = () => {
         </div>
         <div className="inputsSection">
           {loginType === "LOGIN" && (
-            <form>
+            <form onSubmit={handleLoginSubmit}>
               <div className="userNameField">
                 <label className="fieldLabel"> Username: </label>
                 <div className="userNameFieldInput">
@@ -151,7 +148,6 @@ const Authentication = () => {
                 <button
                   type="submit"
                   className="submit"
-                  onClick={handleLoginSubmit}
                 >
                   SUBMIT
                 </button>

@@ -1,1 +1,5 @@
-export const baseUrl = "http://10.169.2.70:9000/api/v1";
+// utils.js
+export const baseUrl =
+  !import.meta.env.PROD
+    ? "http://localhost:9000/api/v1"
+    : "https://finsmart-42713dec77e2.herokuapp.com/api/v1";

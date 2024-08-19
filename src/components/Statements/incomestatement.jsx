@@ -123,9 +123,9 @@ const IncomeStatement = () => {
       const itemEndDate = item.endDate
         ? moment(item.endDate)
         : moment(item.date);
-      const startMonth = itemStartDate.month() ;
+      const startMonth = itemStartDate.month() + 1;
       console.log(startMonth);
-      const endMonth = itemEndDate.month() ;
+      const endMonth = itemEndDate.month()+ 1 ;
       const selected = months.indexOf(selectedMonth);
       if (
         startMonth === selected  ||

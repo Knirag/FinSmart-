@@ -8,7 +8,8 @@ import { LuLogOut } from "react-icons/lu";
 import { SidebarData } from "./SidebarData";
 import SubMenu from "./SubMenu";
 import { IconContext } from "react-icons/lib";
-import fLogo from '../images/logo.svg'
+import fLogo from "../images/logo.svg";
+import { Tooltip } from "react-tooltip";
 
 const Nav = styled.div`
   background: none;
@@ -56,17 +57,16 @@ const SidebarWrap = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  
 `;
 
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(false);
- const navigate = useNavigate();
+  const navigate = useNavigate();
   const showSidebar = () => setSidebar(!sidebar);
- const logOut = () => {
-   localStorage.removeItem("authToken");
-   navigate("/auth"); // Navigate to the auth page
- };
+  const logOut = () => {
+    localStorage.removeItem("authToken");
+    navigate("/auth"); // Navigate to the auth page
+  };
   return (
     <>
       <IconContext.Provider value={{ color: "#fff" }}>
@@ -74,8 +74,17 @@ const Sidebar = () => {
           <NavIcon to="#">
             <FaIcons.FaBars onClick={showSidebar} />
           </NavIcon>
-          <NavIcon2 onClick={logOut}>
-            <LuLogOut/>
+          <NavIcon2 onClick={logOut} data-tip="Click here to logout">
+            <Tooltip
+              anchorSelect="#not-clickable"
+              place="top"
+              style={{ fontSize: "10px", background: "#fff", color: "black" }}
+            >
+              Click Here to Logout
+            </Tooltip>
+            <a id="not-clickable">
+              <LuLogOut />
+            </a>
           </NavIcon2>
         </Nav>
         <SidebarNav sidebar={sidebar}>

@@ -8,7 +8,7 @@ import { baseUrl } from "../../utils";
 import { CiCirclePlus } from "react-icons/ci";
 import "../../App.css";
 
-const AccountHeader = styled.div`
+export const AccountHeader = styled.div`
   position: absolute;
   display: flex;
   flex-direction: row;
